@@ -1490,6 +1490,21 @@
   </div>
 </div>
 
+
+<!-- Feedback Sent Gauge -->
+<div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:12px; display:flex; align-items:center; gap:28px; flex-wrap:wrap;">
+  <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0;">
+    <canvas id="gauge-canvas" width="220" height="120"></canvas>
+  </div>
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div>
+      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:36px; font-weight:500; color:var(--text); line-height:1;">0%</span>
+      <span style="font-size:11px; color:var(--text3); margin-left:8px;">feedback sent</span>
+    </div>
+    <div id="gauge-breakdown" style="display:flex; flex-direction:column; gap:5px;"></div>
+  </div>
+</div>
+
 <!-- Dashboard (collapsible) -->
 <div class="dashboard-toggle" id="dashboard-toggle" onclick="toggleDashboard()">
   <div class="dashboard-toggle-left">
@@ -1549,6 +1564,7 @@
     </div>
 
   </div>
+
 
   <!-- Trend section -->
   <div class="trend-section">
@@ -3297,10 +3313,104 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (dashboardOpen && typeof Chart !== 'undefined') {
       renderRings();
       renderTrend();
+      renderGauge();
     }
   }
 
-  function renderTrend() {
+  function renderGauge() {
+    const canvas = document.getElementById('gauge-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const entries = currentEntries();
+    const total = entries.length || 1;
+    const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
+    const followup = entries.filter(e => e.status === 'followup').length;
+    const pending = entries.filter(e => e.status === 'pending').length;
+    const pct = Math.round(sent / total * 100);
+
+    const W = 220, H = 120;
+    const cx = W / 2, cy = H - 10;
+    const r = 88, rInner = 58;
+    const startAngle = Math.PI;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Colored segments red→orange→yellow→green
+    const segs = [
+      { from: 0,    to: 0.25, color: '#ff6b6b' },
+      { from: 0.25, to: 0.5,  color: '#ff9f43' },
+      { from: 0.5,  to: 0.75, color: '#ffc85e' },
+      { from: 0.75, to: 1.0,  color: '#6bffb8' },
+    ];
+
+    segs.forEach(seg => {
+      const a1 = startAngle + seg.from * Math.PI;
+      const a2 = startAngle + seg.to * Math.PI;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, a1, a2);
+      ctx.arc(cx, cy, rInner, a2, a1, true);
+      ctx.closePath();
+      ctx.fillStyle = seg.color;
+      ctx.fill();
+    });
+
+    // Dark overlay on unused portion
+    const usedAngle = startAngle + (pct / 100) * Math.PI;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, usedAngle, 2 * Math.PI);
+    ctx.arc(cx, cy, rInner, 2 * Math.PI, usedAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(15,15,15,0.7)';
+    ctx.fill();
+
+    // Divider lines
+    segs.forEach(seg => {
+      const a = startAngle + seg.from * Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(cx + rInner * Math.cos(a), cy + rInner * Math.sin(a));
+      ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+      ctx.strokeStyle = 'rgba(15,15,15,0.9)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+    // Needle
+    const na = startAngle + (pct / 100) * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + (r - 6) * Math.cos(na), cy + (r - 6) * Math.sin(na));
+    ctx.strokeStyle = '#f0ede8';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Hub
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = '#f0ede8';
+    ctx.fill();
+
+    // Axis labels
+    ctx.font = '10px monospace';
+    ctx.fillStyle = '#555350';
+    ctx.textAlign = 'right';  ctx.fillText('0%',   cx - r - 4,  cy + 4);
+    ctx.textAlign = 'center'; ctx.fillText('50%',  cx,          cy - r - 6);
+    ctx.textAlign = 'left';   ctx.fillText('100%', cx + r + 4,  cy + 4);
+
+    // Update pct label + color
+    const pctEl = document.getElementById('gauge-pct-label');
+    pctEl.textContent = pct + '%';
+    pctEl.style.color = pct < 25 ? '#ff6b6b' : pct < 50 ? '#ff9f43' : pct < 75 ? '#ffc85e' : '#6bffb8';
+
+    // Breakdown
+    const mono = "font-size:11px;color:var(--text3);font-family:monospace;";
+    document.getElementById('gauge-breakdown').innerHTML =
+      `<div style="${mono}"><span style="color:#6bffb8;">${sent}</span> sent / check-in</div>` +
+      `<div style="${mono}"><span style="color:#ffc85e;">${followup}</span> follow-up needed</div>` +
+      `<div style="${mono}"><span style="color:var(--text3);">${pending}</span> pending</div>`;
+  }
+
+    function renderTrend() {
     const weeks = Object.entries(state.weeks)
       .sort((a, b) => a[0].localeCompare(b[0]));
 
@@ -3655,6 +3765,7 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (dashboardOpen && typeof Chart !== 'undefined') {
       renderRings();
     }
+    renderGauge();
   };
 
   if (dashboardOpen && typeof Chart !== 'undefined') {
