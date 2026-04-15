@@ -1801,7 +1801,6 @@
   <table>
     <thead>
       <tr>
-        <th style="width:28px; padding:8px 4px 8px 10px;"><input type="checkbox" class="batch-check" id="select-all-check" onclick="toggleSelectAll(this)" title="Select all"></th>
         <th class="col-hex sortable" onclick="sortBy('hex')" id="th-hex">Hex Priority</th>
         <th class="sortable" onclick="sortBy('name')" id="th-name">Coach</th>
         <th class="sortable" onclick="sortBy('tier')" id="th-tier">Tier</th>
@@ -1815,6 +1814,7 @@
         <th class="col-resign">Resign Date</th>
         <th class="col-notes col-hidden">Notes</th>
         <th class="col-skip col-hidden">Skip</th>
+        <th style="width:28px; padding:8px 4px 8px 10px;"><input type="checkbox" class="batch-check" id="select-all-check" onclick="toggleSelectAll(this)" title="Select all"></th>
         <th></th>
       </tr>
     </thead>
@@ -2552,7 +2552,6 @@
         const avatarClass = e.photo ? 'coach-avatar' : 'coach-avatar initials';
         return `
         <tr class="${e.skipped ? 'row-skipped' : ''}" onclick="handleRowClick(event, ${e.id})" style="cursor:pointer;">
-          <td class="td-check"><input type="checkbox" class="batch-check row-check" data-id="${e.id}" onclick="event.stopPropagation(); updateBatchBar();" /></td>
           <td class="col-hex">
             ${e.hexPriority && e.hexPriority !== 'none' ? `
             <div class="hex-tooltip-wrap">
@@ -2668,6 +2667,7 @@
               ${e.skipped ? '✓ Skipped' : 'Skip'}
             </button>
           </td>
+          <td class="td-check"><input type="checkbox" class="batch-check row-check" data-id="${e.id}" onclick="event.stopPropagation(); updateBatchBar();" /></td>
           <td><button class="del-btn" onclick="deleteEntry(${e.id})">✕</button></td>
         </tr>
       `}).join('');
