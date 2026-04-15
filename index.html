@@ -922,6 +922,29 @@
   .briefing-open-btn:hover { background: var(--accent); color: #0f0f0f; }
 
 
+
+  /* Quick link buttons */
+  .quick-link {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .quick-link:hover { color: var(--text); border-color: var(--text3); }
+  .quick-link.not-set { color: var(--text3); border-style: dashed; }
+  .quick-link.not-set:hover { color: var(--accent); border-color: var(--accent); border-style: dashed; }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -1468,6 +1491,12 @@
       <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
       <button class="btn btn-hex" onclick="openHexModal()">⬆ Hex priority</button>
       <button class="btn btn-wr" onclick="openWRModal()">⬆ WR data</button>
+      <button class="quick-link" id="hex-link-btn" onclick="openQuickLink('hex')" title="Click to set your Hex URL">
+        <span>Hex ↗</span>
+      </button>
+      <button class="quick-link" id="looker-link-btn" onclick="openQuickLink('looker')" title="Click to set your Looker URL">
+        <span>Looker ↗</span>
+      </button>
       <div class="more-wrap">
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
@@ -1874,6 +1903,29 @@
     <div style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
       <a class="briefing-open-btn" href="https://claude.ai" target="_blank">Open Claude.ai ↗</a>
       <button class="btn" onclick="closeBriefingModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Link Modal -->
+<div id="quick-link-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:500; align-items:center; justify-content:center;" onclick="handleQuickLinkOverlay(event)">
+  <div style="background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:28px; width:460px; max-width:92vw; display:flex; flex-direction:column; gap:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text);" id="quick-link-title">Set URL</div>
+        <div style="font-size:12px; color:var(--text3); margin-top:3px;">Paste your URL — saved automatically</div>
+      </div>
+      <button onclick="closeQuickLink()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+    <input type="url" id="quick-link-input" placeholder="https://..."
+      style="font-family:'DM Mono',monospace; font-size:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); padding:9px 12px; outline:none; width:100%; transition:border-color 0.15s;"
+      onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <button class="btn" style="color:var(--red); border-color:#3a2020;" onclick="clearQuickLink()">Clear</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" onclick="closeQuickLink()">Cancel</button>
+        <button class="btn btn-accent" onclick="saveQuickLink()">Save & Open</button>
+      </div>
     </div>
   </div>
 </div>
@@ -3369,6 +3421,91 @@ Please be specific and direct. I have limited time this week so focus on who nee
     });
   }
 
+
+  // ── Quick Links ───────────────────────────────────
+  let quickLinkActive = null;
+
+  function openQuickLink(type) {
+    quickLinkActive = type;
+    const urls = { hex: state.hexUrl || '', looker: state.lookerUrl || '' };
+    const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL' };
+    const url = urls[type];
+
+    // If URL already set, go straight there
+    if (url) {
+      window.open(url, '_blank');
+      return;
+    }
+
+    // Otherwise open setup modal
+    document.getElementById('quick-link-title').textContent = titles[type];
+    document.getElementById('quick-link-input').value = '';
+    document.getElementById('quick-link-overlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('quick-link-input').focus(), 50);
+  }
+
+  function closeQuickLink() {
+    document.getElementById('quick-link-overlay').style.display = 'none';
+    quickLinkActive = null;
+  }
+
+  function handleQuickLinkOverlay(evt) {
+    if (evt.target === document.getElementById('quick-link-overlay')) closeQuickLink();
+  }
+
+  function saveQuickLink() {
+    const url = document.getElementById('quick-link-input').value.trim();
+    if (!url) return;
+    if (quickLinkActive === 'hex')    { state.hexUrl = url; }
+    if (quickLinkActive === 'looker') { state.lookerUrl = url; }
+    save();
+    updateQuickLinkButtons();
+    closeQuickLink();
+    window.open(url, '_blank');
+  }
+
+  function clearQuickLink() {
+    if (quickLinkActive === 'hex')    { delete state.hexUrl; }
+    if (quickLinkActive === 'looker') { delete state.lookerUrl; }
+    save();
+    updateQuickLinkButtons();
+    closeQuickLink();
+    toast((quickLinkActive === 'hex' ? 'Hex' : 'Looker') + ' URL cleared');
+  }
+
+  function updateQuickLinkButtons() {
+    const hexBtn = document.getElementById('hex-link-btn');
+    const lookerBtn = document.getElementById('looker-link-btn');
+    if (hexBtn) {
+      hexBtn.classList.toggle('not-set', !state.hexUrl);
+      hexBtn.title = state.hexUrl ? 'Open Hex Dashboard (click & hold to change URL)' : 'Click to set your Hex URL';
+    }
+    if (lookerBtn) {
+      lookerBtn.classList.toggle('not-set', !state.lookerUrl);
+      lookerBtn.title = state.lookerUrl ? 'Open Looker Dashboard (click & hold to change URL)' : 'Click to set your Looker URL';
+    }
+  }
+
+  // Long press to edit an already-set URL
+  let quickLinkPressTimer = null;
+  ['hex', 'looker'].forEach(type => {
+    const btn = document.getElementById(type + '-link-btn');
+    if (!btn) return;
+    btn.addEventListener('mousedown', () => {
+      quickLinkPressTimer = setTimeout(() => {
+        // Long press — open edit modal even if URL is set
+        quickLinkActive = type;
+        const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL' };
+        document.getElementById('quick-link-title').textContent = titles[type];
+        document.getElementById('quick-link-input').value = (type === 'hex' ? state.hexUrl : state.lookerUrl) || '';
+        document.getElementById('quick-link-overlay').style.display = 'flex';
+        setTimeout(() => document.getElementById('quick-link-input').focus(), 50);
+      }, 600);
+    });
+    btn.addEventListener('mouseup', () => clearTimeout(quickLinkPressTimer));
+    btn.addEventListener('mouseleave', () => clearTimeout(quickLinkPressTimer));
+  });
+
   // ── Add coach form ────────────────────────────────
   let addFormOpen = false;
   function toggleAddForm() {
@@ -3717,6 +3854,7 @@ Please be specific and direct. I have limited time this week so focus on who nee
   // Set initial sort indicator
   const initTh = document.getElementById('th-' + sortCol);
   if (initTh) initTh.classList.add('sort-asc');
+  updateQuickLinkButtons();
   restoreColState();
   if (state.currentView) {
     currentView = state.currentView;
