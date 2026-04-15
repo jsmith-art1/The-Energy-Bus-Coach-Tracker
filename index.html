@@ -430,10 +430,10 @@
   .td-name { font-weight: 500; color: var(--text); font-size: 13px; }
 
   /* Column widths */
-  th:nth-child(1)  { width: 150px; } /* Coach */
-  th:nth-child(2)  { width: 65px;  } /* Tier */
-  th:nth-child(3)  { width: 100px; } /* WR% + trend */
-  th:nth-child(4)  { width: 75px;  } /* Hex Priority */
+  th:nth-child(1)  { width: 60px;  } /* Hex Priority */
+  th:nth-child(2)  { width: 150px; } /* Coach */
+  th:nth-child(3)  { width: 65px;  } /* Tier */
+  th:nth-child(4)  { width: 100px; } /* WR% + trend */
   th:nth-child(5)  { width: 110px; } /* Standing */
   th:nth-child(6)  { width: 100px; } /* Warning Sent */
   th:nth-child(7)  { width: 75px;  } /* Re-eval */
@@ -1635,10 +1635,10 @@
   <table>
     <thead>
       <tr>
+        <th class="col-hex">Hex Priority</th>
         <th>Coach</th>
         <th>Tier</th>
         <th class="col-wr">WR%</th>
-        <th class="col-hex">Hex Priority</th>
         <th>Standing</th>
         <th class="col-warning">Warning Sent</th>
         <th class="col-reeval">Re-eval</th>
@@ -2249,6 +2249,22 @@
         const avatarClass = e.photo ? 'coach-avatar' : 'coach-avatar initials';
         return `
         <tr class="${e.skipped ? 'row-skipped' : ''}">
+          <td class="col-hex">
+            ${e.hexPriority && e.hexPriority !== 'none' ? `
+            <div class="hex-tooltip-wrap">
+              <div class="hex-dot-wrap">
+                <div class="hex-dot ${e.hexPriority}"></div>
+                <span class="hex-score ${e.hexPriority}">${e.hexScore}</span>
+              </div>
+              <div class="hex-tooltip">
+                <div class="hex-tooltip-title">Hex Dashboard · ${e.hexTimeline || ''}</div>
+                <div class="hex-tooltip-row ${e.hexPriority}"><strong>Need Score:</strong> ${e.hexScore}</div>
+                <div class="hex-tooltip-row"><strong>Why:</strong> ${e.hexWhy || '—'}</div>
+                <div class="hex-tooltip-row"><strong>Root Cause:</strong> ${e.hexRootCause || '—'}</div>
+                <div class="hex-tooltip-row"><strong>At-Risk:</strong> ${e.hexLoad || '—'}</div>
+              </div>
+            </div>` : `<div class="hex-dot none" style="margin:0 auto;"></div>`}
+          </td>
           <td>
             <div class="td-coach-cell">
               <div class="${avatarClass}" onclick="triggerAvatarUpload(${e.id})" title="Upload photo">
@@ -2278,22 +2294,6 @@
               }
               return `<span style="font-family:'DM Mono',monospace; font-size:11px; color:${wrColor}; font-weight:500;">${e.wrPct}%</span>${trendHtml}`;
             })()}
-          </td>
-          <td class="col-hex">
-            ${e.hexPriority && e.hexPriority !== 'none' ? `
-            <div class="hex-tooltip-wrap">
-              <div class="hex-dot-wrap">
-                <div class="hex-dot ${e.hexPriority}"></div>
-                <span class="hex-score ${e.hexPriority}">${e.hexScore}</span>
-              </div>
-              <div class="hex-tooltip">
-                <div class="hex-tooltip-title">Hex Dashboard · ${e.hexTimeline || ''}</div>
-                <div class="hex-tooltip-row ${e.hexPriority}"><strong>Need Score:</strong> ${e.hexScore}</div>
-                <div class="hex-tooltip-row"><strong>Why:</strong> ${e.hexWhy || '—'}</div>
-                <div class="hex-tooltip-row"><strong>Root Cause:</strong> ${e.hexRootCause || '—'}</div>
-                <div class="hex-tooltip-row"><strong>At-Risk:</strong> ${e.hexLoad || '—'}</div>
-              </div>
-            </div>` : `<div class="hex-dot none" style="margin:0 auto;"></div>`}
           </td>
           <td>
             <select class="standing-select standing-${e.standing || 'none'}" onchange="updateStanding(${e.id}, this.value)">
