@@ -443,7 +443,7 @@
   th:nth-child(2)  { width: 150px; } /* Coach */
   th:nth-child(3)  { width: 65px;  } /* Tier */
   th:nth-child(4)  { width: 100px; } /* WR% + trend */
-  th:nth-child(5)  { width: 110px; } /* Standing */
+  th:nth-child(5)  { width: 80px;  } /* Standing */
   th:nth-child(6)  { width: 100px; } /* Warning Sent */
   th:nth-child(7)  { width: 75px;  } /* Re-eval */
   th:nth-child(8)  { width: 110px; } /* Feedback Status */
@@ -1305,6 +1305,12 @@
   .coach-avatar:hover { opacity: 0.75; }
   .coach-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .coach-avatar.initials { background: var(--surface2); color: var(--text3); }
+  .coach-avatar.priority-hex-red    { background: var(--red-bg);    color: var(--red);    border-color: #4a2828; }
+  .coach-avatar.priority-hex-yellow { background: var(--yellow-bg); color: var(--yellow); border-color: #4a3818; }
+  .coach-avatar.priority-tier1      { background: #1e1010;          color: #c45050;       border-color: #3a2020; }
+  .coach-avatar.priority-hex-red    { background: var(--red-bg);    color: var(--red);    border-color: #4a2828; }
+  .coach-avatar.priority-hex-yellow { background: var(--yellow-bg); color: var(--yellow); border-color: #4a3818; }
+  .coach-avatar.priority-tier1      { background: #1e1212;          color: #c45a5a;        border-color: #3a2020; }
   .td-coach-cell { display: flex; align-items: center; gap: 9px; }
   .avatar-file-input { display: none; }
 
@@ -2482,10 +2488,11 @@
     const entries = currentEntries();
 
     // Stats
-    const total = entries.length;
-    const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
-    const followup = entries.filter(e => e.status === 'followup').length;
-    const pending = entries.filter(e => e.status === 'pending').length;
+    const active = entries.filter(e => !e.skipped);
+    const total = active.length;
+    const sent = active.filter(e => e.status === 'sent' || e.status === 'checkin').length;
+    const followup = active.filter(e => e.status === 'followup').length;
+    const pending = active.filter(e => e.status === 'pending').length;
     document.getElementById('s-total').textContent = total;
     document.getElementById('s-sent').textContent = sent;
     document.getElementById('s-followup').textContent = followup;
@@ -2493,10 +2500,10 @@
 
     // Progress bar reflects current view (focus or full)
     const viewTotal = currentView === 'focus'
-      ? entries.filter(e => e.tier === '1' || e.tier === '2').length
+      ? entries.filter(e => (e.tier === '1' || e.tier === '2') && !e.skipped).length
       : total;
     const viewSent = currentView === 'focus'
-      ? entries.filter(e => (e.tier === '1' || e.tier === '2') && (e.status === 'sent' || e.status === 'checkin')).length
+      ? entries.filter(e => (e.tier === '1' || e.tier === '2') && !e.skipped && (e.status === 'sent' || e.status === 'checkin')).length
       : sent;
     const pct = viewTotal ? Math.round(viewSent / viewTotal * 100) : 0;
     document.getElementById('progress-fill').style.width = pct + '%';
@@ -2549,7 +2556,11 @@
         const avatarInner = e.photo
           ? `<img src="${e.photo}" alt="${e.name}" />`
           : `${initials}`;
-        const avatarClass = e.photo ? 'coach-avatar' : 'coach-avatar initials';
+        const priorityClass = e.photo ? '' :
+          e.hexPriority === 'red'    ? ' priority-hex-red' :
+          e.hexPriority === 'yellow' ? ' priority-hex-yellow' :
+          e.tier === '1'             ? ' priority-tier1' : ' initials';
+        const avatarClass = e.photo ? 'coach-avatar' : ('coach-avatar' + priorityClass);
         return `
         <tr class="${e.skipped ? 'row-skipped' : ''}" onclick="handleRowClick(event, ${e.id})" style="cursor:pointer;">
           <td class="col-hex">
@@ -2599,14 +2610,14 @@
             })()}
           </td>
           <td>
-            <select class="standing-select standing-${e.standing || 'none'}" onchange="updateStanding(${e.id}, this.value)">
+            <select class="standing-select standing-${e.standing || 'none'}" onchange="updateStanding(${e.id}, this.value)" title="${{'none':'—','warning1':'1st Warning','warning2':'2nd Warning','monitoring':'Monitoring','active':'Active','resignation':'Resignation','termination':'Termination'}[e.standing||'none']}">
               <option value="none"        ${(e.standing||'none')==='none'        ?'selected':''}>—</option>
-              <option value="warning1"    ${(e.standing||'none')==='warning1'    ?'selected':''}>1st Warning</option>
-              <option value="warning2"    ${(e.standing||'none')==='warning2'    ?'selected':''}>2nd Warning</option>
-              <option value="monitoring"  ${(e.standing||'none')==='monitoring'  ?'selected':''}>Monitoring</option>
+              <option value="warning1"    ${(e.standing||'none')==='warning1'    ?'selected':''}>W1</option>
+              <option value="warning2"    ${(e.standing||'none')==='warning2'    ?'selected':''}>W2</option>
+              <option value="monitoring"  ${(e.standing||'none')==='monitoring'  ?'selected':''}>MON</option>
               <option value="active"      ${(e.standing||'none')==='active'      ?'selected':''}>Active</option>
-              <option value="resignation" ${(e.standing||'none')==='resignation' ?'selected':''}>Resignation</option>
-              <option value="termination" ${(e.standing||'none')==='termination' ?'selected':''}>Termination</option>
+              <option value="resignation" ${(e.standing||'none')==='resignation' ?'selected':''}>Resign</option>
+              <option value="termination" ${(e.standing||'none')==='termination' ?'selected':''}>Term</option>
             </select>
           </td>
           <td class="col-warning">
@@ -3854,10 +3865,11 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     const entries = currentEntries();
-    const total = entries.length || 1;
-    const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
-    const followup = entries.filter(e => e.status === 'followup').length;
-    const pending = entries.filter(e => e.status === 'pending').length;
+    const active = entries.filter(e => !e.skipped);
+    const total = active.length || 1;
+    const sent = active.filter(e => e.status === 'sent' || e.status === 'checkin').length;
+    const followup = active.filter(e => e.status === 'followup').length;
+    const pending = active.filter(e => e.status === 'pending').length;
     const pct = Math.round(sent / total * 100);
 
     const W = 180, H = 98;
