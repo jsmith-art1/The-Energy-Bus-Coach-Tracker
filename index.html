@@ -423,6 +423,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  /* Sortable column headers */
+  thead th.sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th.sortable:hover { color: var(--text2); }
+  thead th.sort-asc::after  { content: ' ↑'; color: var(--accent); }
+  thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
+
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
@@ -1635,14 +1645,14 @@
   <table>
     <thead>
       <tr>
-        <th class="col-hex">Hex Priority</th>
-        <th>Coach</th>
-        <th>Tier</th>
-        <th class="col-wr">WR%</th>
-        <th>Standing</th>
+        <th class="col-hex sortable" onclick="sortBy('hex')" id="th-hex">Hex Priority</th>
+        <th class="sortable" onclick="sortBy('name')" id="th-name">Coach</th>
+        <th class="sortable" onclick="sortBy('tier')" id="th-tier">Tier</th>
+        <th class="col-wr sortable" onclick="sortBy('wr')" id="th-wr">WR%</th>
+        <th class="sortable" onclick="sortBy('standing')" id="th-standing">Standing</th>
         <th class="col-warning">Warning Sent</th>
         <th class="col-reeval">Re-eval</th>
-        <th>Feedback Status</th>
+        <th class="sortable" onclick="sortBy('status')" id="th-status">Feedback Status</th>
         <th>Sent</th>
         <th class="col-intervention">Client Intervention</th>
         <th class="col-resign">Resign Date</th>
@@ -2241,7 +2251,8 @@
       empty.style.display = 'block';
     } else {
       empty.style.display = 'none';
-      tbody.innerHTML = filtered.map(e => {
+      const sorted = applySortToEntries(filtered);
+      tbody.innerHTML = sorted.map(e => {
         const initials = e.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
         const avatarInner = e.photo
           ? `<img src="${e.photo}" alt="${e.name}" />`
@@ -3299,6 +3310,66 @@ Please be specific and direct. I have limited time this week so focus on who nee
   }
 
 
+
+  // ── Column sorting ────────────────────────────────
+  let sortCol = 'tier';  // default sort by tier
+  let sortDir = 'asc';
+
+  function sortBy(col) {
+    if (sortCol === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      // Default directions per column
+      sortDir = col === 'wr' ? 'asc' : col === 'hex' ? 'desc' : 'asc';
+    }
+    // Update header indicators
+    document.querySelectorAll('thead th').forEach(th => {
+      th.classList.remove('sort-asc', 'sort-desc');
+    });
+    const thId = 'th-' + col;
+    const thEl = document.getElementById(thId);
+    if (thEl) thEl.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    render();
+  }
+
+  function applySortToEntries(entries) {
+    const dir = sortDir === 'asc' ? 1 : -1;
+    return [...entries].sort((a, b) => {
+      switch (sortCol) {
+        case 'name':
+          return dir * a.name.localeCompare(b.name);
+        case 'tier':
+          return dir * (parseInt(a.tier) - parseInt(b.tier));
+        case 'wr': {
+          const wa = a.wrPct ?? (sortDir === 'asc' ? 999 : -1);
+          const wb = b.wrPct ?? (sortDir === 'asc' ? 999 : -1);
+          return dir * (wa - wb);
+        }
+        case 'hex': {
+          const hexRank = { red: 3, yellow: 2, none: 1 };
+          const ha = hexRank[a.hexPriority] || 1;
+          const hb = hexRank[b.hexPriority] || 1;
+          return dir * (ha - hb);
+        }
+        case 'standing': {
+          const sRank = { warning2: 6, warning1: 5, monitoring: 4, termination: 3, resignation: 2, active: 1, none: 0 };
+          const sa = sRank[a.standing || 'none'] ?? 0;
+          const sb = sRank[b.standing || 'none'] ?? 0;
+          return dir * (sa - sb);
+        }
+        case 'status': {
+          const stRank = { followup: 3, pending: 2, sent: 1, checkin: 0 };
+          const sta = stRank[a.status] ?? 0;
+          const stb = stRank[b.status] ?? 0;
+          return dir * (sta - stb);
+        }
+        default:
+          return 0;
+      }
+    });
+  }
+
   // ── Add coach form ────────────────────────────────
   let addFormOpen = false;
   function toggleAddForm() {
@@ -3644,6 +3715,9 @@ Please be specific and direct. I have limited time this week so focus on who nee
     document.getElementById('dashboard-toggle').classList.add('open');
     document.getElementById('dashboard-body').classList.add('open');
   }
+  // Set initial sort indicator
+  const initTh = document.getElementById('th-' + sortCol);
+  if (initTh) initTh.classList.add('sort-asc');
   restoreColState();
   if (state.currentView) {
     currentView = state.currentView;
