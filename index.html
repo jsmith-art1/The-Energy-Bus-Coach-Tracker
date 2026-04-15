@@ -945,6 +945,89 @@
   .quick-link.not-set { color: var(--text3); border-style: dashed; }
   .quick-link.not-set:hover { color: var(--accent); border-color: var(--accent); border-style: dashed; }
 
+
+  /* Carry over modal */
+  .carryover-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .carryover-overlay.open { display: flex; }
+  .carryover-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 28px;
+    width: 520px;
+    max-width: 94vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+  .carryover-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  .carryover-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .carryover-item:hover { border-color: var(--border2); }
+  .carryover-item input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .carryover-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+  .carryover-item-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .carryover-empty {
+    text-align: center;
+    padding: 32px;
+    font-size: 13px;
+    color: var(--text3);
+  }
+  .carryover-select-all {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .carryover-select-all:hover { color: var(--accent); }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -1933,6 +2016,37 @@
   </div>
 </div>
 
+<!-- Carry Over Modal -->
+<div class="carryover-overlay" id="carryover-overlay" onclick="handleCarryOverlayClick(event)">
+  <div class="carryover-modal">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text);">Start New Week</div>
+        <div style="font-size:12px; color:var(--text3); margin-top:3px;">Select coaches to carry forward from this week</div>
+      </div>
+      <button onclick="closeCarryOver()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:11px; color:var(--text3);" id="carryover-count">0 coaches selected</div>
+      <div style="display:flex; gap:10px;">
+        <button class="carryover-select-all" onclick="carryoverSelectAll(true)">Select all</button>
+        <button class="carryover-select-all" onclick="carryoverSelectAll(false)">Deselect all</button>
+      </div>
+    </div>
+
+    <div class="carryover-list" id="carryover-list"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <button class="btn" onclick="startFreshWeek()">Start fresh (no carry over)</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" onclick="closeCarryOver()">Cancel</button>
+        <button class="btn btn-accent" onclick="confirmCarryOver()">Start new week →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Hex Priority Import Modal -->
@@ -2184,10 +2298,91 @@
   }
 
   function newWeek() {
+    // Find unfinished Tier 1 & 2 coaches from current week
+    const unfinished = currentEntries().filter(e =>
+      (e.tier === '1' || e.tier === '2') &&
+      (e.status === 'pending' || e.status === 'followup') &&
+      !e.skipped
+    );
+
+    if (unfinished.length === 0) {
+      startFreshWeek();
+      return;
+    }
+
+    // Build carry over list
+    const list = document.getElementById('carryover-list');
+    list.innerHTML = unfinished.map(e => {
+      const tierColor = e.tier === '1' ? 'var(--red)' : 'var(--yellow)';
+      const statusLabel = e.status === 'followup' ? '⚡ Follow-up' : '· Pending';
+      const statusColor = e.status === 'followup' ? 'var(--yellow)' : 'var(--text3)';
+      return `<label class="carryover-item">
+        <input type="checkbox" checked class="carryover-check" data-id="${e.id}" onchange="updateCarryoverCount()" />
+        <span class="carryover-item-name">${e.name}</span>
+        <span class="carryover-item-meta">
+          <span style="color:${tierColor};">Tier ${e.tier}</span>
+          ${e.wrPct != null ? `<span>${e.wrPct}%</span>` : ''}
+          <span style="color:${statusColor};">${statusLabel}</span>
+        </span>
+      </label>`;
+    }).join('');
+
+    updateCarryoverCount();
+    document.getElementById('carryover-overlay').classList.add('open');
+  }
+
+  function updateCarryoverCount() {
+    const checked = document.querySelectorAll('.carryover-check:checked').length;
+    document.getElementById('carryover-count').textContent = checked + ' coach' + (checked !== 1 ? 'es' : '') + ' selected';
+  }
+
+  function carryoverSelectAll(val) {
+    document.querySelectorAll('.carryover-check').forEach(cb => cb.checked = val);
+    updateCarryoverCount();
+  }
+
+  function closeCarryOver() {
+    document.getElementById('carryover-overlay').classList.remove('open');
+  }
+
+  function handleCarryOverlayClick(evt) {
+    if (evt.target === document.getElementById('carryover-overlay')) closeCarryOver();
+  }
+
+  function startFreshWeek() {
+    closeCarryOver();
     const key = weekKey(new Date());
     state.currentWeek = key;
     if (!state.weeks[key]) state.weeks[key] = { entries: [], created: new Date().toISOString() };
     save(); render(); toast('New week started');
+  }
+
+  function confirmCarryOver() {
+    const checked = document.querySelectorAll('.carryover-check:checked');
+    const selectedIds = new Set([...checked].map(cb => parseInt(cb.dataset.id)));
+
+    // Get entries to carry over from current week
+    const toCarry = currentEntries().filter(e => selectedIds.has(e.id));
+
+    // Start new week
+    const key = weekKey(new Date());
+    state.currentWeek = key;
+    if (!state.weeks[key]) state.weeks[key] = { entries: [], created: new Date().toISOString() };
+
+    // Add carried over coaches with reset status to pending
+    toCarry.forEach(e => {
+      const carried = { ...e,
+        id: nextId++,
+        status: 'pending',
+        date: null,
+        created: new Date().toISOString()
+      };
+      state.weeks[key].entries.push(carried);
+    });
+
+    closeCarryOver();
+    save(); render();
+    toast(`New week started — ${toCarry.length} coach${toCarry.length !== 1 ? 'es' : ''} carried over`);
   }
 
   function archiveWeek() {
