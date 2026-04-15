@@ -1491,6 +1491,9 @@
       <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
       <button class="btn btn-hex" onclick="openHexModal()">⬆ Hex priority</button>
       <button class="btn btn-wr" onclick="openWRModal()">⬆ WR data</button>
+      <button class="quick-link" id="github-link-btn" onclick="openQuickLink('github')" title="Click to set your GitHub Pages URL">
+        <span>GitHub ↗</span>
+      </button>
       <button class="quick-link" id="hex-link-btn" onclick="openQuickLink('hex')" title="Click to set your Hex URL">
         <span>Hex ↗</span>
       </button>
@@ -3427,8 +3430,8 @@ Please be specific and direct. I have limited time this week so focus on who nee
 
   function openQuickLink(type) {
     quickLinkActive = type;
-    const urls = { hex: state.hexUrl || '', looker: state.lookerUrl || '' };
-    const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL' };
+    const urls = { hex: state.hexUrl || '', looker: state.lookerUrl || '', github: state.githubUrl || '' };
+    const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL' };
     const url = urls[type];
 
     // If URL already set, go straight there
@@ -3458,6 +3461,7 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (!url) return;
     if (quickLinkActive === 'hex')    { state.hexUrl = url; }
     if (quickLinkActive === 'looker') { state.lookerUrl = url; }
+    if (quickLinkActive === 'github') { state.githubUrl = url; }
     save();
     updateQuickLinkButtons();
     closeQuickLink();
@@ -3467,15 +3471,21 @@ Please be specific and direct. I have limited time this week so focus on who nee
   function clearQuickLink() {
     if (quickLinkActive === 'hex')    { delete state.hexUrl; }
     if (quickLinkActive === 'looker') { delete state.lookerUrl; }
+    if (quickLinkActive === 'github') { delete state.githubUrl; }
     save();
     updateQuickLinkButtons();
     closeQuickLink();
-    toast((quickLinkActive === 'hex' ? 'Hex' : 'Looker') + ' URL cleared');
+    toast((quickLinkActive === 'hex' ? 'Hex' : quickLinkActive === 'looker' ? 'Looker' : 'GitHub') + ' URL cleared');
   }
 
   function updateQuickLinkButtons() {
+    const githubBtn = document.getElementById('github-link-btn');
     const hexBtn = document.getElementById('hex-link-btn');
     const lookerBtn = document.getElementById('looker-link-btn');
+    if (githubBtn) {
+      githubBtn.classList.toggle('not-set', !state.githubUrl);
+      githubBtn.title = state.githubUrl ? 'Open GitHub Pages (hold to edit)' : 'Click to set your GitHub Pages URL';
+    }
     if (hexBtn) {
       hexBtn.classList.toggle('not-set', !state.hexUrl);
       hexBtn.title = state.hexUrl ? 'Open Hex Dashboard (click & hold to change URL)' : 'Click to set your Hex URL';
@@ -3488,16 +3498,16 @@ Please be specific and direct. I have limited time this week so focus on who nee
 
   // Long press to edit an already-set URL
   let quickLinkPressTimer = null;
-  ['hex', 'looker'].forEach(type => {
+  ['github', 'hex', 'looker'].forEach(type => {
     const btn = document.getElementById(type + '-link-btn');
     if (!btn) return;
     btn.addEventListener('mousedown', () => {
       quickLinkPressTimer = setTimeout(() => {
         // Long press — open edit modal even if URL is set
         quickLinkActive = type;
-        const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL' };
+        const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL' };
         document.getElementById('quick-link-title').textContent = titles[type];
-        document.getElementById('quick-link-input').value = (type === 'hex' ? state.hexUrl : state.lookerUrl) || '';
+        document.getElementById('quick-link-input').value = (type === 'hex' ? state.hexUrl : type === 'looker' ? state.lookerUrl : state.githubUrl) || '';
         document.getElementById('quick-link-overlay').style.display = 'flex';
         setTimeout(() => document.getElementById('quick-link-input').focus(), 50);
       }, 600);
