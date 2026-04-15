@@ -1473,37 +1473,42 @@
   </div>
 </div>
 
-<!-- Stats -->
-<div class="stats">
-  <div class="stat"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Total</div></div>
-  <div class="stat"><div class="stat-num accent" id="s-sent">0</div><div class="stat-label">Sent / Check-in</div></div>
-  <div class="stat"><div class="stat-num yellow" id="s-followup">0</div><div class="stat-label">Follow-up</div></div>
-  <div class="stat"><div class="stat-num muted" id="s-pending">0</div><div class="stat-label">Pending</div></div>
-</div>
+<!-- Combined Stats + Gauge -->
+<div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:12px; display:flex; align-items:center; gap:20px; flex-wrap:wrap;">
 
-<!-- Progress -->
-<div class="progress-wrap">
-  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-  <div class="progress-meta">
-    <span id="progress-text">0% sent</span>
-    <span id="progress-count">0 / 0 coaches</span>
+  <!-- Gauge -->
+  <div style="flex-shrink:0;">
+    <canvas id="gauge-canvas" width="180" height="98"></canvas>
   </div>
-</div>
 
-
-<!-- Feedback Sent Gauge -->
-<div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin-bottom:12px; display:flex; align-items:center; gap:28px; flex-wrap:wrap;">
-  <div style="display:flex; flex-direction:column; align-items:center; gap:4px; flex-shrink:0;">
-    <canvas id="gauge-canvas" width="220" height="120"></canvas>
-  </div>
-  <div style="display:flex; flex-direction:column; gap:10px;">
+  <!-- Pct + emoji -->
+  <div style="display:flex; flex-direction:column; gap:4px; flex-shrink:0;">
     <div>
-      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:36px; font-weight:500; color:var(--text); line-height:1;">0%</span>
-      <span style="font-size:11px; color:var(--text3); margin-left:8px;">feedback sent</span>
-      <span style="font-size:28px; margin-left:14px; line-height:1;">🚌💨</span>
+      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:32px; font-weight:500; color:var(--text); line-height:1;">0%</span>
+      <span style="font-size:11px; color:var(--text3); margin-left:6px;">sent</span>
+      <span style="font-size:22px; margin-left:10px; line-height:1;">🚌💨</span>
     </div>
-    <div id="gauge-breakdown" style="display:flex; flex-direction:column; gap:5px;"></div>
+    <div>
+      <div class="progress-track" style="width:160px;"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div style="display:flex; justify-content:space-between; width:160px;">
+        <span id="progress-text" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3);">0%</span>
+        <span id="progress-count" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3);">0 / 0</span>
+      </div>
+    </div>
+    <div id="gauge-breakdown" style="display:flex; flex-direction:column; gap:3px; margin-top:2px;"></div>
   </div>
+
+  <!-- Divider -->
+  <div style="width:1px; background:var(--border); align-self:stretch; flex-shrink:0;"></div>
+
+  <!-- Stat cards -->
+  <div style="display:flex; gap:10px; flex:1; flex-wrap:wrap;">
+    <div class="stat" style="flex:1; min-width:80px;"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Total</div></div>
+    <div class="stat" style="flex:1; min-width:80px;"><div class="stat-num accent" id="s-sent">0</div><div class="stat-label">Sent / Check-in</div></div>
+    <div class="stat" style="flex:1; min-width:80px;"><div class="stat-num yellow" id="s-followup">0</div><div class="stat-label">Follow-up</div></div>
+    <div class="stat" style="flex:1; min-width:80px;"><div class="stat-num muted" id="s-pending">0</div><div class="stat-label">Pending</div></div>
+  </div>
+
 </div>
 
 <!-- Dashboard (collapsible) -->
@@ -3329,7 +3334,7 @@ Please be specific and direct. I have limited time this week so focus on who nee
     const pending = entries.filter(e => e.status === 'pending').length;
     const pct = Math.round(sent / total * 100);
 
-    const W = 220, H = 120;
+    const W = 180, H = 98;
     const cx = W / 2, cy = H - 10;
     const r = 88, rInner = 58;
     const startAngle = Math.PI;
