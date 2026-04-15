@@ -1577,6 +1577,9 @@
       <button class="quick-link" id="github-link-btn" onclick="openQuickLink('github')" title="Click to set your GitHub Pages URL">
         <span>GitHub ↗</span>
       </button>
+      <button class="quick-link" id="trainer-link-btn" onclick="openQuickLink('trainer')" title="Click to set your Trainer Dash URL">
+        <span>Trainer Dash ↗</span>
+      </button>
       <button class="quick-link" id="hex-link-btn" onclick="openQuickLink('hex')" title="Click to set your Hex URL">
         <span>Hex ↗</span>
       </button>
@@ -3625,8 +3628,8 @@ Please be specific and direct. I have limited time this week so focus on who nee
 
   function openQuickLink(type) {
     quickLinkActive = type;
-    const urls = { hex: state.hexUrl || '', looker: state.lookerUrl || '', github: state.githubUrl || '' };
-    const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL' };
+    const urls = { hex: state.hexUrl || '', looker: state.lookerUrl || '', github: state.githubUrl || '', trainer: state.trainerUrl || '' };
+    const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL', trainer: 'Trainer Dash URL' };
     const url = urls[type];
 
     // If URL already set, go straight there
@@ -3657,6 +3660,7 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (quickLinkActive === 'hex')    { state.hexUrl = url; }
     if (quickLinkActive === 'looker') { state.lookerUrl = url; }
     if (quickLinkActive === 'github') { state.githubUrl = url; }
+    if (quickLinkActive === 'trainer') { state.trainerUrl = url; }
     save();
     updateQuickLinkButtons();
     closeQuickLink();
@@ -3667,10 +3671,11 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (quickLinkActive === 'hex')    { delete state.hexUrl; }
     if (quickLinkActive === 'looker') { delete state.lookerUrl; }
     if (quickLinkActive === 'github') { delete state.githubUrl; }
+    if (quickLinkActive === 'trainer') { delete state.trainerUrl; }
     save();
     updateQuickLinkButtons();
     closeQuickLink();
-    toast((quickLinkActive === 'hex' ? 'Hex' : quickLinkActive === 'looker' ? 'Looker' : 'GitHub') + ' URL cleared');
+    toast((quickLinkActive === 'hex' ? 'Hex' : quickLinkActive === 'looker' ? 'Looker' : quickLinkActive === 'github' ? 'GitHub' : 'Trainer Dash') + ' URL cleared');
   }
 
   function updateQuickLinkButtons() {
@@ -3680,6 +3685,11 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (githubBtn) {
       githubBtn.classList.toggle('not-set', !state.githubUrl);
       githubBtn.title = state.githubUrl ? 'Open GitHub Pages (hold to edit)' : 'Click to set your GitHub Pages URL';
+    }
+    const trainerBtn = document.getElementById('trainer-link-btn');
+    if (trainerBtn) {
+      trainerBtn.classList.toggle('not-set', !state.trainerUrl);
+      trainerBtn.title = state.trainerUrl ? 'Open Trainer Dash (hold to edit)' : 'Click to set your Trainer Dash URL';
     }
     if (hexBtn) {
       hexBtn.classList.toggle('not-set', !state.hexUrl);
@@ -3693,16 +3703,16 @@ Please be specific and direct. I have limited time this week so focus on who nee
 
   // Long press to edit an already-set URL
   let quickLinkPressTimer = null;
-  ['github', 'hex', 'looker'].forEach(type => {
+  ['github', 'hex', 'looker', 'trainer'].forEach(type => {
     const btn = document.getElementById(type + '-link-btn');
     if (!btn) return;
     btn.addEventListener('mousedown', () => {
       quickLinkPressTimer = setTimeout(() => {
         // Long press — open edit modal even if URL is set
         quickLinkActive = type;
-        const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL' };
+        const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL', trainer: 'Trainer Dash URL' };
         document.getElementById('quick-link-title').textContent = titles[type];
-        document.getElementById('quick-link-input').value = (type === 'hex' ? state.hexUrl : type === 'looker' ? state.lookerUrl : state.githubUrl) || '';
+        document.getElementById('quick-link-input').value = (type === 'hex' ? state.hexUrl : type === 'looker' ? state.lookerUrl : type === 'github' ? state.githubUrl : state.trainerUrl) || '';
         document.getElementById('quick-link-overlay').style.display = 'flex';
         setTimeout(() => document.getElementById('quick-link-input').focus(), 50);
       }, 600);
