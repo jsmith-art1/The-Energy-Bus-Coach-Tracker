@@ -1058,6 +1058,103 @@
   }
   .td-check { width: 28px; padding: 8px 4px 8px 10px !important; }
 
+
+  /* Coach notes hover tooltip */
+  .name-tooltip-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .coach-notes-tooltip {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 260px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .name-tooltip-wrap:hover .coach-notes-tooltip { display: block; }
+  .coach-notes-tooltip-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+  .coach-notes-tooltip-text {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Team notepad */
+  .team-notepad-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .team-notepad-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .team-notepad-header:hover { background: var(--surface2); }
+  .team-notepad-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .team-notepad-title.has-notes { color: var(--text2); }
+  .team-notepad-body {
+    display: none;
+    padding: 0 16px 14px;
+  }
+  .team-notepad-body.open { display: block; }
+  .team-notepad-textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .team-notepad-textarea:focus { border-color: var(--accent); }
+  .team-notepad-textarea::placeholder { color: var(--text3); }
+  .team-notepad-saved {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-top: 6px;
+    transition: color 0.3s;
+  }
+  .team-notepad-saved.saved { color: var(--green); }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -1681,6 +1778,20 @@
     </div>
   </div>
 
+</div>
+
+<!-- Team Notepad -->
+<div class="team-notepad-wrap" id="team-notepad-wrap">
+  <div class="team-notepad-header" onclick="toggleNotepad()">
+    <div class="team-notepad-title" id="team-notepad-title">📋 Week Notes</div>
+    <span style="font-size:11px; color:var(--text3);" id="notepad-arrow">▼</span>
+  </div>
+  <div class="team-notepad-body" id="team-notepad-body">
+    <textarea class="team-notepad-textarea" id="team-notepad-textarea"
+      placeholder="Add notes for this week — context for leadership, patterns you're seeing, things to remember..."
+      oninput="autoSaveNotepad()"></textarea>
+    <div class="team-notepad-saved" id="team-notepad-saved">Type to save automatically</div>
+  </div>
 </div>
 
 <!-- Dashboard (collapsible) -->
@@ -2593,7 +2704,15 @@
                 ${avatarInner}
               </div>
               <input type="file" accept="image/*" class="avatar-file-input" id="av-${e.id}" onchange="uploadAvatar(${e.id}, this)" />
-              <span class="td-name-link" onclick="openHistoryModal(${e.id})" title="View coach history">${e.name}</span>
+              ${e.coachNotes ? `
+              <span class="name-tooltip-wrap">
+                <span class="td-name-link" onclick="openHistoryModal(${e.id})">📝 ${e.name}</span>
+                <div class="coach-notes-tooltip">
+                  <div class="coach-notes-tooltip-title">Notes</div>
+                  <div class="coach-notes-tooltip-text">${e.coachNotes.slice(0, 300)}${e.coachNotes.length > 300 ? '...' : ''}</div>
+                </div>
+              </span>` : `
+              <span class="td-name-link" onclick="openHistoryModal(${e.id})" title="View coach history">${e.name}</span>`}
             </div>
           </td>
           <td><span class="tier-badge tier-${e.tier}" onclick="cycleTier(${e.id})" title="Click to change tier">${tierLabel(e.tier)}</span></td>
@@ -3843,6 +3962,61 @@ Please be specific and direct. I have limited time this week so focus on who nee
     document.getElementById('batch-bar').classList.remove('visible');
   }
 
+
+  // ── Team Notepad ──────────────────────────────────
+  let notepadOpen = false;
+  let notepadSaveTimer = null;
+
+  function toggleNotepad() {
+    notepadOpen = !notepadOpen;
+    document.getElementById('team-notepad-body').classList.toggle('open', notepadOpen);
+    document.getElementById('notepad-arrow').textContent = notepadOpen ? '▲' : '▼';
+    state.notepadOpen = notepadOpen;
+    if (notepadOpen) {
+      const weekNotes = (state.weeks[state.currentWeek] || {}).teamNotes || '';
+      document.getElementById('team-notepad-textarea').value = weekNotes;
+      document.getElementById('team-notepad-saved').textContent = 'Type to save automatically';
+      document.getElementById('team-notepad-saved').classList.remove('saved');
+      setTimeout(() => document.getElementById('team-notepad-textarea').focus(), 50);
+    }
+    save();
+  }
+
+  function autoSaveNotepad() {
+    if (notepadSaveTimer) clearTimeout(notepadSaveTimer);
+    const indicator = document.getElementById('team-notepad-saved');
+    indicator.textContent = 'Saving...';
+    indicator.classList.remove('saved');
+    notepadSaveTimer = setTimeout(() => {
+      if (!state.weeks[state.currentWeek]) return;
+      state.weeks[state.currentWeek].teamNotes = document.getElementById('team-notepad-textarea').value;
+      save();
+      indicator.textContent = '✓ Saved';
+      indicator.classList.add('saved');
+      updateNotepadTitle();
+    }, 600);
+  }
+
+  function updateNotepadTitle() {
+    const notes = (state.weeks[state.currentWeek] || {}).teamNotes || '';
+    const title = document.getElementById('team-notepad-title');
+    if (title) {
+      title.textContent = notes.trim() ? '📋 Week Notes — ' + notes.trim().slice(0, 40) + (notes.length > 40 ? '...' : '') : '📋 Week Notes';
+      title.classList.toggle('has-notes', !!notes.trim());
+    }
+  }
+
+  function restoreNotepad() {
+    if (state.notepadOpen) {
+      notepadOpen = true;
+      document.getElementById('team-notepad-body').classList.add('open');
+      document.getElementById('notepad-arrow').textContent = '▲';
+      const weekNotes = (state.weeks[state.currentWeek] || {}).teamNotes || '';
+      document.getElementById('team-notepad-textarea').value = weekNotes;
+    }
+    updateNotepadTitle();
+  }
+
   // ── Add coach form ────────────────────────────────
   let addFormOpen = false;
   function toggleAddForm() {
@@ -4189,6 +4363,7 @@ Please be specific and direct. I have limited time this week so focus on who nee
   const initTh = document.getElementById('th-' + sortCol);
   if (initTh) initTh.classList.add('sort-asc');
   updateQuickLinkButtons();
+  restoreNotepad();
   restoreColState();
   if (state.currentView) {
     currentView = state.currentView;
