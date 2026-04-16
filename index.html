@@ -1171,12 +1171,12 @@
     border: 1px solid var(--border2);
     border-radius: 12px;
     padding: 28px;
-    width: 620px;
+    width: 640px;
     max-width: 94vw;
-    max-height: 85vh;
+    max-height: 88vh;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     overflow: hidden;
   }
   .history-modal-header {
@@ -2090,6 +2090,19 @@
       <button onclick="closeHistoryModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
     </div>
     <div class="history-timeline" id="history-timeline"></div>
+
+    <!-- Notes section inside history modal -->
+    <div style="border-top:1px solid var(--border); padding-top:14px; flex-shrink:0;">
+      <div style="font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text3); margin-bottom:8px;">Coach Notes</div>
+      <textarea id="history-notes-textarea"
+        style="width:100%; height:100px; resize:vertical; font-family:'DM Sans',sans-serif; font-size:13px; line-height:1.6; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); padding:10px 12px; outline:none; transition:border-color 0.15s;"
+        placeholder="Add notes about this coach — call summaries, patterns, context..."
+        oninput="autoSaveHistoryNotes()"></textarea>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+        <span id="history-notes-saved" style="font-size:11px; color:var(--text3); font-family:'DM Mono',monospace;">Type to save automatically</span>
+        <button class="btn" onclick="closeHistoryModal()">Done</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2796,7 +2809,7 @@
             ` : '<span style=\"color:var(--text3);font-size:12px;\">—</span>'}
           </td>
           <td class="col-notes col-hidden">
-            <button class="notes-btn ${e.coachNotes ? 'notes-has' : ''}" onclick="openNotes(${e.id})" title="${e.coachNotes ? 'View notes' : 'Add notes'}">
+            <button class="notes-btn ${e.coachNotes ? 'notes-has' : ''}" onclick="openHistoryModal(${e.id})" title="${e.coachNotes ? 'View notes' : 'Add notes'}">
               ${e.coachNotes ? '📝' : '+'}
             </button>
           </td>
@@ -3630,8 +3643,30 @@ Please be specific and direct. I have limited time this week so focus on who nee
     });
   }
 
+
+  // ── History modal notes ───────────────────────────
+  let historyNotesSaveTimer = null;
+
+  function autoSaveHistoryNotes() {
+    if (historyNotesSaveTimer) clearTimeout(historyNotesSaveTimer);
+    const indicator = document.getElementById('history-notes-saved');
+    indicator.textContent = 'Saving...';
+    indicator.style.color = 'var(--text3)';
+    historyNotesSaveTimer = setTimeout(() => {
+      const e = currentEntries().find(e => e.id === historyActiveId);
+      if (!e) return;
+      e.coachNotes = document.getElementById('history-notes-textarea').value;
+      save();
+      indicator.textContent = '✓ Saved';
+      indicator.style.color = 'var(--green)';
+      render();
+    }, 600);
+  }
+
   // ── Coach History Modal ───────────────────────────
+  let historyActiveId = null;
   function openHistoryModal(id) {
+    historyActiveId = id;
     const currentEntry = currentEntries().find(e => e.id === id);
     if (!currentEntry) return;
     const name = currentEntry.name;
@@ -3728,6 +3763,13 @@ Please be specific and direct. I have limited time this week so focus on who nee
 
       timeline.innerHTML = header + dataRows.join('');
     }
+
+    // Populate notes
+    const notesTA = document.getElementById('history-notes-textarea');
+    const notesSaved = document.getElementById('history-notes-saved');
+    notesTA.value = currentEntry.coachNotes || '';
+    notesSaved.textContent = 'Type to save automatically';
+    notesSaved.style.color = 'var(--text3)';
 
     document.getElementById('history-modal-overlay').classList.add('open');
   }
