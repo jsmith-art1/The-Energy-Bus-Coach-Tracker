@@ -82,7 +82,10 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(to right, var(--red), var(--yellow), var(--accent)) 1;
   }
   .header-row {
     display: flex;
@@ -432,7 +435,13 @@
   thead th.sort-asc::after  { content: ' ↑'; color: var(--accent); }
   thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
 
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; border-left: 3px solid transparent; }
+  tbody tr.tier-row-1 { border-left-color: #ff6b6b55; }
+  tbody tr.tier-row-2 { border-left-color: #ffc85e55; }
+  tbody tr.tier-row-3 { border-left-color: #6bffb855; }
+  tbody tr.tier-row-1:hover { border-left-color: var(--red); }
+  tbody tr.tier-row-2:hover { border-left-color: var(--yellow); }
+  tbody tr.tier-row-3:hover { border-left-color: var(--green); }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:hover { background: var(--surface2); }
   td { padding: 8px 10px; font-size: 12px; vertical-align: middle; }
@@ -458,16 +467,16 @@
   .tier-badge {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 4px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     white-space: nowrap;
   }
-  .tier-1 { background: var(--red-bg); color: var(--red); border: 1px solid #4a2828; }
-  .tier-2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #4a3818; }
-  .tier-3 { background: var(--green-bg); color: var(--green); border: 1px solid #1a4a30; }
+  .tier-1 { background: var(--red-bg); color: var(--red); border: 1px solid #ff6b6b55; box-shadow: 0 0 8px rgba(255,107,107,0.15); }
+  .tier-2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #ffc85e55; box-shadow: 0 0 8px rgba(255,200,94,0.15); }
+  .tier-3 { background: var(--green-bg); color: var(--green); border: 1px solid #6bffb855; box-shadow: 0 0 8px rgba(107,255,184,0.15); }
 
   /* PM Status select */
   .pm-select {
@@ -1624,12 +1633,12 @@
   }
   .dashboard-chip {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    border: 1px solid var(--border2);
-    color: var(--text3);
-    background: var(--surface2);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.04em;
   }
   .dashboard-toggle-arrow {
     font-size: 11px;
@@ -2699,7 +2708,7 @@
           e.tier === '1'             ? ' priority-tier1' : ' initials';
         const avatarClass = e.photo ? 'coach-avatar' : ('coach-avatar' + priorityClass);
         return `
-        <tr class="${e.skipped ? 'row-skipped' : ''}" onclick="handleRowClick(event, ${e.id})" style="cursor:pointer;">
+        <tr class="${e.skipped ? 'row-skipped' : ''} tier-row-${e.tier}" onclick="handleRowClick(event, ${e.id})" style="cursor:pointer;">
           <td class="col-hex">
             ${e.hexPriority && e.hexPriority !== 'none' ? `
             <div class="hex-tooltip-wrap">
@@ -4167,16 +4176,22 @@ Please be specific and direct. I have limited time this week so focus on who nee
     ctx.beginPath();
     ctx.moveTo(cx, cy);
     ctx.lineTo(cx + (r - 6) * Math.cos(na), cy + (r - 6) * Math.sin(na));
-    ctx.strokeStyle = '#f0ede8';
+    ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 2.5;
     ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(255,255,255,0.9)';
+    ctx.shadowBlur = 8;
     ctx.stroke();
+    ctx.shadowBlur = 0;
 
     // Hub
     ctx.beginPath();
     ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
-    ctx.fillStyle = '#f0ede8';
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(255,255,255,0.8)';
+    ctx.shadowBlur = 10;
     ctx.fill();
+    ctx.shadowBlur = 0;
 
     // Axis labels
     ctx.font = '10px monospace';
@@ -4324,9 +4339,9 @@ Please be specific and direct. I have limited time this week so focus on who nee
     const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
     const pct = total ? Math.round(sent/total*100) : 0;
     document.getElementById('dashboard-chips').innerHTML =
-      `<span class="dashboard-chip" style="color:#ff6b6b; border-color:#4a2828;">${t1} T1</span>` +
-      `<span class="dashboard-chip" style="color:#ff8aff; border-color:#4a2040;">${warn} warnings</span>` +
-      `<span class="dashboard-chip" style="color:#6bffb8; border-color:#1a4a30;">${pct}% sent</span>`;
+      `<span class="dashboard-chip" style="color:#ff6b6b; border-color:#ff6b6b55; background:var(--red-bg); box-shadow:0 0 8px rgba(255,107,107,0.2);">${t1} Tier 1</span>` +
+      `<span class="dashboard-chip" style="color:#ff8aff; border-color:#ff8aff55; background:#2a1020; box-shadow:0 0 8px rgba(255,138,255,0.2);">${warn} Warning${warn !== 1 ? 's' : ''}</span>` +
+      `<span class="dashboard-chip" style="color:#6bffb8; border-color:#6bffb855; background:var(--green-bg); box-shadow:0 0 8px rgba(107,255,184,0.2);">${pct}% Sent</span>`;
   }
 
   // ── More dropdown ─────────────────────────────────
