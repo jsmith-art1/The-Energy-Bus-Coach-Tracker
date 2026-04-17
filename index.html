@@ -1250,6 +1250,51 @@
   }
   .team-notepad-saved.saved { color: var(--green); }
 
+
+  /* Tier suggestion modal */
+  .tier-suggest-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 600;
+    align-items: center;
+    justify-content: center;
+  }
+  .tier-suggest-overlay.open { display: flex; }
+  .tier-suggest-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 28px;
+    width: 540px;
+    max-width: 94vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+  .tier-suggest-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .tier-suggest-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .tier-suggest-name { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+  .tier-suggest-detail { font-family: "DM Mono", monospace; font-size: 11px; color: var(--text3); }
+  .tier-suggest-arrow { font-size: 14px; color: var(--text3); }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -1824,6 +1869,7 @@
       <div class="more-wrap">
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
+          <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
           <button class="more-item" onclick="showHistory(); closeMoreDropdown()" id="history-btn">Week history</button>
@@ -1971,6 +2017,7 @@
 <!-- Batch skip bar -->
 <div class="batch-bar" id="batch-bar">
   <span id="batch-count" class="batch-bar-count">0 selected</span>
+  <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--green); border-color:#1a4a30; background:var(--green-bg);" onclick="batchMarkSent()">✓ Mark Sent</button>
   <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchSkip()">Skip selected</button>
   <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchUnskip()">Unskip selected</button>
   <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--text3);" onclick="clearBatchSelection()">Clear</button>
@@ -2326,6 +2373,24 @@
         <button class="btn" onclick="closeCarryOver()">Cancel</button>
         <button class="btn btn-accent" onclick="confirmCarryOver()">Start new week →</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tier Suggestion Modal -->
+<div class="tier-suggest-overlay" id="tier-suggest-overlay" onclick="handleTierSuggestOverlay(event)">
+  <div class="tier-suggest-modal">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text);">Tier Suggestions</div>
+        <div style="font-size:12px; color:var(--text3); margin-top:3px;">WR% data doesn't match current tier for these coaches</div>
+      </div>
+      <button onclick="closeTierSuggest()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+    <div class="tier-suggest-list" id="tier-suggest-list"></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <button class="btn" onclick="applyAllTierSuggestions()" style="color:var(--accent); border-color:var(--accent);">Apply all suggestions</button>
+      <button class="btn" onclick="closeTierSuggest()">Done</button>
     </div>
   </div>
 </div>
@@ -3203,6 +3268,9 @@
     save(); render();
     closeWRModal();
     toast(`WR data applied — ${updated} coaches updated`);
+
+    // Check for tier mismatches
+    setTimeout(() => checkTierSuggestions(), 300);
   }
 
   // ── Import Modal ─────────────────────────────────
@@ -4092,6 +4160,21 @@ Please be specific and direct. I have limited time this week so focus on who nee
     return [...document.querySelectorAll('.row-check:checked')].map(cb => parseInt(cb.dataset.id));
   }
 
+  function batchMarkSent() {
+    const ids = getSelectedIds();
+    if (!ids.length) return;
+    ids.forEach(id => {
+      const e = currentEntries().find(e => e.id === id);
+      if (e) {
+        e.status = 'sent';
+        e.date = e.date || fmtDate(new Date());
+      }
+    });
+    save(); render();
+    clearBatchSelection();
+    toast(`${ids.length} coach${ids.length !== 1 ? 'es' : ''} marked as Sent`);
+  }
+
   function batchSkip() {
     const ids = getSelectedIds();
     if (!ids.length) return;
@@ -4174,6 +4257,125 @@ Please be specific and direct. I have limited time this week so focus on who nee
       document.getElementById('team-notepad-textarea').value = weekNotes;
     }
     updateNotepadTitle();
+  }
+
+
+  // ── Auto-tier suggestion ──────────────────────────
+  let pendingTierSuggestions = [];
+
+  function suggestedTier(wr) {
+    if (wr === null || wr === undefined) return null;
+    if (wr < 60)  return '1';
+    if (wr < 75)  return '2';
+    return '3';
+  }
+
+  function checkTierSuggestions() {
+    const entries = currentEntries();
+    pendingTierSuggestions = entries
+      .filter(e => e.wrPct !== null && e.wrPct !== undefined)
+      .map(e => ({ e, suggested: suggestedTier(e.wrPct) }))
+      .filter(({ e, suggested }) => suggested && e.tier !== suggested);
+
+    if (pendingTierSuggestions.length === 0) return;
+
+    const tierLabels = { '1': 'Tier 1', '2': 'Tier 2', '3': 'Tier 3' };
+    const tierColors = { '1': 'var(--red)', '2': 'var(--yellow)', '3': 'var(--green)' };
+
+    document.getElementById('tier-suggest-list').innerHTML = pendingTierSuggestions.map(({ e, suggested }, i) =>
+      `<div class="tier-suggest-item">
+        <span class="tier-suggest-name">${e.name}</span>
+        <span class="tier-suggest-detail">${e.wrPct}% WR</span>
+        <span class="tier-suggest-detail" style="color:${tierColors[e.tier]};">${tierLabels[e.tier]}</span>
+        <span class="tier-suggest-arrow">→</span>
+        <span class="tier-suggest-detail" style="color:${tierColors[suggested]};">${tierLabels[suggested]}</span>
+        <button class="btn" style="font-size:11px; padding:3px 10px; margin-left:6px;" onclick="applyTierSuggestion(${i})">Apply</button>
+      </div>`
+    ).join('');
+
+    document.getElementById('tier-suggest-overlay').classList.add('open');
+  }
+
+  function applyTierSuggestion(i) {
+    const { e, suggested } = pendingTierSuggestions[i];
+    const entry = currentEntries().find(en => en.id === e.id);
+    if (entry) { entry.tier = suggested; save(); render(); }
+    // Remove from list
+    pendingTierSuggestions.splice(i, 1);
+    checkTierSuggestions();
+    if (pendingTierSuggestions.length === 0) closeTierSuggest();
+    else document.getElementById('tier-suggest-list').children[i] && document.getElementById('tier-suggest-list').removeChild(document.getElementById('tier-suggest-list').children[i]);
+  }
+
+  function applyAllTierSuggestions() {
+    pendingTierSuggestions.forEach(({ e, suggested }) => {
+      const entry = currentEntries().find(en => en.id === e.id);
+      if (entry) entry.tier = suggested;
+    });
+    save(); render();
+    closeTierSuggest();
+    toast(`${pendingTierSuggestions.length} tier${pendingTierSuggestions.length !== 1 ? 's' : ''} updated`);
+    pendingTierSuggestions = [];
+  }
+
+  function closeTierSuggest() {
+    document.getElementById('tier-suggest-overlay').classList.remove('open');
+  }
+
+  function handleTierSuggestOverlay(evt) {
+    if (evt.target === document.getElementById('tier-suggest-overlay')) closeTierSuggest();
+  }
+
+
+  // ── Re-eval calendar export (.ics) ───────────────
+  function exportReEvalCalendar() {
+    const entries = currentEntries();
+    const warningCoaches = entries.filter(e =>
+      (e.standing === 'warning1' || e.standing === 'warning2') && e.warningDate
+    );
+
+    if (warningCoaches.length === 0) {
+      toast('No coaches with active warnings and re-eval dates set');
+      return;
+    }
+
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Energy Bus Coach Tracker//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+    ];
+
+    warningCoaches.forEach(e => {
+      const days = e.standing === 'warning1' ? 14 : 7;
+      const sent = new Date(e.warningDate + 'T12:00:00');
+      const due = new Date(sent);
+      due.setDate(sent.getDate() + days);
+
+      const fmt = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const dateStr = due.toISOString().slice(0,10).replace(/-/g,'');
+      const uid = `reeval-${e.id}-${dateStr}@energy-bus-tracker`;
+      const label = e.standing === 'warning1' ? '1st Warning' : '2nd Warning';
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${uid}`);
+      lines.push(`DTSTAMP:${fmt(new Date())}`);
+      lines.push(`DTSTART;VALUE=DATE:${dateStr}`);
+      lines.push(`DTEND;VALUE=DATE:${dateStr}`);
+      lines.push(`SUMMARY:Re-eval: ${e.name} (${label})`);
+      lines.push(`DESCRIPTION:Coach: ${e.name}\nStanding: ${label}\nWarning sent: ${e.warningDate}\nWR%: ${e.wrPct ?? '—'}`);
+      lines.push('END:VEVENT');
+    });
+
+    lines.push('END:VCALENDAR');
+
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'reeval-dates.ics';
+    a.click();
+    toast(`${warningCoaches.length} re-eval date${warningCoaches.length !== 1 ? 's' : ''} exported`);
   }
 
   // ── Add coach form ────────────────────────────────
