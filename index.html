@@ -86,6 +86,56 @@
   body.light .dashboard-toggle-chips .dashboard-chip { }
   body.light #dashboard-chips .dashboard-chip { filter: none; }
 
+  body.light #gauge-stats-bar {
+    background: #1a1a1a !important;
+    border-color: #2e2e2e !important;
+    color: #f0ede8;
+  }
+  body.light #gauge-stats-bar span,
+  body.light #gauge-stats-bar div {
+    color: inherit;
+  }
+  body.light #gauge-stats-bar .stat,
+  body.light #gauge-stats-bar [style*="background:var(--surface2)"] {
+    background: #222222 !important;
+    border-color: #3a3a3a !important;
+  }
+  body.light #gauge-stats-bar #s-total,
+  body.light #gauge-stats-bar #s-sent { color: #d4ff6e; }
+  body.light #gauge-stats-bar #s-followup { color: #ffc85e; }
+  body.light #gauge-stats-bar #s-pending { color: #555350; }
+  body.light #gauge-stats-bar #progress-count { color: #555350; }
+
+
+
+  /* Keep gauge/stats bar, notepad, and dashboard dark in light mode */
+  body.light .team-notepad-wrap,
+  body.light .dashboard-toggle,
+  body.light .dashboard-body {
+    background: #1a1a1a;
+    border-color: #2e2e2e;
+    color: #f0ede8;
+  }
+  body.light .team-notepad-header:hover { background: #222222; }
+  body.light .team-notepad-title { color: #8a8780; }
+  body.light .team-notepad-title.has-notes { color: #f0ede8; }
+  body.light .team-notepad-textarea {
+    background: #222222;
+    border-color: #3a3a3a;
+    color: #f0ede8;
+  }
+  body.light .team-notepad-saved { color: #555350; }
+  body.light .dashboard-toggle-title { color: #8a8780; }
+  body.light .dashboard-toggle-arrow { color: #555350; }
+  body.light .dashboard-toggle:hover { border-color: #3a3a3a; }
+
+  /* Gauge + stats bar */
+  body.light #gauge-canvas-wrap,
+  body.light .gauge-stats-bar {
+    background: #1a1a1a;
+    border-color: #2e2e2e;
+  }
+
   /* Theme toggle button */
   .theme-toggle {
     font-family: 'DM Mono', monospace;
@@ -1787,7 +1837,7 @@
 </div>
 
 <!-- Combined Stats + Gauge -->
-<div style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; align-items:center; gap:16px;">
+<div id="gauge-stats-bar" style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; align-items:center; gap:16px;">
 
   <!-- Gauge (smaller) -->
   <div style="flex-shrink:0;">
