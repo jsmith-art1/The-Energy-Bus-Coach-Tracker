@@ -525,6 +525,27 @@
   thead th.sort-asc::after  { content: ' ↑'; color: var(--accent); }
   thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
 
+
+  /* Resizable columns */
+  thead th {
+    position: relative;
+  }
+  .col-resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 11;
+  }
+  .col-resizer:hover,
+  .col-resizer.resizing {
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; border-left: 3px solid transparent; }
   tbody tr.tier-row-1 { border-left-color: #ff6b6b55; }
   tbody tr.tier-row-2 { border-left-color: #ffc85e55; }
@@ -4397,6 +4418,42 @@ Please be specific and direct. I have limited time this week so focus on who nee
     toast(`${warningCoaches.length} re-eval date${warningCoaches.length !== 1 ? 's' : ''} exported`);
   }
 
+
+  // ── Column resize ─────────────────────────────────
+  function initColumnResize() {
+    const ths = document.querySelectorAll('thead th');
+    ths.forEach(th => {
+      // Skip if already has resizer
+      if (th.querySelector('.col-resizer')) return;
+      const resizer = document.createElement('div');
+      resizer.className = 'col-resizer';
+      th.appendChild(resizer);
+
+      let startX, startW;
+
+      resizer.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startX = e.pageX;
+        startW = th.offsetWidth;
+        resizer.classList.add('resizing');
+
+        const onMove = (e) => {
+          const diff = e.pageX - startX;
+          th.style.width = Math.max(40, startW + diff) + 'px';
+        };
+
+        const onUp = () => {
+          resizer.classList.remove('resizing');
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        };
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    });
+  }
+
   // ── Add coach form ────────────────────────────────
   let addFormOpen = false;
   function toggleAddForm() {
@@ -4879,6 +4936,7 @@ Please be specific and direct. I have limited time this week so focus on who nee
       renderRings();
     }
     renderGauge();
+    initColumnResize();
   };
 
   if (dashboardOpen && typeof Chart !== 'undefined') {
