@@ -2020,6 +2020,7 @@
   <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--green); border-color:#1a4a30; background:var(--green-bg);" onclick="batchMarkSent()">✓ Mark Sent</button>
   <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchSkip()">Skip selected</button>
   <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchUnskip()">Unskip selected</button>
+  <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--blue); border-color:#1a3a50; background:var(--blue-bg);" onclick="batchCopyNames()">📋 Copy names</button>
   <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--text3);" onclick="clearBatchSelection()">Clear</button>
   <span style="margin-left:auto; font-size:11px; color:var(--text3);">Click rows to select</span>
 </div>
@@ -4158,6 +4159,19 @@ Please be specific and direct. I have limited time this week so focus on who nee
 
   function getSelectedIds() {
     return [...document.querySelectorAll('.row-check:checked')].map(cb => parseInt(cb.dataset.id));
+  }
+
+
+  function batchCopyNames() {
+    const ids = getSelectedIds();
+    if (!ids.length) return;
+    const names = ids.map(id => {
+      const e = currentEntries().find(e => e.id === id);
+      return e ? e.name : null;
+    }).filter(Boolean);
+    navigator.clipboard.writeText(names.join('\n')).then(() => {
+      toast(`${names.length} name${names.length !== 1 ? 's' : ''} copied to clipboard`);
+    });
   }
 
   function batchMarkSent() {
