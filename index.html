@@ -3768,63 +3768,31 @@
     const entries = currentEntries();
     const wl = weekLabel(state.currentWeek);
 
-    // Sort: T1 first, then T2, then T3
-    const sorted = [...entries].sort((a, b) => parseInt(a.tier) - parseInt(b.tier));
-
     const t1 = entries.filter(e => e.tier === '1');
     const t2 = entries.filter(e => e.tier === '2');
-    const t3 = entries.filter(e => e.tier === '3');
     const warnings = entries.filter(e => e.standing === 'warning1' || e.standing === 'warning2');
     const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
     const sentPct = entries.length ? Math.round(sent / entries.length * 100) : 0;
-    const hexRed = entries.filter(e => e.hexPriority === 'red');
-    const hexYellow = entries.filter(e => e.hexPriority === 'yellow');
 
-    // Format a coach row
     const fmtCoach = (e) => {
       const parts = [];
-      if (e.wrPct != null) parts.push(`WR: ${e.wrPct}%`);
-      if (e.wrHistory && e.wrHistory.length >= 2) {
-        const diff = Math.round((e.wrHistory[e.wrHistory.length-1].wr - e.wrHistory[e.wrHistory.length-2].wr) * 10) / 10;
-        const sign = diff > 0 ? '+' : '';
-        parts.push(`trend: ${sign}${diff}%`);
-      }
-      if (e.standing && e.standing !== 'none' && e.standing !== 'active') parts.push(`standing: ${e.standing.replace('warning1','1st warning').replace('warning2','2nd warning')}`);
-      if (e.hexPriority && e.hexPriority !== 'none') parts.push(`Hex: ${e.hexPriority} (score ${e.hexScore})`);
-      if (e.status) parts.push(`feedback: ${e.status}`);
-      if (e.note) parts.push(`note: ${e.note}`);
-      if (e.coachNotes) parts.push(`coach notes: ${e.coachNotes.slice(0, 120)}${e.coachNotes.length > 120 ? '...' : ''}`);
-      return `  - ${e.name}${parts.length ? ' (' + parts.join(' · ') + ')' : ''}`;
+      if (e.wrPct != null) parts.push(`${e.wrPct}% WR`);
+      if (e.standing === 'warning1') parts.push(`1st warning${e.warningDate ? ' ' + e.warningDate : ''}`);
+      if (e.standing === 'warning2') parts.push(`2nd warning${e.warningDate ? ' ' + e.warningDate : ''}`);
+      if (e.coachNotes) parts.push(`"${e.coachNotes.slice(0, 60)}${e.coachNotes.length > 60 ? '...' : ''}"`);
+      return `• ${e.name}${parts.length ? ' — ' + parts.join(' · ') : ''}`;
     };
 
-    const prompt = `You are helping me, a Performance Coach Manager, prepare for my weekly coaching sessions. Here is my current roster data for ${wl}. Please give me:
+    const prompt = `${wl} | T1: ${t1.length} · T2: ${t2.length} · Warnings: ${warnings.length} · Sent: ${sentPct}%
 
-1. A prioritized list of coaches I should focus on most this week and why
-2. Any patterns you notice across the team (e.g. common struggles, WR trends, warning clusters)
-3. Suggested talking points or coaching approaches for my top 3-5 priority coaches
-4. Any coaches who appear to be improving that I should acknowledge
+TIER 1
+${t1.length ? t1.map(fmtCoach).join('\n') : '• None'}
 
----
-ROSTER SUMMARY
-Total coaches: ${entries.length} | Tier 1: ${t1.length} | Tier 2: ${t2.length} | Tier 3: ${t3.length}
-Active warnings: ${warnings.length} | Feedback sent this week: ${sentPct}%
-Hex priority (this week): ${hexRed.length} red, ${hexYellow.length} yellow
+TIER 2
+${t2.length ? t2.map(fmtCoach).join('\n') : '• None'}
+${warnings.length ? `\nWARNINGS\n${warnings.map(e => `• ${e.name} — ${e.standing === 'warning1' ? '1st' : '2nd'} warning${e.warningDate ? ', sent ' + e.warningDate : ''}${e.wrPct != null ? ', ' + e.wrPct + '% WR' : ''}`).join('\n')}` : ''}
 
----
-TIER 1 — URGENT (${t1.length} coaches)
-${t1.length ? t1.map(fmtCoach).join('\n') : '  None'}
-
-TIER 2 — DEVELOPING (${t2.length} coaches)
-${t2.length ? t2.map(fmtCoach).join('\n') : '  None'}
-
-TIER 3 — ON TRACK (${t3.length} coaches)
-${t3.length ? t3.map(fmtCoach).join('\n') : '  None'}
-${warnings.length ? `
----
-ACTIVE WARNINGS (${warnings.length} coaches)
-${warnings.map(e => `  - ${e.name} (${e.standing === 'warning1' ? '1st warning' : '2nd warning'}${e.warningDate ? ', sent ' + e.warningDate : ''})`).join('\n')}` : ''}
----
-Please be specific and direct. I have limited time this week so focus on who needs the most attention and what to actually say to them.`;
+Give me: top 3 priorities with one talking point each, and one team pattern.`;
 
     document.getElementById('briefing-week-label').textContent = wl;
     document.getElementById('briefing-prompt').textContent = prompt;
