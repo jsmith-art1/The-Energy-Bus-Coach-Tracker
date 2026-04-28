@@ -1416,6 +1416,40 @@
   .tier-suggest-detail { font-family: "DM Mono", monospace; font-size: 11px; color: var(--text3); }
   .tier-suggest-arrow { font-size: 14px; color: var(--text3); }
 
+
+  /* All caught up state */
+  .caught-up-state {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .caught-up-state.visible { display: flex; }
+  .caught-up-emoji { font-size: 42px; line-height: 1; }
+  .caught-up-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .caught-up-sub {
+    font-size: 13px;
+    color: var(--text3);
+    max-width: 320px;
+    line-height: 1.6;
+  }
+  .caught-up-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    background: var(--green-bg);
+    border: 1px solid #1a4a30;
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-top: 4px;
+  }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -2220,6 +2254,12 @@
     <div class="empty-icon">[ ]</div>
     No coaches in queue — use <strong>+ Add coach</strong> or <strong>Import roster</strong> to get started
   </div>
+  <div class="caught-up-state" id="caught-up-state">
+    <div class="caught-up-emoji">🚌💨</div>
+    <div class="caught-up-title">All caught up!</div>
+    <div class="caught-up-sub">Every Tier 1 and Tier 2 coach has been contacted this week. Nice work.</div>
+    <div class="caught-up-stat" id="caught-up-stat"></div>
+  </div>
 </div>
 
 <!-- History panel -->
@@ -2967,11 +3007,23 @@
     const tbody = document.getElementById('tbody');
     const empty = document.getElementById('empty-state');
 
+    const caughtUp = document.getElementById('caught-up-state');
+    const t1t2 = entries.filter(e => e.tier === '1' || e.tier === '2');
+    const t1t2Sent = t1t2.filter(e => e.status === 'sent' || e.status === 'checkin');
+    const allCaughtUp = currentView === 'focus' && t1t2.length > 0 && t1t2Sent.length === t1t2.length && filtered.length === 0;
+
     if (entries.length === 0) {
       tbody.innerHTML = '';
       empty.style.display = 'block';
+      caughtUp.classList.remove('visible');
+    } else if (allCaughtUp) {
+      tbody.innerHTML = '';
+      empty.style.display = 'none';
+      caughtUp.classList.add('visible');
+      document.getElementById('caught-up-stat').textContent = `${t1t2Sent.length} of ${t1t2.length} coaches contacted`;
     } else {
       empty.style.display = 'none';
+      caughtUp.classList.remove('visible');
       const sorted = applySortToEntries(filtered);
       tbody.innerHTML = sorted.map(e => {
         const initials = e.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
