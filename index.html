@@ -150,6 +150,87 @@
   .futurepro-text span { font-weight: 300; }
   .futurepro-text strong { font-weight: 600; }
 
+
+  /* Password gate */
+  .pw-gate {
+    position: fixed;
+    inset: 0;
+    background: #0f0f0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .pw-gate.hidden { display: none; }
+  .pw-box {
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-radius: 12px;
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 320px;
+  }
+  .pw-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f0ede8;
+    text-align: center;
+  }
+  .pw-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #555350;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-top: -8px;
+  }
+  .pw-input {
+    width: 100%;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    background: #222222;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    color: #f0ede8;
+    padding: 10px 14px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.1em;
+    transition: border-color 0.15s;
+  }
+  .pw-input:focus { border-color: #d4ff6e; }
+  .pw-input.error { border-color: #ff6b6b; animation: shake 0.3s; }
+  .pw-btn {
+    width: 100%;
+    padding: 10px;
+    background: #d4ff6e;
+    color: #0f0f0f;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .pw-btn:hover { background: #c8f060; }
+  .pw-error {
+    font-size: 12px;
+    color: #ff6b6b;
+    font-family: 'DM Mono', monospace;
+    min-height: 16px;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
   /* Theme toggle button */
   .theme-toggle {
     font-family: 'DM Mono', monospace;
@@ -4426,6 +4507,41 @@
         document.addEventListener('mouseup', onUp);
       });
     });
+  }
+
+
+  // ── Password gate ─────────────────────────────────
+  const PW_HASH = '3defe9adcd27b66d2e780194e64d0045c6f5f1536303ba0cff7479ab89e020c9';
+
+  async function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    const errEl = document.getElementById('pw-error');
+    const input = document.getElementById('pw-input');
+
+    const hash = await sha256(val);
+    if (hash === PW_HASH) {
+      document.getElementById('pw-gate').classList.add('hidden');
+      document.getElementById('app').style.display = '';
+      sessionStorage.setItem('eb_auth', '1');
+    } else {
+      errEl.textContent = 'Incorrect password';
+      input.classList.add('error');
+      input.value = '';
+      setTimeout(() => { input.classList.remove('error'); errEl.textContent = ''; }, 1500);
+    }
+  }
+
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Skip gate if already authenticated this session
+  if (sessionStorage.getItem('eb_auth') === '1') {
+    document.getElementById('pw-gate').classList.add('hidden');
+    document.getElementById('app').style.display = '';
   }
 
   // ── Add coach form ────────────────────────────────
