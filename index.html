@@ -3767,32 +3767,11 @@
   function openBriefingModal() {
     const entries = currentEntries();
     const wl = weekLabel(state.currentWeek);
-
-    const t1 = entries.filter(e => e.tier === '1');
-    const t2 = entries.filter(e => e.tier === '2');
     const warnings = entries.filter(e => e.standing === 'warning1' || e.standing === 'warning2');
-    const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
-    const sentPct = entries.length ? Math.round(sent / entries.length * 100) : 0;
 
-    const fmtCoach = (e) => {
-      const parts = [];
-      if (e.wrPct != null) parts.push(`${e.wrPct}% WR`);
-      if (e.standing === 'warning1') parts.push(`1st warning${e.warningDate ? ' ' + e.warningDate : ''}`);
-      if (e.standing === 'warning2') parts.push(`2nd warning${e.warningDate ? ' ' + e.warningDate : ''}`);
-      if (e.coachNotes) parts.push(`"${e.coachNotes.slice(0, 60)}${e.coachNotes.length > 60 ? '...' : ''}"`);
-      return `• ${e.name}${parts.length ? ' — ' + parts.join(' · ') : ''}`;
-    };
-
-    const prompt = `${wl} | T1: ${t1.length} · T2: ${t2.length} · Warnings: ${warnings.length} · Sent: ${sentPct}%
-
-TIER 1
-${t1.length ? t1.map(fmtCoach).join('\n') : '• None'}
-
-TIER 2
-${t2.length ? t2.map(fmtCoach).join('\n') : '• None'}
-${warnings.length ? `\nWARNINGS\n${warnings.map(e => `• ${e.name} — ${e.standing === 'warning1' ? '1st' : '2nd'} warning${e.warningDate ? ', sent ' + e.warningDate : ''}${e.wrPct != null ? ', ' + e.wrPct + '% WR' : ''}`).join('\n')}` : ''}
-
-Give me: top 3 priorities with one talking point each, and one team pattern.`;
+    const prompt = warnings.length
+      ? `WARNINGS\n${warnings.map(e => `• ${e.name} — ${e.standing === 'warning1' ? '1st warning' : '2nd warning'}${e.warningDate ? ', sent ' + e.warningDate : ''}${e.wrPct != null ? ', ' + e.wrPct + '% WR' : ''}`).join('\n')}`
+      : 'WARNINGS\n• None';
 
     document.getElementById('briefing-week-label').textContent = wl;
     document.getElementById('briefing-prompt').textContent = prompt;
