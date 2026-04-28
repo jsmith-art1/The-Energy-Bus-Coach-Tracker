@@ -3769,9 +3769,21 @@
     const wl = weekLabel(state.currentWeek);
     const warnings = entries.filter(e => e.standing === 'warning1' || e.standing === 'warning2');
 
-    const prompt = warnings.length
+    // Top 3 by WR%
+    const topPerformers = [...entries]
+      .filter(e => e.wrPct != null)
+      .sort((a, b) => b.wrPct - a.wrPct)
+      .slice(0, 3);
+
+    const warningsSection = warnings.length
       ? `WARNINGS\n${warnings.map(e => `• ${e.name} — ${e.standing === 'warning1' ? '1st warning' : '2nd warning'}${e.warningDate ? ', sent ' + e.warningDate : ''}${e.wrPct != null ? ', ' + e.wrPct + '% WR' : ''}`).join('\n')}`
       : 'WARNINGS\n• None';
+
+    const topSection = topPerformers.length
+      ? `TOP PERFORMERS\n${topPerformers.map(e => `• ${e.name} — ${e.wrPct}% WR`).join('\n')}`
+      : '';
+
+    const prompt = [warningsSection, topSection].filter(Boolean).join('\n\n');
 
     document.getElementById('briefing-week-label').textContent = wl;
     document.getElementById('briefing-prompt').textContent = prompt;
