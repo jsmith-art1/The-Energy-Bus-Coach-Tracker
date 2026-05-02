@@ -8,24 +8,26 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --surface2: #222222;
-    --border: #2e2e2e;
-    --border2: #3a3a3a;
-    --text: #f0ede8;
-    --text2: #8a8780;
-    --text3: #555350;
-    --accent: #d4ff6e;
-    --accent-dim: #a8cc50;
-    --red: #ff6b6b;
-    --red-bg: #2a1818;
-    --yellow: #ffc85e;
-    --yellow-bg: #2a2010;
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --border2: #363636;
+    --text: #fff8ee;
+    --text2: #b8a898;
+    --text3: #6a5f52;
+    --accent: #ffb800;
+    --accent-dim: #e0a000;
+    --red: #ff5a36;
+    --red-bg: #2a1208;
+    --yellow: #ffb800;
+    --yellow-bg: #2a2000;
     --green: #6bffb8;
     --green-bg: #0f2a1e;
     --blue: #6bb5ff;
     --blue-bg: #101e2a;
+    --orange: #ff8c00;
+    --orange-bg: #2a1800;
   }
 
 
@@ -54,10 +56,10 @@
 
   /* Keep header and stats dark in light mode */
   body.light .header {
-    background: #0f0f0f;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
     padding: 16px 24px;
     margin: -32px -24px 24px;
-    border-image: linear-gradient(to right, #ff6b6b, #ffc85e, #d4ff6e) 1;
+    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
   }
   body.light .header-left h1 { color: #f0ede8; }
   body.light .header-left .week-label { color: #8a8780; background: #1a1a1a; border-color: #3a3a3a; }
@@ -231,6 +233,55 @@
     75% { transform: translateX(6px); }
   }
 
+
+  .header-actions .btn:hover {
+    background: rgba(255,255,255,0.12) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: #f0ede8 !important;
+  }
+  .header-actions .btn-accent {
+    background: var(--accent) !important;
+    color: #0f0f0f !important;
+    border-color: var(--accent) !important;
+  }
+  .header-actions .btn-accent:hover {
+    background: var(--accent-dim) !important;
+    color: #0f0f0f !important;
+  }
+  .header-actions .btn-hex {
+    background: rgba(184,160,255,0.12) !important;
+    color: #b8a0ff !important;
+    border-color: rgba(184,160,255,0.25) !important;
+  }
+  .header-actions .btn-wr {
+    background: rgba(107,255,184,0.1) !important;
+    color: #6bffb8 !important;
+    border-color: rgba(107,255,184,0.2) !important;
+  }
+  .header-actions .btn-danger {
+    color: #ff6b6b !important;
+    border-color: rgba(255,107,107,0.25) !important;
+  }
+  .header-actions .quick-link {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: #a0b4cc !important;
+  }
+  .header-actions .quick-link:hover {
+    background: rgba(255,255,255,0.12) !important;
+    color: #f0ede8 !important;
+  }
+  .header-actions .quick-link.not-set {
+    border-style: dashed !important;
+    color: #4a6a8a !important;
+  }
+  .futurepro-text { color: #6a5a3a; }
+  .view-toggle { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.1) !important; }
+  .view-btn { color: #6b8cba !important; }
+  .view-btn.active { background: rgba(255,255,255,0.12) !important; color: #f0ede8 !important; }
+  .view-btn.active.focus-view { color: #ff8080 !important; }
+  .theme-toggle { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.12) !important; color: #a0b4cc !important; }
+
   /* Theme toggle button */
   .theme-toggle {
     font-family: 'DM Mono', monospace;
@@ -264,9 +315,11 @@
     flex-direction: column;
     gap: 8px;
     margin-bottom: 24px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid transparent;
-    border-image: linear-gradient(to right, var(--red), var(--yellow), var(--accent)) 1;
+    padding: 20px 24px;
+    margin: -32px -24px 24px;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
   }
   .header-row {
     display: flex;
@@ -280,17 +333,17 @@
     font-weight: 500;
     letter-spacing: -0.01em;
     white-space: nowrap;
-    color: var(--text);
+    color: #f0ede8;
   }
   .header-left .week-label {
     font-family: 'DM Mono', monospace;
     font-size: 12px;
-    color: var(--text2);
+    color: #6b8cba;
     margin-top: 5px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 5px;
     padding: 3px 8px;
     display: inline-block;
@@ -423,7 +476,7 @@
   }
   .progress-fill {
     height: 100%;
-    background: var(--accent);
+    background: linear-gradient(to right, #ff8c00, #ffb800);
     border-radius: 2px;
     transition: width 0.4s ease;
   }
@@ -642,11 +695,11 @@
   }
 
   tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; border-left: 3px solid transparent; }
-  tbody tr.tier-row-1 { border-left-color: #ff6b6b55; }
-  tbody tr.tier-row-2 { border-left-color: #ffc85e55; }
+  tbody tr.tier-row-1 { border-left-color: #ff5a3655; }
+  tbody tr.tier-row-2 { border-left-color: #ffb80055; }
   tbody tr.tier-row-3 { border-left-color: #6bffb855; }
-  tbody tr.tier-row-1:hover { border-left-color: var(--red); }
-  tbody tr.tier-row-2:hover { border-left-color: var(--yellow); }
+  tbody tr.tier-row-1:hover { border-left-color: #ff5a36; }
+  tbody tr.tier-row-2:hover { border-left-color: #ffb800; }
   tbody tr.tier-row-3:hover { border-left-color: var(--green); }
   tbody tr:last-child { border-bottom: none; }
   tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
@@ -681,8 +734,8 @@
     letter-spacing: 0.06em;
     white-space: nowrap;
   }
-  .tier-1 { background: var(--red-bg); color: var(--red); border: 1px solid #ff6b6b55; box-shadow: 0 0 8px rgba(255,107,107,0.15); }
-  .tier-2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #ffc85e55; box-shadow: 0 0 8px rgba(255,200,94,0.15); }
+  .tier-1 { background: #2a1208; color: #ff5a36; border: 1px solid #ff5a3655; box-shadow: 0 0 8px rgba(255,90,54,0.2); }
+  .tier-2 { background: #2a2000; color: #ffb800; border: 1px solid #ffb80055; box-shadow: 0 0 8px rgba(255,184,0,0.2); }
   .tier-3 { background: var(--green-bg); color: var(--green); border: 1px solid #6bffb855; box-shadow: 0 0 8px rgba(107,255,184,0.15); }
 
   /* PM Status select */
@@ -2255,7 +2308,7 @@
     No coaches in queue — use <strong>+ Add coach</strong> or <strong>Import roster</strong> to get started
   </div>
   <div class="caught-up-state" id="caught-up-state">
-    <div class="caught-up-emoji">🚌💨</div>
+    <div class="caught-up-emoji">🚌💨🔥</div>
     <div class="caught-up-title">All caught up!</div>
     <div class="caught-up-sub">Every Tier 1 and Tier 2 coach has been contacted this week. Nice work.</div>
     <div class="caught-up-stat" id="caught-up-stat"></div>
@@ -4640,12 +4693,12 @@
 
     ctx.clearRect(0, 0, W, H);
 
-    // Colored segments — vivid red→orange→yellow→green
+    // Energy Bus colors: deep red → orange → yellow → bright yellow
     const segs = [
-      { from: 0,    to: 0.25, color: '#ff3b3b' },
-      { from: 0.25, to: 0.5,  color: '#ff8c00' },
-      { from: 0.5,  to: 0.75, color: '#ffd000' },
-      { from: 0.75, to: 1.0,  color: '#00e87a' },
+      { from: 0,    to: 0.25, color: '#ff3a1a' },
+      { from: 0.25, to: 0.5,  color: '#ff7800' },
+      { from: 0.5,  to: 0.75, color: '#ffb800' },
+      { from: 0.75, to: 1.0,  color: '#ffe44d' },
     ];
 
     segs.forEach(seg => {
@@ -4711,7 +4764,7 @@
     // Update pct label + color
     const pctEl = document.getElementById('gauge-pct-label');
     pctEl.textContent = pct + '%';
-    pctEl.style.color = pct < 25 ? '#ff3b3b' : pct < 50 ? '#ff8c00' : pct < 75 ? '#ffd000' : '#00e87a';
+    pctEl.style.color = pct < 25 ? '#ff3a1a' : pct < 50 ? '#ff7800' : pct < 75 ? '#ffb800' : '#ffe44d';
 
     // Breakdown
     document.getElementById('gauge-breakdown').innerHTML = '';
@@ -4847,9 +4900,9 @@
     const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
     const pct = total ? Math.round(sent/total*100) : 0;
     document.getElementById('dashboard-chips').innerHTML =
-      `<span class="dashboard-chip" style="color:#ff6b6b; border-color:#ff6b6b; background:rgba(255,107,107,0.15); box-shadow:0 0 12px rgba(255,107,107,0.35);">${t1} Tier 1</span>` +
-      `<span class="dashboard-chip" style="color:#ff8aff; border-color:#ff8aff; background:rgba(255,138,255,0.12); box-shadow:0 0 12px rgba(255,138,255,0.3);">${warn} Warning${warn !== 1 ? 's' : ''}</span>` +
-      `<span class="dashboard-chip" style="color:#6bffb8; border-color:#6bffb8; background:rgba(107,255,184,0.12); box-shadow:0 0 12px rgba(107,255,184,0.3);">${pct}% Sent</span>`;
+      `<span class="dashboard-chip" style="color:#ff5a36; border-color:#ff5a36; background:rgba(255,90,54,0.15); box-shadow:0 0 12px rgba(255,90,54,0.35);">${t1} Tier 1</span>` +
+      `<span class="dashboard-chip" style="color:#ff8c00; border-color:#ff8c00; background:rgba(255,140,0,0.12); box-shadow:0 0 12px rgba(255,140,0,0.3);">${warn} Warning${warn !== 1 ? 's' : ''}</span>` +
+      `<span class="dashboard-chip" style="color:#ffb800; border-color:#ffb800; background:rgba(255,184,0,0.12); box-shadow:0 0 12px rgba(255,184,0,0.3);">${pct}% Sent</span>`;
   }
 
   // ── More dropdown ─────────────────────────────────
