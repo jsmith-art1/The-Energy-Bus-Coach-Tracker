@@ -1503,6 +1503,43 @@
     margin-top: 4px;
   }
 
+
+  /* Name search */
+  .search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .search-input {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    color: var(--text);
+    padding: 6px 14px 6px 32px;
+    outline: none;
+    width: 220px;
+    transition: all 0.15s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236a5f52' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 10px center;
+  }
+  .search-input:focus { border-color: var(--accent); width: 280px; }
+  .search-input::placeholder { color: var(--text3); }
+  .search-clear {
+    font-size: 11px;
+    color: var(--text3);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: none;
+  }
+  .search-clear.visible { display: inline; }
+  .search-clear:hover { color: var(--text2); }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -2268,6 +2305,12 @@
   </div>
 </div>
 
+<div class="search-wrap">
+  <input class="search-input" id="search-input" type="text" placeholder="Search coaches..."
+    oninput="handleSearch()" onkeydown="if(event.key==='Escape'){clearSearch();}" />
+  <button class="search-clear" id="search-clear" onclick="clearSearch()">✕ Clear</button>
+  <span id="search-results" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); display:none;"></span>
+</div>
 <div class="filters">
   <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
   <button class="filter-btn f-followup" data-filter="followup" onclick="setFilter('followup',this)">Follow-up</button>
@@ -3044,7 +3087,21 @@
       focusBanner.classList.remove('visible');
     }
 
-    const filtered = viewEntries.filter(e => {
+    // Apply name search
+    const searchEntries = searchQuery
+      ? viewEntries.filter(e => e.name.toLowerCase().includes(searchQuery))
+      : viewEntries;
+
+    // Update search results count
+    const resultsEl = document.getElementById('search-results');
+    if (searchQuery) {
+      resultsEl.textContent = searchEntries.length + ' result' + (searchEntries.length !== 1 ? 's' : '');
+      resultsEl.style.display = 'inline';
+    } else {
+      resultsEl.style.display = 'none';
+    }
+
+    const filtered = searchEntries.filter(e => {
       if (filter === 'all') return true;
       if (filter === 'followup') return e.status === 'followup';
       if (filter === 'pending') return e.status === 'pending';
@@ -4647,6 +4704,26 @@
   if (sessionStorage.getItem('eb_auth') === '1') {
     document.getElementById('pw-gate').classList.add('hidden');
     document.getElementById('app').style.display = '';
+  }
+
+
+  // ── Name search ───────────────────────────────────
+  let searchQuery = '';
+
+  function handleSearch() {
+    searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+    const clearBtn = document.getElementById('search-clear');
+    clearBtn.classList.toggle('visible', searchQuery.length > 0);
+    render();
+  }
+
+  function clearSearch() {
+    searchQuery = '';
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-clear').classList.remove('visible');
+    document.getElementById('search-results').style.display = 'none';
+    document.getElementById('search-input').focus();
+    render();
   }
 
   // ── Add coach form ────────────────────────────────
