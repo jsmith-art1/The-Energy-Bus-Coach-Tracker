@@ -2225,7 +2225,6 @@
           <label class="col-toggle-item"><input type="checkbox" onchange="toggleCol('col-skip', this.checked)"> Skip</label>
         </div>
       </div>
-      <button class="theme-toggle" id="heatmap-btn" onclick="toggleHeatmapView()" title="WR% Heatmap" style="font-size:11px; letter-spacing:0.04em;">🗂 Heatmap</button>
       <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
       <button class="btn btn-hex" onclick="openHexModal()">⬆ Hex priority</button>
       <button class="btn btn-wr" onclick="openWRModal()">⬆ WR data</button>
@@ -2250,6 +2249,7 @@
       <div class="more-wrap">
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
+          <button class="more-item" onclick="toggleHeatmapView(); closeMoreDropdown()" id="heatmap-more-btn">🗂 WR% Heatmap</button>
           <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
@@ -4900,9 +4900,8 @@
       if (el) el.style.display = heatmapOpen ? 'none' : '';
     });
 
-    const btn = document.getElementById('heatmap-btn');
-    btn.style.color = heatmapOpen ? 'var(--accent)' : '';
-    btn.style.borderColor = heatmapOpen ? 'var(--accent)' : '';
+    const btn = document.getElementById('heatmap-more-btn');
+    if (btn) btn.style.color = heatmapOpen ? 'var(--accent)' : '';
 
     if (heatmapOpen) renderHeatmap();
   }
