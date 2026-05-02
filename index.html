@@ -1540,6 +1540,140 @@
   .search-clear.visible { display: inline; }
   .search-clear:hover { color: var(--text2); }
 
+
+  /* Heatmap view */
+  .heatmap-view {
+    display: none;
+  }
+  .heatmap-view.open { display: block; }
+  .heatmap-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+  .heatmap-table {
+    border-collapse: collapse;
+    font-size: 11px;
+    min-width: 100%;
+  }
+  .heatmap-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text3);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 2;
+    text-align: center;
+  }
+  .heatmap-table th.hm-name-col {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    min-width: 150px;
+  }
+  .heatmap-table td {
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .heatmap-table td.hm-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    padding: 8px 12px;
+    white-space: nowrap;
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    z-index: 1;
+    border-right: 2px solid var(--border2);
+    min-width: 150px;
+  }
+  .heatmap-table td.hm-name:hover { color: var(--accent); cursor: pointer; }
+  .hm-cell {
+    width: 60px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: default;
+    transition: filter 0.1s;
+  }
+  .hm-cell:hover { filter: brightness(1.2); }
+  .hm-empty {
+    color: var(--text3);
+    font-size: 11px;
+  }
+  .hm-cell.wr-critical  { background: rgba(255,58,26,0.85);  color: #fff; }
+  .hm-cell.wr-low       { background: rgba(255,120,0,0.75);  color: #fff; }
+  .hm-cell.wr-mid       { background: rgba(255,184,0,0.7);   color: #1a1000; }
+  .hm-cell.wr-good      { background: rgba(107,255,184,0.55); color: #0a2a1a; }
+  .hm-cell.wr-great     { background: rgba(107,255,184,0.85); color: #0a2a1a; }
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .hm-legend-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 6px;
+  }
+  .hm-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .hm-legend-swatch {
+    width: 18px;
+    height: 14px;
+    border-radius: 3px;
+  }
+  .heatmap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .heatmap-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text2);
+  }
+  .heatmap-meta {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  /* View toggle for heatmap vs table */
+  .main-view-wrap { position: relative; }
+  .table-view { display: block; }
+  .table-view.hidden { display: none; }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -2091,6 +2225,7 @@
           <label class="col-toggle-item"><input type="checkbox" onchange="toggleCol('col-skip', this.checked)"> Skip</label>
         </div>
       </div>
+      <button class="theme-toggle" id="heatmap-btn" onclick="toggleHeatmapView()" title="WR% Heatmap" style="font-size:11px; letter-spacing:0.04em;">🗂 Heatmap</button>
       <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
       <button class="btn btn-hex" onclick="openHexModal()">⬆ Hex priority</button>
       <button class="btn btn-wr" onclick="openWRModal()">⬆ WR data</button>
@@ -2188,6 +2323,8 @@
   </div>
 </div>
 
+</div><!-- /table-view-wrap -->
+
 <!-- Dashboard (collapsible) -->
 <div class="dashboard-toggle" id="dashboard-toggle" onclick="toggleDashboard()">
   <div class="dashboard-toggle-left">
@@ -2260,6 +2397,26 @@
   <span>⚡ Focus View — Tier 1 &amp; 2 only · <span id="focus-count">0</span> coaches need attention</span>
   <span style="opacity:0.6; font-size:10px;">Switch to Full Roster to see all coaches</span>
 </div>
+<!-- Heatmap View -->
+<div class="heatmap-view" id="heatmap-view">
+  <div class="heatmap-wrap">
+    <div class="heatmap-header">
+      <div class="heatmap-title">WR% Heatmap — All Coaches · All Weeks</div>
+      <div class="heatmap-meta" id="heatmap-meta"></div>
+    </div>
+    <div id="heatmap-table-wrap"></div>
+    <div class="heatmap-legend">
+      <span class="hm-legend-label">WR%</span>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(255,58,26,0.85);"></div>&lt;50</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(255,120,0,0.75);"></div>50–60</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(255,184,0,0.7);"></div>60–70</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(107,255,184,0.55);"></div>70–80</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(107,255,184,0.85);"></div>80+</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:var(--surface2); border:1px solid var(--border);"></div>No data</div>
+    </div>
+  </div>
+</div>
+
 <!-- Batch skip bar -->
 <div class="batch-bar" id="batch-bar">
   <span id="batch-count" class="batch-bar-count">0 selected</span>
@@ -2305,6 +2462,7 @@
   </div>
 </div>
 
+<div id="table-view-wrap">
 <div class="search-wrap">
   <input class="search-input" id="search-input" type="text" placeholder="Search coaches..."
     oninput="handleSearch()" onkeydown="if(event.key==='Escape'){clearSearch();}" />
@@ -4724,6 +4882,120 @@
     document.getElementById('search-results').style.display = 'none';
     document.getElementById('search-input').focus();
     render();
+  }
+
+
+  // ── Heatmap view ──────────────────────────────────
+  let heatmapOpen = false;
+
+  function toggleHeatmapView() {
+    heatmapOpen = !heatmapOpen;
+    document.getElementById('heatmap-view').classList.toggle('open', heatmapOpen);
+    document.getElementById('table-view-wrap').style.display = heatmapOpen ? 'none' : '';
+
+    // Also hide focus banner, filters, batch bar when in heatmap
+    const toHide = ['focus-banner', 'batch-bar'];
+    toHide.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = heatmapOpen ? 'none' : '';
+    });
+
+    const btn = document.getElementById('heatmap-btn');
+    btn.style.color = heatmapOpen ? 'var(--accent)' : '';
+    btn.style.borderColor = heatmapOpen ? 'var(--accent)' : '';
+
+    if (heatmapOpen) renderHeatmap();
+  }
+
+  function wrClass(wr) {
+    if (wr === null || wr === undefined) return '';
+    if (wr < 50) return 'wr-critical';
+    if (wr < 60) return 'wr-low';
+    if (wr < 70) return 'wr-mid';
+    if (wr < 80) return 'wr-good';
+    return 'wr-great';
+  }
+
+  function renderHeatmap() {
+    // Gather all weeks sorted oldest → newest
+    const allWeeks = Object.entries(state.weeks)
+      .sort((a, b) => a[0].localeCompare(b[0]));
+
+    if (allWeeks.length === 0) {
+      document.getElementById('heatmap-table-wrap').innerHTML =
+        '<div style="padding:40px; text-align:center; color:var(--text3); font-size:13px;">No week data yet — archive some weeks to populate the heatmap.</div>';
+      return;
+    }
+
+    // Collect all unique coach names across all weeks
+    const coachSet = new Map();
+    allWeeks.forEach(([key, weekData]) => {
+      (weekData.entries || []).forEach(e => {
+        if (!coachSet.has(e.name)) coachSet.set(e.name, { name: e.name, tier: e.tier });
+      });
+    });
+
+    // Also include current week coaches
+    currentEntries().forEach(e => {
+      if (!coachSet.has(e.name)) coachSet.set(e.name, { name: e.name, tier: e.tier });
+    });
+
+    const coaches = [...coachSet.values()].sort((a, b) => {
+      // Sort by tier then name
+      if (a.tier !== b.tier) return parseInt(a.tier || 3) - parseInt(b.tier || 3);
+      return a.name.localeCompare(b.name);
+    });
+
+    // Include current week in columns
+    const weekCols = [...allWeeks];
+    const currentWeekEntries = currentEntries();
+    if (!weekCols.find(([k]) => k === state.currentWeek)) {
+      weekCols.push([state.currentWeek, { entries: currentWeekEntries }]);
+    }
+
+    document.getElementById('heatmap-meta').textContent =
+      `${coaches.length} coaches · ${weekCols.length} week${weekCols.length !== 1 ? 's' : ''}`;
+
+    // Build table
+    let html = '<table class="heatmap-table"><thead><tr>';
+    html += '<th class="hm-name-col">Coach</th>';
+    weekCols.forEach(([key]) => {
+      const label = weekLabel(key).replace('Week of ', '').replace(/[0-9]{4}/, '').trim();
+      const isCurrent = key === state.currentWeek;
+      html += `<th style="${isCurrent ? 'color:var(--accent);' : ''}">${label}${isCurrent ? ' ←' : ''}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    coaches.forEach(({ name, tier }) => {
+      const tierColor = tier === '1' ? '#ff5a36' : tier === '2' ? '#ffb800' : 'var(--green)';
+      html += `<tr>`;
+      html += `<td class="hm-name" onclick="openHistoryModalByName('${name.replace(/'/g, "\'")}')" title="View history">
+        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${tierColor}; margin-right:7px; vertical-align:middle; flex-shrink:0;"></span>${name}
+      </td>`;
+
+      weekCols.forEach(([key, weekData]) => {
+        const entries = weekData.entries || (key === state.currentWeek ? currentWeekEntries : []);
+        const entry = entries.find(e => e.name.toLowerCase() === name.toLowerCase());
+        const wr = entry?.wrPct ?? null;
+        const cls = wrClass(wr);
+        const isCurrent = key === state.currentWeek;
+        html += `<td style="${isCurrent ? 'border-right:2px solid var(--accent);' : ''}">
+          <div class="hm-cell ${cls}" title="${name} — ${wr !== null ? wr + '% WR' : 'No data'}">
+            ${wr !== null ? wr + '%' : '<span class="hm-empty">—</span>'}
+          </div>
+        </td>`;
+      });
+
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    document.getElementById('heatmap-table-wrap').innerHTML = html;
+  }
+
+  function openHistoryModalByName(name) {
+    const entry = currentEntries().find(e => e.name.toLowerCase() === name.toLowerCase());
+    if (entry) openHistoryModal(entry.id);
   }
 
   // ── Add coach form ────────────────────────────────
