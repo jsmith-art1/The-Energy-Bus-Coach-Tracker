@@ -106,6 +106,7 @@
   body.light #gauge-stats-bar #s-sent { color: #d4ff6e; }
   body.light #gauge-stats-bar #s-followup { color: #ffc85e; }
   body.light #gauge-stats-bar #s-pending { color: #555350; }
+  body.light #gauge-stats-bar #s-wr-avg { color: inherit; }
   body.light #gauge-stats-bar #progress-count { color: #555350; }
 
 
@@ -2306,6 +2307,10 @@
       <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--text3); line-height:1;" id="s-pending">0</span>
       <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Pending</span>
     </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; line-height:1;" id="s-wr-avg">—</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Avg WR%</span>
+    </div>
   </div>
 
 </div>
@@ -3214,6 +3219,18 @@
     document.getElementById('s-sent').textContent = sent;
     document.getElementById('s-followup').textContent = followup;
     document.getElementById('s-pending').textContent = pending;
+
+    // Team WR% average
+    const wrEntries = active.filter(e => e.wrPct !== null && e.wrPct !== undefined);
+    const wrAvgEl = document.getElementById('s-wr-avg');
+    if (wrEntries.length > 0) {
+      const avg = Math.round(wrEntries.reduce((sum, e) => sum + e.wrPct, 0) / wrEntries.length * 10) / 10;
+      wrAvgEl.textContent = avg + '%';
+      wrAvgEl.style.color = avg < 60 ? 'var(--red)' : avg < 70 ? 'var(--yellow)' : avg < 80 ? 'var(--text2)' : 'var(--green)';
+    } else {
+      wrAvgEl.textContent = '—';
+      wrAvgEl.style.color = 'var(--text3)';
+    }
 
     // Progress bar reflects current view (focus or full)
     const viewTotal = currentView === 'focus'
