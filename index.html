@@ -336,7 +336,9 @@
       linear-gradient(160deg, #111008 0%, #0d0d0d 40%, #0a0a0a 100%);
     border-bottom: 1px solid transparent;
     border-image: linear-gradient(to right, #ff5a3644, #ff8c0077, #ffb800aa, #ffe566aa, #ffb80077, #ff8c0044) 1;
-    position: relative;
+    position: sticky;
+    top: -32px;
+    z-index: 100;
     overflow: hidden;
   }
 
@@ -579,6 +581,13 @@
     gap: 4px;
     margin-bottom: 14px;
     flex-wrap: wrap;
+    position: sticky;
+    top: calc(var(--sticky-header-h) + 106px);
+    z-index: 98;
+    background: var(--bg);
+    padding: 6px 0 8px;
+    margin-left: -2px;
+    margin-right: -2px;
   }
   .filter-btn {
     font-family: 'DM Mono', monospace;
@@ -709,7 +718,26 @@
   thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
 
 
-  /* Resizable columns */
+  :root {
+    --sticky-header-h: 82px;
+  }
+
+  /* Gauge bar sticky */
+  #gauge-stats-bar {
+    position: sticky;
+    top: var(--sticky-header-h);
+    z-index: 99;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  /* Shadow when stuck */
+  .header.is-stuck {
+    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
+  }
+  #gauge-stats-bar.is-stuck {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+  }
+
   .col-resizer {
     position: absolute;
     right: 0;
@@ -3313,6 +3341,10 @@
   function render() {
     const entries = currentEntries();
 
+    // Preserve table scroll position across re-renders
+    const scrollEl = document.querySelector('.table-scroll-inner');
+    const savedScroll = scrollEl ? scrollEl.scrollTop : 0;
+
     // Stats
     const active = entries.filter(e => !e.skipped);
     const total = active.length;
@@ -3585,6 +3617,9 @@
         </tr>
       `}).join('');
     }
+
+    // Restore scroll position after re-render
+    if (scrollEl && savedScroll) scrollEl.scrollTop = savedScroll;
   }
 
   function renderHistory() {
@@ -5514,6 +5549,17 @@
   if (state.logoSrc) applyLogo(state.logoSrc);
   if (state.headerTitle) document.getElementById('header-title').textContent = state.headerTitle;
   render();
+
+  // Sticky shadow on scroll
+  (function() {
+    const header = document.querySelector('.header');
+    const gauge  = document.getElementById('gauge-stats-bar');
+    window.addEventListener('scroll', () => {
+      const stuck = window.scrollY > 10;
+      header?.classList.toggle('is-stuck', stuck);
+      gauge?.classList.toggle('is-stuck', stuck);
+    }, { passive: true });
+  })();
 
   // ── AI Feedback Draft ─────────────────────────────
   let aiDraftCoachId = null;
