@@ -2364,17 +2364,23 @@
     </div>
 
     <!-- Sent -->
-    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(107,255,184,0.07); border:1px solid rgba(107,255,184,0.2); gap:2px;">
+    <div style="display:flex; flex-direction:column; flex:1; min-width:100px; padding:8px 12px; border-radius:8px; background:rgba(107,255,184,0.07); border:1px solid rgba(107,255,184,0.2); gap:2px;">
       <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#2a7a52;">Sent</span>
       <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--green); line-height:1; letter-spacing:-0.02em;" id="s-sent">0</span>
-      <span style="font-size:10px; color:var(--text3);">complete</span>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-top:2px;">
+        <span style="font-size:10px; color:var(--text3);" id="s-sent-trend-label">complete</span>
+        <svg id="sent-sparkline" width="60" height="22" viewBox="0 0 60 22" style="overflow:visible; opacity:0; transition:opacity 0.3s;"></svg>
+      </div>
     </div>
 
     <!-- Follow-up -->
-    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(255,184,0,0.06); border:1px solid rgba(255,184,0,0.18); gap:2px;">
+    <div style="display:flex; flex-direction:column; flex:1; min-width:100px; padding:8px 12px; border-radius:8px; background:rgba(255,184,0,0.06); border:1px solid rgba(255,184,0,0.18); gap:2px;">
       <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#a07800;">Follow-up</span>
       <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--yellow); line-height:1; letter-spacing:-0.02em;" id="s-followup">0</span>
-      <span style="font-size:10px; color:var(--text3);">needs action</span>
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-top:2px;">
+        <span style="font-size:10px; color:var(--text3);" id="s-followup-trend-label">needs action</span>
+        <svg id="followup-sparkline" width="60" height="22" viewBox="0 0 60 22" style="overflow:visible; opacity:0; transition:opacity 0.3s;"></svg>
+      </div>
     </div>
 
     <!-- Pending -->
@@ -2793,6 +2799,16 @@
       <div>
         <div class="history-modal-name" id="history-modal-name"></div>
         <div class="history-modal-sub">Coach history — last 4 weeks</div>
+        <div id="history-spark-wrap" style="display:none; align-items:center; gap:10px; margin-top:8px; padding:7px 10px; background:var(--surface2); border:1px solid var(--border); border-radius:6px;">
+          <div style="flex:1;">
+            <div style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--text3); margin-bottom:4px;">WR% trend</div>
+            <svg id="history-sparkline" width="100%" height="32" viewBox="0 0 180 32" preserveAspectRatio="none" style="overflow:visible; display:block;"></svg>
+          </div>
+          <div style="flex-shrink:0; text-align:right;">
+            <div id="history-spark-delta" style="font-family:'DM Mono',monospace; font-size:13px; font-weight:600; line-height:1;"></div>
+            <div id="history-spark-range" style="font-size:10px; color:var(--text3); margin-top:2px;"></div>
+          </div>
+        </div>
       </div>
       <button onclick="closeHistoryModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
     </div>
@@ -3359,6 +3375,53 @@
     document.getElementById('s-sent').textContent = sent;
     document.getElementById('s-followup').textContent = followup;
     document.getElementById('s-pending').textContent = pending;
+
+    // Sent sparkline — sent count per week
+    (function() {
+      const sentVals = weeklyStats(entries => {
+        const a = entries.filter(e => !e.skipped);
+        if (!a.length) return null;
+        return a.filter(e => e.status === 'sent' || e.status === 'checkin').length;
+      });
+      const svg = document.getElementById('sent-sparkline');
+      const lbl = document.getElementById('s-sent-trend-label');
+      if (sentVals.length >= 2) {
+        const diff = sentVals[sentVals.length-1] - sentVals[0];
+        const color = diff > 0 ? '#6bffb8' : diff < 0 ? '#ff5a36' : '#ffb800';
+        drawSparkline(svg, sentVals, color);
+        const sign = diff > 0 ? '+' : '';
+        lbl.textContent = `${diff > 0 ? '↑' : diff < 0 ? '↓' : '→'} ${sign}${diff} ${sentVals.length}wk`;
+        lbl.style.color = color;
+      } else {
+        if (svg) svg.style.opacity = '0';
+        lbl.textContent = 'complete';
+        lbl.style.color = 'var(--text3)';
+      }
+    })();
+
+    // Follow-up sparkline — followup count per week
+    (function() {
+      const fuVals = weeklyStats(entries => {
+        const a = entries.filter(e => !e.skipped);
+        if (!a.length) return null;
+        return a.filter(e => e.status === 'followup').length;
+      });
+      const svg = document.getElementById('followup-sparkline');
+      const lbl = document.getElementById('s-followup-trend-label');
+      if (fuVals.length >= 2) {
+        const diff = fuVals[fuVals.length-1] - fuVals[0];
+        // For follow-up, rising is BAD (red), falling is GOOD (green)
+        const color = diff < 0 ? '#6bffb8' : diff > 0 ? '#ff5a36' : '#ffb800';
+        drawSparkline(svg, fuVals, color);
+        const sign = diff > 0 ? '+' : '';
+        lbl.textContent = `${diff > 0 ? '↑' : diff < 0 ? '↓' : '→'} ${sign}${diff} ${fuVals.length}wk`;
+        lbl.style.color = color;
+      } else {
+        if (svg) svg.style.opacity = '0';
+        lbl.textContent = 'needs action';
+        lbl.style.color = 'var(--text3)';
+      }
+    })();
 
     // Team WR% average
     const wrEntries = active.filter(e => e.wrPct !== null && e.wrPct !== undefined);
@@ -4581,6 +4644,51 @@
       timeline.innerHTML = header + dataRows.join('');
     }
 
+    // WR sparkline in modal header
+    const sparkWrap  = document.getElementById('history-spark-wrap');
+    const sparkSvg   = document.getElementById('history-sparkline');
+    const sparkDelta = document.getElementById('history-spark-delta');
+    const sparkRange = document.getElementById('history-spark-range');
+    const wrPoints   = rows.map(r => r.entry.wrPct).filter(v => v != null);
+
+    if (wrPoints.length >= 2) {
+      const first = wrPoints[0], last = wrPoints[wrPoints.length - 1];
+      const diff  = Math.round((last - first) * 10) / 10;
+      const color = diff > 0 ? '#6bffb8' : diff < 0 ? '#ff5a36' : '#ffb800';
+      const sign  = diff > 0 ? '+' : '';
+      const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
+
+      // Draw wider sparkline for the modal (180×32 viewBox)
+      const W = 180, H = 32, pad = 3;
+      const min = Math.min(...wrPoints) - 3;
+      const max = Math.max(...wrPoints) + 3;
+      const range = max - min || 1;
+      const xStep = (W - pad * 2) / (wrPoints.length - 1);
+      const toY = v => H - pad - ((v - min) / range) * (H - pad * 2);
+      const pts = wrPoints.map((v, i) => [pad + i * xStep, toY(v)]);
+      const linePts = pts.map(p => p.join(',')).join(' ');
+      const areaPath = `M${pts[0][0]},${H} ${pts.map(p => `L${p[0]},${p[1]}`).join(' ')} L${pts[pts.length-1][0]},${H} Z`;
+
+      sparkSvg.innerHTML = `
+        <defs>
+          <linearGradient id="hsg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${color}" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="${areaPath}" fill="url(#hsg)"/>
+        <polyline points="${linePts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
+        ${pts.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i === pts.length-1 ? 3 : 1.5}" fill="${color}" opacity="${i === pts.length-1 ? 1 : 0.5}"/>`).join('')}
+      `;
+
+      sparkDelta.textContent = `${arrow} ${sign}${diff}%`;
+      sparkDelta.style.color = color;
+      sparkRange.textContent = `${wrPoints[0]}% → ${last}% · ${wrPoints.length} wks`;
+      sparkWrap.style.display = 'flex';
+    } else {
+      sparkWrap.style.display = 'none';
+    }
+
     // Show roster note if exists
     const noteBanner = document.getElementById('history-note-banner');
     if (currentEntry.note) {
@@ -5607,6 +5715,42 @@
   if (state.logoSrc) applyLogo(state.logoSrc);
   if (state.headerTitle) document.getElementById('header-title').textContent = state.headerTitle;
   render();
+
+  // ── Shared sparkline utility ──────────────────────
+  function drawSparkline(svgEl, values, color, W = 60, H = 22) {
+    if (!svgEl || values.length < 2) { svgEl.style.opacity = '0'; return; }
+    const pad = 2;
+    const min = Math.min(...values) - 2;
+    const max = Math.max(...values) + 2;
+    const range = max - min || 1;
+    const xStep = (W - pad * 2) / (values.length - 1);
+    const toY = v => H - pad - ((v - min) / range) * (H - pad * 2);
+    const pts = values.map((v, i) => [pad + i * xStep, toY(v)]);
+    const linePts = pts.map(p => p.join(',')).join(' ');
+    const areaPath = `M${pts[0][0]},${H} ${pts.map(p => `L${p[0]},${p[1]}`).join(' ')} L${pts[pts.length-1][0]},${H} Z`;
+    const gradId = 'sg-' + svgEl.id;
+    svgEl.innerHTML = `
+      <defs>
+        <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="${color}" stop-opacity="0.22"/>
+          <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <path d="${areaPath}" fill="url(#${gradId})"/>
+      <polyline points="${linePts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="2" fill="${color}"/>
+    `;
+    svgEl.style.opacity = '1';
+  }
+
+  // ── Shared helper: per-week stat across state.weeks ──
+  function weeklyStats(statFn, limit = 8) {
+    return Object.entries(state.weeks)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .slice(-limit)
+      .map(([, w]) => statFn(w.entries || []))
+      .filter(v => v !== null);
+  }
 
   // Sticky shadow on scroll
   (function() {
