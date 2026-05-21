@@ -665,7 +665,14 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .table-scroll-inner {
     overflow-x: auto;
+    overflow-y: auto;
+    max-height: calc(100vh - 320px);
+    min-height: 200px;
     -webkit-overflow-scrolling: touch;
   }
   table {
@@ -703,9 +710,6 @@
 
 
   /* Resizable columns */
-  thead th {
-    position: relative;
-  }
   .col-resizer {
     position: absolute;
     right: 0;
@@ -2536,6 +2540,11 @@
 
 <!-- Table -->
 <div class="table-wrap">
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border);">
+    <span id="table-title-label" style="font-family:'DM Mono',monospace; font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.09em; color:var(--text2);">Focus Roster</span>
+    <span id="table-visible-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3);">0 visible</span>
+  </div>
+  <div class="table-scroll-inner">
   <table>
     <thead>
       <tr>
@@ -2566,6 +2575,7 @@
     <div class="caught-up-title">All caught up!</div>
     <div class="caught-up-sub">Every Tier 1 and Tier 2 coach has been contacted this week. Nice work.</div>
     <div class="caught-up-stat" id="caught-up-stat"></div>
+  </div>
   </div>
 </div>
 
@@ -3416,6 +3426,12 @@
     const t1t2 = entries.filter(e => e.tier === '1' || e.tier === '2');
     const t1t2Sent = t1t2.filter(e => e.status === 'sent' || e.status === 'checkin');
     const allCaughtUp = currentView === 'focus' && t1t2.length > 0 && t1t2Sent.length === t1t2.length && filtered.length === 0;
+
+    // Update table title and count
+    const titleLabel = document.getElementById('table-title-label');
+    const visibleCount = document.getElementById('table-visible-count');
+    if (titleLabel) titleLabel.textContent = currentView === 'focus' ? 'Focus Roster' : 'Full Roster';
+    if (visibleCount) visibleCount.textContent = `${filtered.length} visible`;
 
     if (entries.length === 0) {
       tbody.innerHTML = '';
