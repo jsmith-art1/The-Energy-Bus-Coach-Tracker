@@ -56,10 +56,14 @@
 
   /* Keep header and stats dark in light mode */
   body.light .header {
-    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
+    background:
+      radial-gradient(ellipse 55% 180% at 18% 50%, rgba(255, 140, 0, 0.22) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 140% at 72% 60%, rgba(255, 80, 30, 0.14) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 200% at 50% -20%, rgba(255, 184, 0, 0.11) 0%, transparent 60%),
+      linear-gradient(160deg, #111008 0%, #0d0d0d 40%, #0a0a0a 100%);
     padding: 16px 24px;
     margin: -32px -24px 24px;
-    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
+    border-image: linear-gradient(to right, #ff5a3644, #ff8c0077, #ffb800aa, #ffe566aa, #ffb80077, #ff8c0044) 1;
   }
   body.light .header-left h1 { color: #f0ede8; }
   body.light .header-left .week-label { color: #8a8780; background: #1a1a1a; border-color: #3a3a3a; }
@@ -102,9 +106,9 @@
     background: #222222 !important;
     border-color: #3a3a3a !important;
   }
-  body.light #gauge-stats-bar #s-total,
-  body.light #gauge-stats-bar #s-sent { color: #d4ff6e; }
-  body.light #gauge-stats-bar #s-followup { color: #ffc85e; }
+  body.light #gauge-stats-bar #s-total { color: #7a5f00; }
+  body.light #gauge-stats-bar #s-sent  { color: #1a6040; }
+  body.light #gauge-stats-bar #s-followup { color: #7a5f00; }
   body.light #gauge-stats-bar #s-pending { color: #555350; }
   body.light #gauge-stats-bar #s-wr-avg { color: inherit; }
   body.light #gauge-stats-bar #progress-count { color: #555350; }
@@ -234,6 +238,9 @@
     25% { transform: translateX(-6px); }
     75% { transform: translateX(6px); }
   }
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
 
 
   .header-actions .btn:hover {
@@ -303,7 +310,10 @@
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
+    background:
+      radial-gradient(ellipse 80% 40% at 20% 0%, rgba(255, 140, 0, 0.07) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 30% at 80% 0%, rgba(255, 70, 20, 0.05) 0%, transparent 55%),
+      var(--bg);
     color: var(--text);
     min-height: 100vh;
     padding: 32px 24px;
@@ -319,9 +329,25 @@
     margin-bottom: 24px;
     padding: 20px 24px;
     margin: -32px -24px 24px;
-    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
-    border-bottom: 2px solid transparent;
-    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
+    background:
+      radial-gradient(ellipse 55% 180% at 18% 50%, rgba(255, 140, 0, 0.18) 0%, transparent 70%),
+      radial-gradient(ellipse 35% 140% at 72% 60%, rgba(255, 80, 30, 0.10) 0%, transparent 65%),
+      radial-gradient(ellipse 60% 200% at 50% -20%, rgba(255, 184, 0, 0.09) 0%, transparent 60%),
+      linear-gradient(160deg, #111008 0%, #0d0d0d 40%, #0a0a0a 100%);
+    border-bottom: 1px solid transparent;
+    border-image: linear-gradient(to right, #ff5a3644, #ff8c0077, #ffb800aa, #ffe566aa, #ffb80077, #ff8c0044) 1;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 30% 90% at 0% 50%, rgba(255, 100, 20, 0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 20% 60% at 100% 50%, rgba(255, 184, 0, 0.05) 0%, transparent 70%);
+    pointer-events: none;
   }
   .header-row {
     display: flex;
@@ -331,11 +357,11 @@
   }
 
   .header-left h1 {
-    font-size: 15px;
-    font-weight: 500;
-    letter-spacing: -0.01em;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
     white-space: nowrap;
-    color: #f0ede8;
+    color: #f5f0e8;
   }
   .header-left .week-label {
     font-family: 'DM Mono', monospace;
@@ -651,12 +677,12 @@
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.09em;
     color: var(--text3);
-    padding: 8px 10px;
+    padding: 10px 10px;
     border-bottom: 1px solid var(--border);
     text-align: left;
-    font-weight: 400;
+    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -706,8 +732,8 @@
   tbody tr:last-child { border-bottom: none; }
   tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
   tbody tr:hover { background: var(--surface2); }
-  td { padding: 8px 10px; font-size: 12px; vertical-align: middle; }
-  .td-name { font-weight: 500; color: var(--text); font-size: 13px; }
+  td { padding: 9px 10px; font-size: 12px; vertical-align: middle; color: var(--text2); }
+  .td-name { font-weight: 600; color: #f5f0e8; font-size: 14px; letter-spacing: -0.01em; }
 
   /* Column widths */
   th:nth-child(1)  { width: 60px;  } /* Hex Priority */
@@ -820,15 +846,18 @@
   .td-date {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
-    color: var(--text3);
+    color: var(--text2);
+    font-variant-numeric: tabular-nums;
   }
   .td-note {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text3);
     max-width: 180px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    letter-spacing: 0.01em;
+    margin-top: 1px;
   }
   .del-btn {
     background: none;
@@ -1768,12 +1797,13 @@
   /* Clickable coach name */
   .td-name-link {
     cursor: pointer;
-    font-weight: 500;
-    color: var(--text);
-    font-size: 13px;
+    font-weight: 600;
+    color: #f5f0e8;
+    font-size: 14px;
     transition: color 0.15s;
     text-decoration: none;
     display: inline;
+    letter-spacing: -0.01em;
   }
   .td-name-link:hover { color: var(--accent); }
 
@@ -2254,6 +2284,7 @@
           <button class="more-item" onclick="toggleHeatmapView(); closeMoreDropdown()" id="heatmap-more-btn">🗂 WR% Heatmap</button>
           <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
+          <button class="more-item" onclick="openSlackSummaryModal(); closeMoreDropdown()">✦ AI Slack summary</button>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
           <button class="more-item" onclick="showHistory(); closeMoreDropdown()" id="history-btn">Week history</button>
           <div class="more-divider"></div>
@@ -2276,11 +2307,11 @@
   <!-- Pct + emoji + progress -->
   <div style="display:flex; flex-direction:column; gap:3px; flex-shrink:0; min-width:110px;">
     <div style="display:flex; align-items:baseline; gap:6px;">
-      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:24px; font-weight:500; color:var(--text); line-height:1;">0%</span>
-      <span style="font-size:10px; color:var(--text3);">sent</span>
+      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:26px; font-weight:600; color:var(--text); line-height:1; letter-spacing:-0.02em;">0%</span>
+      <span style="font-size:10px; color:var(--text3); letter-spacing:0.04em; text-transform:uppercase;">sent</span>
       <span style="font-size:16px; line-height:1;">🚌💨</span>
     </div>
-    <div class="progress-track" style="width:120px;"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-track" style="width:120px; height:4px; border-radius:2px;"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     <span id="progress-count" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3);">0 / 0 coaches</span>
     <span id="progress-text" style="display:none;">0%</span>
     <div id="gauge-breakdown"></div>
@@ -2289,28 +2320,44 @@
   <!-- Divider -->
   <div style="width:1px; background:var(--border); align-self:stretch; flex-shrink:0;"></div>
 
-  <!-- Stat chips (compact) -->
-  <div style="display:flex; gap:8px; flex:1; align-items:center; flex-wrap:wrap;">
-    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
-      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-total">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Total</span>
+  <!-- Stat chips (upgraded) -->
+  <div style="display:flex; gap:8px; flex:1; align-items:stretch; flex-wrap:wrap;">
+
+    <!-- Total -->
+    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(255,184,0,0.07); border:1px solid rgba(255,184,0,0.22); gap:2px;">
+      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#a07800;">Total</span>
+      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--accent); line-height:1; letter-spacing:-0.02em;" id="s-total">0</span>
+      <span style="font-size:10px; color:var(--text3);">coaches</span>
     </div>
-    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
-      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-sent">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Sent</span>
+
+    <!-- Sent -->
+    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(107,255,184,0.07); border:1px solid rgba(107,255,184,0.2); gap:2px;">
+      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#2a7a52;">Sent</span>
+      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--green); line-height:1; letter-spacing:-0.02em;" id="s-sent">0</span>
+      <span style="font-size:10px; color:var(--text3);">complete</span>
     </div>
-    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
-      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--yellow); line-height:1;" id="s-followup">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Follow-up</span>
+
+    <!-- Follow-up -->
+    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(255,184,0,0.06); border:1px solid rgba(255,184,0,0.18); gap:2px;">
+      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#a07800;">Follow-up</span>
+      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--yellow); line-height:1; letter-spacing:-0.02em;" id="s-followup">0</span>
+      <span style="font-size:10px; color:var(--text3);">needs action</span>
     </div>
-    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
-      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--text3); line-height:1;" id="s-pending">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Pending</span>
+
+    <!-- Pending -->
+    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border); gap:2px;">
+      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:var(--text3);">Pending</span>
+      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--text2); line-height:1; letter-spacing:-0.02em;" id="s-pending">0</span>
+      <span style="font-size:10px; color:var(--text3);">open</span>
     </div>
-    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
-      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; line-height:1;" id="s-wr-avg">—</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Avg WR%</span>
+
+    <!-- Avg WR% — border/color set dynamically by JS -->
+    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; gap:2px;" id="s-wr-card">
+      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:var(--text3);" id="s-wr-label">Avg WR%</span>
+      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; line-height:1; letter-spacing:-0.02em;" id="s-wr-avg">—</span>
+      <span style="font-size:10px; color:var(--text3);">team avg</span>
     </div>
+
   </div>
 
 </div>
@@ -2647,10 +2694,57 @@
       <span class="notes-saved-indicator" id="notes-saved-indicator">Type to save automatically</span>
       <button class="btn" onclick="closeNotes()">Done</button>
     </div>
+
+    <!-- AI Feedback Draft -->
+    <div style="border-top:1px solid var(--border); margin-top:16px; padding-top:14px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
+        <span style="font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text3);">AI Feedback Draft</span>
+        <span style="display:inline-flex; padding:1px 6px; border-radius:4px; background:linear-gradient(135deg,#ffcf48,#f06f2e); color:#0f0f0f; font-size:9px; font-weight:700; letter-spacing:0.04em;">AI</span>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+        <select id="ai-draft-tone" style="font-family:'DM Mono',monospace; font-size:11px; background:var(--surface2); border:1px solid var(--border); border-radius:5px; color:var(--text2); padding:5px 10px; outline:none; flex:1; min-width:120px;">
+          <option value="direct">Direct</option>
+          <option value="supportive">Supportive</option>
+          <option value="urgent">Urgent</option>
+          <option value="developmental">Developmental</option>
+        </select>
+        <button class="btn" id="ai-draft-btn" onclick="generateAIDraft()" style="white-space:nowrap;">✦ Generate Draft</button>
+        <button class="btn" id="ai-draft-copy-btn" onclick="copyAIDraft()" style="display:none; white-space:nowrap;">Copy</button>
+      </div>
+      <div id="ai-draft-loading" style="display:none; align-items:center; gap:10px; padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:12px; color:var(--text3);">
+        <span id="ai-draft-spinner" style="display:inline-block; width:14px; height:14px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; flex-shrink:0;"></span>
+        Generating feedback draft…
+      </div>
+      <div id="ai-draft-output" style="display:none; padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:13px; color:var(--text); line-height:1.65; white-space:pre-wrap;"></div>
+    </div>
   </div>
 </div>
 
-<!-- Coach History Modal -->
+<!-- AI Slack Summary Modal -->
+<div id="slack-summary-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:600; align-items:center; justify-content:center;" onclick="handleSlackSummaryOverlay(event)">
+  <div style="background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:24px; width:520px; max-width:92vw; display:flex; flex-direction:column; gap:14px;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text); display:flex; align-items:center; gap:8px;">
+          AI Slack Summary
+          <span style="display:inline-flex; padding:1px 6px; border-radius:4px; background:linear-gradient(135deg,#ffcf48,#f06f2e); color:#0f0f0f; font-size:9px; font-weight:700; letter-spacing:0.04em;">AI</span>
+        </div>
+        <div id="slack-summary-week" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.07em; margin-top:4px;"></div>
+      </div>
+      <button onclick="closeSlackSummaryModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+    <p style="font-size:12px; color:var(--text3); line-height:1.5; margin:0;">Generates a concise leadership Slack message summarising this week's coaching activity.</p>
+    <div style="display:flex; gap:8px;">
+      <button class="btn btn-accent" id="slack-gen-btn" onclick="generateSlackSummary()" style="flex:1;">✦ Generate</button>
+      <button class="btn" id="slack-copy-btn" onclick="copySlackSummary()" style="display:none;">Copy</button>
+    </div>
+    <div id="slack-loading" style="display:none; align-items:center; gap:10px; padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:12px; color:var(--text3);">
+      <span style="display:inline-block; width:14px; height:14px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; flex-shrink:0;"></span>
+      Writing summary…
+    </div>
+    <div id="slack-output" style="display:none; padding:14px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:13px; color:var(--text); line-height:1.65; white-space:pre-wrap;"></div>
+  </div>
+</div>
 <div class="history-modal-overlay" id="history-modal-overlay" onclick="handleHistoryOverlayClick(event)">
   <div class="history-modal">
     <div class="history-modal-header">
@@ -3223,13 +3317,38 @@
     // Team WR% average
     const wrEntries = active.filter(e => e.wrPct !== null && e.wrPct !== undefined);
     const wrAvgEl = document.getElementById('s-wr-avg');
+    const wrCard  = document.getElementById('s-wr-card');
+    const wrLabel = document.getElementById('s-wr-label');
     if (wrEntries.length > 0) {
       const avg = Math.round(wrEntries.reduce((sum, e) => sum + e.wrPct, 0) / wrEntries.length * 10) / 10;
       wrAvgEl.textContent = avg + '%';
-      wrAvgEl.style.color = avg < 60 ? 'var(--red)' : avg < 70 ? 'var(--yellow)' : avg < 80 ? 'var(--text2)' : 'var(--green)';
+      if (avg < 60) {
+        wrAvgEl.style.color = 'var(--red)';
+        wrCard.style.background = 'rgba(255,90,54,0.07)';
+        wrCard.style.border = '1px solid rgba(255,90,54,0.22)';
+        wrLabel.style.color = '#7a3020';
+      } else if (avg < 70) {
+        wrAvgEl.style.color = 'var(--yellow)';
+        wrCard.style.background = 'rgba(255,184,0,0.06)';
+        wrCard.style.border = '1px solid rgba(255,184,0,0.18)';
+        wrLabel.style.color = '#a07800';
+      } else if (avg < 80) {
+        wrAvgEl.style.color = 'var(--text2)';
+        wrCard.style.background = 'rgba(255,255,255,0.03)';
+        wrCard.style.border = '1px solid var(--border)';
+        wrLabel.style.color = 'var(--text3)';
+      } else {
+        wrAvgEl.style.color = 'var(--green)';
+        wrCard.style.background = 'rgba(107,255,184,0.07)';
+        wrCard.style.border = '1px solid rgba(107,255,184,0.20)';
+        wrLabel.style.color = '#2a7a52';
+      }
     } else {
       wrAvgEl.textContent = '—';
       wrAvgEl.style.color = 'var(--text3)';
+      wrCard.style.background = 'rgba(255,255,255,0.03)';
+      wrCard.style.border = '1px solid var(--border)';
+      wrLabel.style.color = 'var(--text3)';
     }
 
     // Progress bar reflects current view (focus or full)
@@ -3374,7 +3493,7 @@
                 const sign = diff > 0 ? '+' : '';
                 trendHtml = ` <span style="font-size:10px; color:${trendColor}; font-family:'DM Mono',monospace;">${arrow} ${sign}${diff}%</span>`;
               }
-              return `<span style="font-family:'DM Mono',monospace; font-size:11px; color:${wrColor}; font-weight:500;">${e.wrPct}%</span>${trendHtml}`;
+              return `<span style="font-family:'DM Mono',monospace; font-size:13px; color:${wrColor}; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-0.01em;">${e.wrPct}%</span>${trendHtml}`;
             })()}
           </td>
           <td>
@@ -4300,7 +4419,7 @@
           e.wrPct < 70 ? 'var(--yellow)' :
           e.wrPct < 80 ? 'var(--text2)' : 'var(--green)';
         const wrCell = e.wrPct != null
-          ? `<span style="font-family:'DM Mono',monospace; color:${wrColor}; font-weight:500;">${e.wrPct}%</span>`
+          ? `<span style="font-family:'DM Mono',monospace; color:${wrColor}; font-weight:600; font-size:13px; font-variant-numeric:tabular-nums;">${e.wrPct}%</span>`
           : `<span style="color:var(--text3);">—</span>`;
 
         // WR trend vs previous week
@@ -5379,6 +5498,160 @@
   if (state.logoSrc) applyLogo(state.logoSrc);
   if (state.headerTitle) document.getElementById('header-title').textContent = state.headerTitle;
   render();
+
+  // ── AI Feedback Draft ─────────────────────────────
+  let aiDraftCoachId = null;
+
+  // Patch openNotes to track current coach for AI draft
+  const _origOpenNotes = openNotes;
+  function openNotes(id) {
+    aiDraftCoachId = id;
+    _origOpenNotes(id);
+    // Reset draft UI
+    document.getElementById('ai-draft-output').style.display = 'none';
+    document.getElementById('ai-draft-loading').style.display = 'none';
+    document.getElementById('ai-draft-copy-btn').style.display = 'none';
+    document.getElementById('ai-draft-btn').disabled = false;
+  }
+
+  async function generateAIDraft() {
+    const e = currentEntries().find(e => e.id === aiDraftCoachId);
+    if (!e) return;
+
+    const loadEl = document.getElementById('ai-draft-loading');
+    const outEl  = document.getElementById('ai-draft-output');
+    const copyBtn = document.getElementById('ai-draft-copy-btn');
+    const genBtn  = document.getElementById('ai-draft-btn');
+    const tone    = document.getElementById('ai-draft-tone').value;
+    const notes   = document.getElementById('notes-textarea').value.trim();
+
+    outEl.style.display = 'none';
+    copyBtn.style.display = 'none';
+    loadEl.style.display = 'flex';
+    genBtn.disabled = true;
+
+    const tierLabel = e.tier === '1' ? 'Tier 1 (needs improvement)' : e.tier === '2' ? 'Tier 2 (developing)' : 'Tier 3 (strong performer)';
+    const priorityMap = { red: 'High — contact this week', yellow: 'Medium — contact next 2 weeks', none: 'No urgent flag' };
+    const standingMap = { none: 'None', warning1: '1st Warning', warning2: '2nd Warning', monitoring: 'Monitoring', resignation: 'Resignation', termination: 'Termination' };
+
+    const prompt = `You are a Performance Coach Manager writing a weekly feedback message to a coach on your team.
+
+Coach: ${e.name}
+${tierLabel}
+Weighted Retention (WR%): ${e.wrPct != null ? e.wrPct + '%' : 'Unknown'}
+Hex Priority: ${priorityMap[e.hexPriority || 'none'] || 'No urgent flag'}
+${e.hexWhy ? 'Driver: ' + e.hexWhy : ''}
+Standing: ${standingMap[e.standing || 'none']}
+Status: ${e.status || 'pending'}
+${notes ? 'Coach Notes: ' + notes : ''}
+
+Write a ${tone} weekly feedback message using the SBI (Situation-Behavior-Impact) framework where relevant. Be specific, actionable, and professional. 3–5 sentences. No bullet points. No subject line. Write only the message body.`;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const text = data.content?.map(b => b.text || '').join('') || 'Unable to generate draft.';
+      outEl.textContent = text;
+      outEl.style.display = 'block';
+      copyBtn.style.display = 'inline-flex';
+    } catch {
+      outEl.textContent = 'Error generating draft. Please try again.';
+      outEl.style.display = 'block';
+    } finally {
+      loadEl.style.display = 'none';
+      genBtn.disabled = false;
+    }
+  }
+
+  function copyAIDraft() {
+    const text = document.getElementById('ai-draft-output').textContent;
+    navigator.clipboard.writeText(text).then(() => toast('Draft copied to clipboard'));
+  }
+
+  // ── AI Slack Summary ──────────────────────────────
+  function openSlackSummaryModal() {
+    const wl = document.getElementById('current-week-label')?.textContent || '';
+    document.getElementById('slack-summary-week').textContent = wl;
+    document.getElementById('slack-output').style.display = 'none';
+    document.getElementById('slack-loading').style.display = 'none';
+    document.getElementById('slack-copy-btn').style.display = 'none';
+    document.getElementById('slack-gen-btn').disabled = false;
+    document.getElementById('slack-summary-overlay').style.display = 'flex';
+  }
+
+  function closeSlackSummaryModal() {
+    document.getElementById('slack-summary-overlay').style.display = 'none';
+  }
+
+  function handleSlackSummaryOverlay(evt) {
+    if (evt.target === document.getElementById('slack-summary-overlay')) closeSlackSummaryModal();
+  }
+
+  async function generateSlackSummary() {
+    const entries = currentEntries();
+    const active  = entries.filter(e => !e.skipped);
+    const sent    = active.filter(e => e.status === 'sent' || e.status === 'checkin').length;
+    const pending = active.filter(e => e.status === 'pending').length;
+    const followup = active.filter(e => e.status === 'followup').length;
+    const t1      = active.filter(e => e.tier === '1').length;
+    const redPrio = active.filter(e => e.hexPriority === 'red');
+    const warnings = active.filter(e => e.standing === 'warning1' || e.standing === 'warning2').length;
+    const wrEntries = active.filter(e => e.wrPct != null);
+    const wrAvg  = wrEntries.length ? Math.round(wrEntries.reduce((s, e) => s + e.wrPct, 0) / wrEntries.length * 10) / 10 : null;
+    const weekLabel = document.getElementById('current-week-label')?.textContent || '';
+    const teamNotes = document.getElementById('team-notepad-textarea')?.value?.trim() || '';
+
+    const loadEl  = document.getElementById('slack-loading');
+    const outEl   = document.getElementById('slack-output');
+    const copyBtn = document.getElementById('slack-copy-btn');
+    const genBtn  = document.getElementById('slack-gen-btn');
+
+    outEl.style.display = 'none';
+    copyBtn.style.display = 'none';
+    loadEl.style.display = 'flex';
+    genBtn.disabled = true;
+
+    const prompt = `You are a Performance Coach Manager writing a weekly Slack update for your leadership team.
+
+Week: ${weekLabel}
+Total coaches: ${active.length}
+Feedback sent: ${sent} (${active.length ? Math.round(sent / active.length * 100) : 0}% complete)
+Pending: ${pending} | Follow-up: ${followup}
+Tier 1 coaches: ${t1}
+Red priority: ${redPrio.length}${redPrio.length ? ' (' + redPrio.map(e => e.name).slice(0, 3).join(', ') + ')' : ''}
+Active warnings: ${warnings}
+Team avg WR%: ${wrAvg != null ? wrAvg + '%' : 'N/A'}
+${teamNotes ? 'Manager notes: ' + teamNotes : ''}
+
+Write a concise Slack message (3–5 sentences) summarising this week's coaching activity for leadership. Highlight progress, any urgent situations, and your plan. Professional but casual Slack tone. Start with the week. No bullets, no headers.`;
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
+      });
+      const data = await res.json();
+      const text = data.content?.map(b => b.text || '').join('') || 'Unable to generate summary.';
+      outEl.textContent = text;
+      outEl.style.display = 'block';
+      copyBtn.style.display = 'inline-flex';
+    } catch {
+      outEl.textContent = 'Error generating summary. Please try again.';
+      outEl.style.display = 'block';
+    } finally {
+      loadEl.style.display = 'none';
+      genBtn.disabled = false;
+    }
+  }
+
+  function copySlackSummary() {
+    navigator.clipboard.writeText(document.getElementById('slack-output').textContent).then(() => toast('Slack summary copied'));
+  }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
