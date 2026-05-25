@@ -2,29 +2,32 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚌</text></svg>">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Coach Feedback Tracker</title>
+<title>🚌📈 Coach Feedback Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0f0f0f;
-    --surface: #1a1a1a;
-    --surface2: #222222;
-    --border: #2e2e2e;
-    --border2: #3a3a3a;
-    --text: #f0ede8;
-    --text2: #8a8780;
-    --text3: #555350;
-    --accent: #d4ff6e;
-    --accent-dim: #a8cc50;
-    --red: #ff6b6b;
-    --red-bg: #2a1818;
-    --yellow: #ffc85e;
-    --yellow-bg: #2a2010;
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --border2: #363636;
+    --text: #fff8ee;
+    --text2: #b8a898;
+    --text3: #6a5f52;
+    --accent: #ffb800;
+    --accent-dim: #e0a000;
+    --red: #ff5a36;
+    --red-bg: #2a1208;
+    --yellow: #ffb800;
+    --yellow-bg: #2a2000;
     --green: #6bffb8;
     --green-bg: #0f2a1e;
     --blue: #6bb5ff;
     --blue-bg: #101e2a;
+    --orange: #ff8c00;
+    --orange-bg: #2a1800;
   }
 
 
@@ -49,6 +52,242 @@
     --blue: #1a5fa8;
     --blue-bg: #e8f0fb;
   }
+
+
+  /* Keep header and stats dark in light mode */
+  body.light .header {
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
+    padding: 16px 24px;
+    margin: -32px -24px 24px;
+    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
+  }
+  body.light .header-left h1 { color: #f0ede8; }
+  body.light .header-left .week-label { color: #8a8780; background: #1a1a1a; border-color: #3a3a3a; }
+  body.light .header-actions .btn { background: #1a1a1a; color: #8a8780; border-color: #3a3a3a; }
+  body.light .header-actions .btn:hover { color: #f0ede8; border-color: #555350; }
+  body.light .header-actions .btn-accent { background: #d4ff6e; color: #0f0f0f; border-color: #d4ff6e; }
+  body.light .header-actions .btn-hex { background: #1a1830; color: #b8a0ff; border-color: #2e2a4a; }
+  body.light .header-actions .btn-wr { background: #0f2a1e; color: #6bffb8; border-color: #1a4a30; }
+  body.light .header-actions .btn-danger { color: #ff6b6b; border-color: #3a2020; background: #1a1a1a; }
+  body.light .view-toggle { background: #222222; border-color: #3a3a3a; }
+  body.light .view-btn { color: #555350; }
+  body.light .view-btn.active { background: #0f0f0f; color: #f0ede8; }
+  body.light .view-btn.active.focus-view { color: #ff6b6b; }
+  body.light .theme-toggle { background: #1a1a1a; color: #8a8780; border-color: #3a3a3a; }
+  body.light .quick-link { background: #1a1a1a; color: #8a8780; border-color: #3a3a3a; }
+  body.light .quick-link:hover { color: #f0ede8; border-color: #555350; }
+  body.light .quick-link.not-set { border-style: dashed; color: #555350; }
+  body.light .more-dropdown,
+  body.light .source-dropdown { background: #1a1a1a; border-color: #3a3a3a; }
+  body.light .more-item { color: #8a8780; }
+  body.light .more-item:hover { background: #222222; color: #f0ede8; }
+  body.light .more-item.danger { color: #ff6b6b; }
+  body.light .source-label,
+  body.light .source-dropdown .quick-link.not-set { color: #555350; }
+  body.light .source-dropdown .quick-link { color: #8a8780; }
+  body.light .source-dropdown .quick-link:hover { background: #222222; color: #f0ede8; }
+  body.light .col-toggle-dropdown { background: #1a1a1a; border-color: #3a3a3a; }
+  body.light .col-toggle-title { color: #555350; }
+  body.light .col-toggle-item { color: #8a8780; }
+  body.light .col-toggle-item:hover { color: #f0ede8; }
+  body.light .dashboard-toggle-chips .dashboard-chip { }
+  body.light #dashboard-chips .dashboard-chip { filter: none; }
+
+  body.light #gauge-stats-bar {
+    background: #1a1a1a !important;
+    border-color: #2e2e2e !important;
+    color: #f0ede8;
+  }
+  body.light #gauge-stats-bar span,
+  body.light #gauge-stats-bar div {
+    color: inherit;
+  }
+  body.light #gauge-stats-bar .stat,
+  body.light #gauge-stats-bar [style*="background:var(--surface2)"] {
+    background: #222222 !important;
+    border-color: #3a3a3a !important;
+  }
+  body.light #gauge-stats-bar #s-total,
+  body.light #gauge-stats-bar #s-sent { color: #d4ff6e; }
+  body.light #gauge-stats-bar #s-followup { color: #ffc85e; }
+  body.light #gauge-stats-bar #s-pending { color: #555350; }
+  body.light #gauge-stats-bar #s-wr-avg { color: inherit; }
+  body.light #gauge-stats-bar #progress-count { color: #555350; }
+
+
+
+  /* Keep gauge/stats bar, notepad, and dashboard dark in light mode */
+  body.light .team-notepad-wrap,
+  body.light .dashboard-toggle,
+  body.light .dashboard-body {
+    background: #1a1a1a;
+    border-color: #2e2e2e;
+    color: #f0ede8;
+  }
+  body.light .team-notepad-header:hover { background: #222222; }
+  body.light .team-notepad-title { color: #8a8780; }
+  body.light .team-notepad-title.has-notes { color: #f0ede8; }
+  body.light .team-notepad-textarea {
+    background: #222222;
+    border-color: #3a3a3a;
+    color: #f0ede8;
+  }
+  body.light .team-notepad-saved { color: #555350; }
+  body.light .dashboard-toggle-title { color: #8a8780; }
+  body.light .dashboard-toggle-arrow { color: #555350; }
+  body.light .dashboard-toggle:hover { border-color: #3a3a3a; }
+
+  /* Gauge + stats bar */
+  body.light #gauge-canvas-wrap,
+  body.light .gauge-stats-bar {
+    background: #1a1a1a;
+    border-color: #2e2e2e;
+  }
+
+
+
+  /* futurePro text logo */
+  .futurepro-text {
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    color: rgba(255,255,255,0.9);
+    margin-bottom: 5px;
+    display: block;
+    line-height: 1;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .futurepro-text span { font-weight: 300; color: rgba(255,255,255,0.7); }
+  .futurepro-text strong { font-weight: 700; color: #fff; }
+
+
+  /* Password gate */
+  .pw-gate {
+    position: fixed;
+    inset: 0;
+    background: #0f0f0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .pw-gate.hidden { display: none; }
+  .pw-box {
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-radius: 12px;
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 320px;
+  }
+  .pw-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f0ede8;
+    text-align: center;
+  }
+  .pw-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #555350;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-top: -8px;
+  }
+  .pw-input {
+    width: 100%;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    background: #222222;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    color: #f0ede8;
+    padding: 10px 14px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.1em;
+    transition: border-color 0.15s;
+  }
+  .pw-input:focus { border-color: #d4ff6e; }
+  .pw-input.error { border-color: #ff6b6b; animation: shake 0.3s; }
+  .pw-btn {
+    width: 100%;
+    padding: 10px;
+    background: #d4ff6e;
+    color: #0f0f0f;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .pw-btn:hover { background: #c8f060; }
+  .pw-error {
+    font-size: 12px;
+    color: #ff6b6b;
+    font-family: 'DM Mono', monospace;
+    min-height: 16px;
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-6px); }
+    75% { transform: translateX(6px); }
+  }
+
+
+  .header-actions .btn:hover {
+    background: rgba(255,255,255,0.12) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+    color: #f0ede8 !important;
+  }
+  .header-actions .btn-accent {
+    background: var(--accent) !important;
+    color: #0f0f0f !important;
+    border-color: var(--accent) !important;
+  }
+  .header-actions .btn-accent:hover {
+    background: var(--accent-dim) !important;
+    color: #0f0f0f !important;
+  }
+  .header-actions .btn-hex {
+    background: rgba(184,160,255,0.12) !important;
+    color: #b8a0ff !important;
+    border-color: rgba(184,160,255,0.25) !important;
+  }
+  .header-actions .btn-wr {
+    background: rgba(107,255,184,0.1) !important;
+    color: #6bffb8 !important;
+    border-color: rgba(107,255,184,0.2) !important;
+  }
+  .header-actions .btn-danger {
+    color: #ff6b6b !important;
+    border-color: rgba(255,107,107,0.25) !important;
+  }
+  .header-actions > .quick-link {
+    background: rgba(255,255,255,0.06) !important;
+    border-color: rgba(255,255,255,0.12) !important;
+    color: #a0b4cc !important;
+  }
+  .header-actions > .quick-link:hover {
+    background: rgba(255,255,255,0.12) !important;
+    color: #f0ede8 !important;
+  }
+  .header-actions > .quick-link.not-set {
+    border-style: dashed !important;
+    color: #4a6a8a !important;
+  }
+  .futurepro-text { color: #6a5a3a; }
+  .view-toggle { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.1) !important; }
+  .view-btn { color: #6b8cba !important; }
+  .view-btn.active { background: rgba(255,255,255,0.12) !important; color: #f0ede8 !important; }
+  .view-btn.active.focus-view { color: #ff8080 !important; }
+  .theme-toggle { background: rgba(255,255,255,0.06) !important; border-color: rgba(255,255,255,0.12) !important; color: #a0b4cc !important; }
 
   /* Theme toggle button */
   .theme-toggle {
@@ -82,7 +321,12 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
+    padding: 20px 24px;
+    margin: -32px -24px 24px;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
   }
   .header-row {
     display: flex;
@@ -96,17 +340,17 @@
     font-weight: 500;
     letter-spacing: -0.01em;
     white-space: nowrap;
-    color: var(--text);
+    color: #f0ede8;
   }
   .header-left .week-label {
     font-family: 'DM Mono', monospace;
     font-size: 12px;
-    color: var(--text2);
+    color: #6b8cba;
     margin-top: 5px;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    background: var(--surface2);
-    border: 1px solid var(--border2);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
     border-radius: 5px;
     padding: 3px 8px;
     display: inline-block;
@@ -239,7 +483,7 @@
   }
   .progress-fill {
     height: 100%;
-    background: var(--accent);
+    background: linear-gradient(to right, #ff8c00, #ffb800);
     border-radius: 2px;
     transition: width 0.4s ease;
   }
@@ -258,15 +502,16 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
     color: var(--text3);
     cursor: pointer;
     padding: 4px 0;
     margin-bottom: 10px;
     background: none;
     border: none;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
     transition: color 0.15s;
   }
   .add-coach-toggle:hover { color: var(--accent); }
@@ -316,15 +561,16 @@
     flex-wrap: wrap;
   }
   .filter-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
     padding: 5px 12px;
     border-radius: 20px;
     border: 1px solid var(--border);
     background: transparent;
     color: var(--text3);
     cursor: pointer;
-    letter-spacing: 0.05em;
+    letter-spacing: 0;
     transition: all 0.15s;
   }
   .filter-btn:hover { color: var(--text2); border-color: var(--border2); }
@@ -405,9 +651,8 @@
   }
   table {
     width: 100%;
-    min-width: 1000px;
     border-collapse: collapse;
-    table-layout: fixed;
+    table-layout: auto;
   }
   thead th {
     font-family: 'DM Mono', monospace;
@@ -422,42 +667,85 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 10;
   }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+
+  /* Sortable column headers */
+  thead th.sortable {
+    cursor: pointer;
+    user-select: none;
+  }
+  thead th.sortable:hover { color: var(--text2); }
+  thead th.sort-asc::after  { content: ' ↑'; color: var(--accent); }
+  thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
+
+
+  /* Resizable columns */
+  thead th {
+    position: relative;
+  }
+  .col-resizer {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 5px;
+    cursor: col-resize;
+    user-select: none;
+    z-index: 11;
+  }
+  .col-resizer:hover,
+  .col-resizer.resizing {
+    background: var(--accent);
+    opacity: 0.5;
+  }
+
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; border-left: 3px solid transparent; }
+  tbody tr.tier-row-1 { border-left-color: #ff5a3655; }
+  tbody tr.tier-row-2 { border-left-color: #ffb80055; }
+  tbody tr.tier-row-3 { border-left-color: #6bffb855; }
+  tbody tr.tier-row-1:hover { border-left-color: #ff5a36; }
+  tbody tr.tier-row-2:hover { border-left-color: #ffb800; }
+  tbody tr.tier-row-3:hover { border-left-color: var(--green); }
   tbody tr:last-child { border-bottom: none; }
+  tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
   tbody tr:hover { background: var(--surface2); }
   td { padding: 8px 10px; font-size: 12px; vertical-align: middle; }
   .td-name { font-weight: 500; color: var(--text); font-size: 13px; }
 
   /* Column widths */
-  th:nth-child(1)  { width: 160px; } /* Coach */
-  th:nth-child(2)  { width: 75px;  } /* Tier */
-  th:nth-child(3)  { width: 110px; } /* WR% + trend */
-  th:nth-child(4)  { width: 120px; } /* Standing */
-  th:nth-child(5)  { width: 112px; } /* Warning Sent */
-  th:nth-child(6)  { width: 82px;  } /* Re-eval */
-  th:nth-child(7)  { width: 108px; } /* Feedback Status */
-  th:nth-child(8)  { width: 60px;  } /* Sent date */
-  th:nth-child(9)  { width: 108px; } /* Client Intervention */
-  th:nth-child(10) { width: 95px;  } /* Resign Date */
-  th:nth-child(11) { width: 50px;  } /* Notes */
-  th:nth-child(12) { width: 55px;  } /* Skip */
-  th:nth-child(13) { width: 34px;  } /* Delete */
+  th:nth-child(1)  { width: 60px;  } /* Hex Priority */
+  th:nth-child(2)  { width: 150px; } /* Coach */
+  th:nth-child(3)  { width: 65px;  } /* Tier */
+  th:nth-child(4)  { width: 100px; } /* WR% + trend */
+  th:nth-child(5)  { width: 80px;  } /* Standing */
+  th:nth-child(6)  { width: 100px; } /* Warning Sent */
+  th:nth-child(7)  { width: 75px;  } /* Re-eval */
+  th:nth-child(8)  { width: 110px; } /* Feedback Status */
+  th:nth-child(9)  { width: 60px;  } /* Sent date */
+  th:nth-child(10) { width: 110px; } /* Client Intervention */
+  th:nth-child(11) { width: 90px;  } /* Resign Date */
+  th:nth-child(12) { width: 44px;  } /* Notes */
+  th:nth-child(13) { width: 44px;  } /* Skip */
+  th:nth-child(14) { width: 30px;  } /* Delete */
 
   /* Tier badges */
   .tier-badge {
     font-family: 'DM Mono', monospace;
     font-size: 10px;
-    font-weight: 500;
-    padding: 3px 8px;
-    border-radius: 4px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     white-space: nowrap;
   }
-  .tier-1 { background: var(--red-bg); color: var(--red); border: 1px solid #4a2828; }
-  .tier-2 { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #4a3818; }
-  .tier-3 { background: var(--green-bg); color: var(--green); border: 1px solid #1a4a30; }
+  .tier-1 { background: #2a1208; color: #ff5a36; border: 1px solid #ff5a3655; box-shadow: 0 0 8px rgba(255,90,54,0.2); }
+  .tier-2 { background: #2a2000; color: #ffb800; border: 1px solid #ffb80055; box-shadow: 0 0 8px rgba(255,184,0,0.2); }
+  .tier-3 { background: var(--green-bg); color: var(--green); border: 1px solid #6bffb855; box-shadow: 0 0 8px rgba(107,255,184,0.15); }
 
   /* PM Status select */
   .pm-select {
@@ -912,6 +1200,544 @@
   .briefing-open-btn:hover { background: var(--accent); color: #0f0f0f; }
 
 
+
+  /* Quick link buttons */
+  .quick-link {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .quick-link:hover { color: var(--text); border-color: var(--text3); }
+  .quick-link.not-set { color: var(--text3); border-style: dashed; }
+  .quick-link.not-set:hover { color: var(--accent); border-color: var(--accent); border-style: dashed; }
+
+  /* Sources menu */
+  .sources-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .source-dropdown {
+    display: none;
+    position: fixed;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 6px;
+    z-index: 9999;
+    min-width: 190px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    flex-direction: column;
+    gap: 2px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .source-dropdown.open { display: flex; }
+  .source-dropdown .quick-link {
+    width: 100%;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+  }
+  .source-dropdown .quick-link:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+  .source-dropdown .quick-link.not-set {
+    border: none;
+    color: var(--text3);
+    font-style: italic;
+  }
+  .source-dropdown .quick-link.not-set:hover {
+    background: var(--surface2);
+    color: var(--accent);
+  }
+  .source-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text3);
+    padding: 5px 12px 4px;
+  }
+
+
+  /* Carry over modal */
+  .carryover-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .carryover-overlay.open { display: flex; }
+  .carryover-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 28px;
+    width: 520px;
+    max-width: 94vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+  .carryover-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+  .carryover-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .carryover-item:hover { border-color: var(--border2); }
+  .carryover-item input[type="checkbox"] {
+    accent-color: var(--accent);
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+  .carryover-item-name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+  .carryover-item-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  .carryover-empty {
+    text-align: center;
+    padding: 32px;
+    font-size: 13px;
+    color: var(--text3);
+  }
+  .carryover-select-all {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    cursor: pointer;
+    text-decoration: underline;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  .carryover-select-all:hover { color: var(--accent); }
+
+
+  /* Batch skip */
+  .batch-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 8px 14px;
+    margin-bottom: 10px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .batch-bar.visible { display: flex; }
+  .batch-bar-count {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .batch-check {
+    accent-color: var(--accent);
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .td-check { width: 28px; padding: 8px 4px 8px 10px !important; }
+
+
+  /* Coach notes hover tooltip */
+  .name-tooltip-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .coach-notes-tooltip {
+    display: none;
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 260px;
+    background: var(--surface2);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 10px 12px;
+    z-index: 100;
+    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  }
+  .name-tooltip-wrap:hover .coach-notes-tooltip { display: block; }
+  .coach-notes-tooltip-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text3);
+    margin-bottom: 5px;
+  }
+  .coach-notes-tooltip-text {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  /* Team notepad */
+  .team-notepad-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+  .team-notepad-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .team-notepad-header:hover { background: var(--surface2); }
+  .team-notepad-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .team-notepad-title.has-notes { color: var(--text2); }
+  .team-notepad-body {
+    display: none;
+    padding: 0 16px 14px;
+  }
+  .team-notepad-body.open { display: block; }
+  .team-notepad-textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .team-notepad-textarea:focus { border-color: var(--accent); }
+  .team-notepad-textarea::placeholder { color: var(--text3); }
+  .team-notepad-saved {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+    margin-top: 6px;
+    transition: color 0.3s;
+  }
+  .team-notepad-saved.saved { color: var(--green); }
+
+
+  /* Tier suggestion modal */
+  .tier-suggest-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 600;
+    align-items: center;
+    justify-content: center;
+  }
+  .tier-suggest-overlay.open { display: flex; }
+  .tier-suggest-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 28px;
+    width: 540px;
+    max-width: 94vw;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+  .tier-suggest-list {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+  .tier-suggest-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+  }
+  .tier-suggest-name { font-size: 13px; font-weight: 500; color: var(--text); flex: 1; }
+  .tier-suggest-detail { font-family: "DM Mono", monospace; font-size: 11px; color: var(--text3); }
+  .tier-suggest-arrow { font-size: 14px; color: var(--text3); }
+
+
+  /* All caught up state */
+  .caught-up-state {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+  .caught-up-state.visible { display: flex; }
+  .caught-up-emoji { font-size: 42px; line-height: 1; }
+  .caught-up-title {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .caught-up-sub {
+    font-size: 13px;
+    color: var(--text3);
+    max-width: 320px;
+    line-height: 1.6;
+  }
+  .caught-up-stat {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--green);
+    background: var(--green-bg);
+    border: 1px solid #1a4a30;
+    border-radius: 20px;
+    padding: 4px 14px;
+    margin-top: 4px;
+  }
+
+
+  /* Name search */
+  .search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .search-input {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 20px;
+    color: var(--text);
+    padding: 6px 14px 6px 32px;
+    outline: none;
+    width: 220px;
+    transition: all 0.15s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236a5f52' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='M21 21l-4.35-4.35'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: 10px center;
+  }
+  .search-input:focus { border-color: var(--accent); width: 280px; }
+  .search-input::placeholder { color: var(--text3); }
+  .search-clear {
+    font-size: 11px;
+    color: var(--text3);
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    display: none;
+  }
+  .search-clear.visible { display: inline; }
+  .search-clear:hover { color: var(--text2); }
+
+
+  /* Heatmap view */
+  .heatmap-view {
+    display: none;
+  }
+  .heatmap-view.open { display: block; }
+  .heatmap-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+  }
+  .heatmap-table {
+    border-collapse: collapse;
+    font-size: 11px;
+    min-width: 100%;
+  }
+  .heatmap-table th {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text3);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    position: sticky;
+    top: 0;
+    background: var(--surface);
+    z-index: 2;
+    text-align: center;
+  }
+  .heatmap-table th.hm-name-col {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+    min-width: 150px;
+  }
+  .heatmap-table td {
+    padding: 0;
+    border-bottom: 1px solid var(--border);
+    border-right: 1px solid var(--border);
+  }
+  .heatmap-table td.hm-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    padding: 8px 12px;
+    white-space: nowrap;
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+    z-index: 1;
+    border-right: 2px solid var(--border2);
+    min-width: 150px;
+  }
+  .heatmap-table td.hm-name:hover { color: var(--accent); cursor: pointer; }
+  .hm-cell {
+    width: 60px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: default;
+    transition: filter 0.1s;
+  }
+  .hm-cell:hover { filter: brightness(1.2); }
+  .hm-empty {
+    color: var(--text3);
+    font-size: 11px;
+  }
+  .hm-cell.wr-critical  { background: rgba(255,58,26,0.85);  color: #fff; }
+  .hm-cell.wr-low       { background: rgba(255,120,0,0.75);  color: #fff; }
+  .hm-cell.wr-mid       { background: rgba(255,184,0,0.7);   color: #1a1000; }
+  .hm-cell.wr-good      { background: rgba(107,255,184,0.55); color: #0a2a1a; }
+  .hm-cell.wr-great     { background: rgba(107,255,184,0.85); color: #0a2a1a; }
+  .heatmap-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 12px 16px;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+  .hm-legend-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 6px;
+  }
+  .hm-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    color: var(--text3);
+  }
+  .hm-legend-swatch {
+    width: 18px;
+    height: 14px;
+    border-radius: 3px;
+  }
+  .heatmap-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .heatmap-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text2);
+  }
+  .heatmap-meta {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'DM Mono', monospace;
+  }
+  /* View toggle for heatmap vs table */
+  .main-view-wrap { position: relative; }
+  .table-view { display: block; }
+  .table-view.hidden { display: none; }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -928,12 +1754,12 @@
     border: 1px solid var(--border2);
     border-radius: 12px;
     padding: 28px;
-    width: 620px;
+    width: 640px;
     max-width: 94vw;
-    max-height: 85vh;
+    max-height: 88vh;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
     overflow: hidden;
   }
   .history-modal-header {
@@ -1159,6 +1985,12 @@
   .coach-avatar:hover { opacity: 0.75; }
   .coach-avatar img { width: 100%; height: 100%; object-fit: cover; }
   .coach-avatar.initials { background: var(--surface2); color: var(--text3); }
+  .coach-avatar.priority-hex-red    { background: var(--red-bg);    color: var(--red);    border-color: #4a2828; }
+  .coach-avatar.priority-hex-yellow { background: var(--yellow-bg); color: var(--yellow); border-color: #4a3818; }
+  .coach-avatar.priority-tier1      { background: #1e1010;          color: #c45050;       border-color: #3a2020; }
+  .coach-avatar.priority-hex-red    { background: var(--red-bg);    color: var(--red);    border-color: #4a2828; }
+  .coach-avatar.priority-hex-yellow { background: var(--yellow-bg); color: var(--yellow); border-color: #4a3818; }
+  .coach-avatar.priority-tier1      { background: #1e1212;          color: #c45a5a;        border-color: #3a2020; }
   .td-coach-cell { display: flex; align-items: center; gap: 9px; }
   .avatar-file-input { display: none; }
 
@@ -1205,8 +2037,8 @@
     gap: 2px;
   }
   .view-btn {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
     font-weight: 500;
     padding: 5px 14px;
     border-radius: 5px;
@@ -1214,7 +2046,7 @@
     background: transparent;
     color: var(--text3);
     cursor: pointer;
-    letter-spacing: 0.04em;
+    letter-spacing: 0;
     transition: all 0.15s;
     white-space: nowrap;
   }
@@ -1229,19 +2061,64 @@
   /* Focus view banner */
   .focus-banner {
     display: none;
-    background: var(--red-bg);
-    border: 1px solid #4a2828;
-    border-radius: 8px;
-    padding: 10px 16px;
+    width: fit-content;
+    max-width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid rgba(255,90,54,0.72);
+    border-radius: 7px;
+    padding: 7px 10px;
     margin-bottom: 14px;
     font-size: 12px;
-    color: var(--red);
-    font-family: 'DM Mono', monospace;
-    letter-spacing: 0.04em;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: 10px;
   }
-  .focus-banner.visible { display: flex; }
+  .focus-banner.visible { display: inline-flex; }
+  .focus-banner-main {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+  }
+  .focus-banner-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: var(--red);
+    box-shadow: 0 0 8px rgba(255,90,54,0.35);
+    flex-shrink: 0;
+  }
+  .focus-banner strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .focus-banner-count {
+    font-family: 'DM Mono', monospace;
+    color: var(--red);
+    font-weight: 500;
+  }
+  .focus-banner-action {
+    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--surface);
+    color: var(--text2);
+    border-radius: 5px;
+    padding: 4px 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.15s;
+  }
+  .focus-banner-action:hover {
+    border-color: rgba(255,90,54,0.45);
+    color: var(--text);
+    background: rgba(255,90,54,0.08);
+  }
 
 
   /* Column visibility toggle */
@@ -1251,16 +2128,16 @@
   }
   .col-toggle-dropdown {
     display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    position: fixed;
     background: var(--surface);
     border: 1px solid var(--border2);
     border-radius: 8px;
     padding: 10px 14px;
-    z-index: 100;
-    min-width: 180px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 9999;
+    min-width: 200px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    max-height: 80vh;
+    overflow-y: auto;
   }
   .col-toggle-dropdown.open { display: block; }
   .col-toggle-title {
@@ -1303,18 +2180,18 @@
   }
   .more-dropdown {
     display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    position: fixed;
     background: var(--surface);
     border: 1px solid var(--border2);
     border-radius: 8px;
     padding: 6px;
-    z-index: 100;
-    min-width: 160px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 9999;
+    min-width: 200px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     flex-direction: column;
     gap: 2px;
+    max-height: 80vh;
+    overflow-y: auto;
   }
   .more-dropdown.open { display: flex; }
   .more-item {
@@ -1375,13 +2252,15 @@
   }
   .dashboard-chip {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 2px 8px;
-    border-radius: 4px;
-    border: 1px solid var(--border2);
-    color: var(--text3);
-    background: var(--surface2);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 5px 14px;
+    border-radius: 20px;
+    border: 1px solid;
+    letter-spacing: 0.05em;
+    transition: transform 0.15s;
   }
+  .dashboard-chip:hover { transform: scale(1.05); }
   .dashboard-toggle-arrow {
     font-size: 11px;
     color: var(--text3);
@@ -1420,10 +2299,256 @@
     padding: 24px 0;
   }
 
-  @media (max-width: 600px) {
-    .stats { grid-template-columns: repeat(2, 1fr); }
-    .field-name input { width: 140px; }
-    .field-note input { width: 140px; }
+  @media (max-width: 1180px) {
+    body {
+      padding: 24px 18px;
+    }
+    .header {
+      margin: -24px -18px 22px;
+      padding: 16px 18px;
+    }
+    .header-row {
+      align-items: flex-start;
+      flex-wrap: wrap;
+    }
+    .header-actions {
+      width: 100%;
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .header-actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+    .view-toggle {
+      grid-column: span 2;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: 100%;
+    }
+    .view-btn,
+    .theme-toggle,
+    .header-actions > .btn,
+    .col-toggle-wrap > .btn,
+    .sources-wrap > .btn,
+    .more-wrap > .btn {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+    }
+    .col-toggle-wrap,
+    .sources-wrap,
+    .more-wrap {
+      width: 100%;
+    }
+    .col-intervention,
+    .col-resign,
+    .col-notes,
+    .col-skip {
+      display: none !important;
+    }
+    table {
+      min-width: 820px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    body {
+      padding: 18px 12px;
+    }
+    .header {
+      margin: -18px -12px 18px;
+      padding: 14px 12px;
+    }
+    .header-left h1 {
+      white-space: normal;
+      line-height: 1.25;
+    }
+    .header-actions {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .view-toggle {
+      grid-column: 1 / -1;
+    }
+    .btn,
+    .view-btn,
+    .theme-toggle {
+      min-height: 36px;
+    }
+    .source-dropdown,
+    .more-dropdown,
+    .col-toggle-dropdown {
+      left: 12px !important;
+      right: 12px !important;
+      width: auto;
+      min-width: 0;
+    }
+    #gauge-stats-bar {
+      flex-wrap: wrap;
+      align-items: stretch !important;
+      gap: 10px !important;
+      padding: 10px !important;
+    }
+    #gauge-stats-bar > div[style*="width:1px"] {
+      display: none !important;
+    }
+    #gauge-stats-bar > div:last-child {
+      flex-basis: 100%;
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    #gauge-stats-bar > div:last-child > div {
+      min-width: 0 !important;
+    }
+    .dashboard-toggle {
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .dashboard-toggle-left {
+      min-width: 0;
+      align-items: flex-start;
+      flex-direction: column;
+    }
+    .dashboard-toggle-chips,
+    .filters {
+      max-width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    .dashboard-toggle-chips::-webkit-scrollbar,
+    .filters::-webkit-scrollbar {
+      display: none;
+    }
+    .dashboard-chip,
+    .filter-btn {
+      flex: 0 0 auto;
+    }
+    .focus-banner {
+      width: 100%;
+    }
+    .focus-banner.visible {
+      display: flex;
+    }
+    .focus-banner-action {
+      margin-left: auto;
+    }
+    .search-wrap {
+      width: 100%;
+      flex-wrap: wrap;
+    }
+    .search-input,
+    .search-input:focus {
+      width: 100%;
+      flex: 1 0 100%;
+    }
+    .filters {
+      flex-wrap: nowrap;
+      gap: 6px;
+      padding-bottom: 5px;
+      margin-right: -12px;
+      padding-right: 12px;
+    }
+    .batch-bar {
+      flex-wrap: wrap;
+    }
+    .batch-bar span:last-child {
+      flex-basis: 100%;
+      margin-left: 0 !important;
+    }
+    .table-wrap {
+      margin-left: -12px;
+      margin-right: -12px;
+      border-left: 0;
+      border-right: 0;
+      border-radius: 0;
+    }
+    table {
+      min-width: 620px;
+    }
+    .col-hex,
+    .col-wr,
+    .col-warning,
+    .col-reeval,
+    .col-intervention,
+    .col-resign,
+    .col-notes,
+    .col-skip,
+    th:nth-child(9),
+    td:nth-child(9),
+    th:nth-child(13),
+    td:nth-child(14),
+    th:nth-child(14),
+    td:nth-child(15) {
+      display: none !important;
+    }
+    thead th:nth-child(2),
+    tbody td:nth-child(2) {
+      position: sticky;
+      left: 0;
+      background: var(--surface);
+      box-shadow: 8px 0 12px rgba(0,0,0,0.18);
+    }
+    thead th:nth-child(2) {
+      z-index: 20;
+      min-width: 160px;
+    }
+    tbody td:nth-child(2) {
+      z-index: 5;
+      min-width: 168px;
+      max-width: 190px;
+    }
+    tbody tr:hover td:nth-child(2) {
+      background: var(--surface2);
+    }
+    .td-coach-cell {
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .header-actions {
+      grid-template-columns: 1fr;
+    }
+    .view-toggle {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    #gauge-stats-bar > div:last-child {
+      grid-template-columns: 1fr;
+    }
+    .dashboard-toggle {
+      padding: 10px 12px;
+    }
+    .focus-banner {
+      align-items: stretch;
+      flex-direction: column;
+    }
+    .focus-banner-action {
+      margin-left: 0;
+      width: 100%;
+    }
+    .field-name input,
+    .field-note input,
+    .field-tier select {
+      width: 100%;
+    }
+    .add-row,
+    .field,
+    .add-coach-form {
+      width: 100%;
+    }
+    th,
+    td {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    table {
+      min-width: 560px;
+    }
   }
 </style>
 </head>
@@ -1433,7 +2558,8 @@
   <!-- Row 1: Title + primary actions -->
   <div class="header-row">
     <div class="header-left">
-      <h1><span class="editable-title" id="header-title" onclick="editHeader('title')" title="Click to edit">Coach Feedback Tracker</span></h1>
+      <div class="futurepro-text"><span>future</span><strong>Pro</strong></div>
+      <h1><span class="editable-title" id="header-title" onclick="editHeader('title')" title="Click to edit">🚌📈 Coach Feedback Tracker</span></h1>
       <div class="week-label" id="current-week-label">Loading...</div>
     </div>
     <div class="header-actions">
@@ -1451,16 +2577,44 @@
           <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-reeval', this.checked)"> Re-eval</label>
           <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-intervention', this.checked)"> Client Intervention</label>
           <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-resign', this.checked)"> Resign Date</label>
-          <label class="col-toggle-item"><input type="checkbox" onchange="toggleCol('col-notes', this.checked)"> Notes</label>
           <label class="col-toggle-item"><input type="checkbox" onchange="toggleCol('col-skip', this.checked)"> Skip</label>
         </div>
       </div>
       <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
       <button class="btn btn-hex" onclick="openHexModal()">⬆ Hex priority</button>
       <button class="btn btn-wr" onclick="openWRModal()">⬆ WR data</button>
+      <div class="sources-wrap">
+        <button class="btn" onclick="toggleSourceDropdown()" id="source-toggle-btn">Sources ▾</button>
+        <div class="source-dropdown" id="source-dropdown">
+          <div class="source-label">Source Links</div>
+          <button class="quick-link" id="github-link-btn" onclick="openQuickLink('github'); closeSourceDropdown()" title="Click to set your GitHub Pages URL">
+            <span>GitHub</span><span>↗</span>
+          </button>
+          <a class="quick-link" href="https://www.notion.so/futurefit/a3b893f7893a4779adae962ff275ccb2?v=3455ecc6bbcc8183a124000c1f9513dd" target="_blank" title="Open Notion Roster" style="text-decoration:none;">
+            <span>Notion</span><span>↗</span>
+          </a>
+          <a class="quick-link" href="slack://" onclick="closeSourceDropdown()" title="Open Slack" style="text-decoration:none;">
+            <span>Slack</span><span>↗</span>
+          </a>
+          <button class="quick-link" id="gcal-link-btn" onclick="openQuickLink('gcal'); closeSourceDropdown()" title="Click to set your Google Calendar URL">
+            <span>GCal</span><span>↗</span>
+          </button>
+          <button class="quick-link" id="trainer-link-btn" onclick="openQuickLink('trainer'); closeSourceDropdown()" title="Click to set your Trainer Dash URL">
+            <span>Trainer Dash</span><span>↗</span>
+          </button>
+          <button class="quick-link" id="hex-link-btn" onclick="openQuickLink('hex'); closeSourceDropdown()" title="Click to set your Hex URL">
+            <span>Hex</span><span>↗</span>
+          </button>
+          <button class="quick-link" id="looker-link-btn" onclick="openQuickLink('looker'); closeSourceDropdown()" title="Click to set your Looker URL">
+            <span>Looker</span><span>↗</span>
+          </button>
+        </div>
+      </div>
       <div class="more-wrap">
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
+          <button class="more-item" onclick="toggleHeatmapView(); closeMoreDropdown()" id="heatmap-more-btn">🗂 WR% Heatmap</button>
+          <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
           <button class="more-item" onclick="showHistory(); closeMoreDropdown()" id="history-btn">Week history</button>
@@ -1473,22 +2627,71 @@
   </div>
 </div>
 
-<!-- Stats -->
-<div class="stats">
-  <div class="stat"><div class="stat-num accent" id="s-total">0</div><div class="stat-label">Total</div></div>
-  <div class="stat"><div class="stat-num accent" id="s-sent">0</div><div class="stat-label">Sent / Check-in</div></div>
-  <div class="stat"><div class="stat-num yellow" id="s-followup">0</div><div class="stat-label">Follow-up</div></div>
-  <div class="stat"><div class="stat-num muted" id="s-pending">0</div><div class="stat-label">Pending</div></div>
+<!-- Combined Stats + Gauge -->
+<div id="gauge-stats-bar" style="background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:10px 16px; margin-bottom:12px; display:flex; align-items:center; gap:16px;">
+
+  <!-- Gauge (smaller) -->
+  <div style="flex-shrink:0;">
+    <canvas id="gauge-canvas" width="130" height="72"></canvas>
+  </div>
+
+  <!-- Pct + emoji + progress -->
+  <div style="display:flex; flex-direction:column; gap:3px; flex-shrink:0; min-width:110px;">
+    <div style="display:flex; align-items:baseline; gap:6px;">
+      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:24px; font-weight:500; color:var(--text); line-height:1;">0%</span>
+      <span style="font-size:10px; color:var(--text3);">sent</span>
+      <span style="font-size:16px; line-height:1;">🚌💨</span>
+    </div>
+    <div class="progress-track" style="width:120px;"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <span id="progress-count" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3);">0 / 0 coaches</span>
+    <span id="progress-text" style="display:none;">0%</span>
+    <div id="gauge-breakdown"></div>
+  </div>
+
+  <!-- Divider -->
+  <div style="width:1px; background:var(--border); align-self:stretch; flex-shrink:0;"></div>
+
+  <!-- Stat chips (compact) -->
+  <div style="display:flex; gap:8px; flex:1; align-items:center; flex-wrap:wrap;">
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-total">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Total</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-sent">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Sent</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--yellow); line-height:1;" id="s-followup">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Follow-up</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--text3); line-height:1;" id="s-pending">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Pending</span>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; line-height:1;" id="s-wr-avg">—</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Avg WR%</span>
+    </div>
+  </div>
+
 </div>
 
-<!-- Progress -->
-<div class="progress-wrap">
-  <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
-  <div class="progress-meta">
-    <span id="progress-text">0% sent</span>
-    <span id="progress-count">0 / 0 coaches</span>
+<!-- Team Notepad -->
+<div class="team-notepad-wrap" id="team-notepad-wrap">
+  <div class="team-notepad-header" onclick="toggleNotepad()">
+    <div class="team-notepad-title" id="team-notepad-title">📋 Week Notes</div>
+    <span style="font-size:11px; color:var(--text3);" id="notepad-arrow">▼</span>
+  </div>
+  <div class="team-notepad-body" id="team-notepad-body">
+    <textarea class="team-notepad-textarea" id="team-notepad-textarea"
+      placeholder="Add notes for this week — context for leadership, patterns you're seeing, things to remember..."
+      oninput="autoSaveNotepad()"></textarea>
+    <div class="team-notepad-saved" id="team-notepad-saved">Type to save automatically</div>
   </div>
 </div>
+
+</div><!-- /table-view-wrap -->
 
 <!-- Dashboard (collapsible) -->
 <div class="dashboard-toggle" id="dashboard-toggle" onclick="toggleDashboard()">
@@ -1550,6 +2753,7 @@
 
   </div>
 
+
   <!-- Trend section -->
   <div class="trend-section">
     <div class="trend-title">Week-over-week trends</div>
@@ -1558,9 +2762,44 @@
 
 </div>
 <div class="focus-banner" id="focus-banner">
-  <span>⚡ Focus View — Tier 1 &amp; 2 only · <span id="focus-count">0</span> coaches need attention</span>
-  <span style="opacity:0.6; font-size:10px;">Switch to Full Roster to see all coaches</span>
+  <span class="focus-banner-main">
+    <span class="focus-banner-dot"></span>
+    <strong>Focus view</strong>
+    <span><span class="focus-banner-count" id="focus-count">0</span> coaches need attention</span>
+  </span>
+  <button class="focus-banner-action" onclick="setView('full')">View Full Roster</button>
 </div>
+<!-- Heatmap View -->
+<div class="heatmap-view" id="heatmap-view">
+  <div class="heatmap-wrap">
+    <div class="heatmap-header">
+      <div class="heatmap-title">WR% Heatmap — All Coaches · All Weeks</div>
+      <div class="heatmap-meta" id="heatmap-meta"></div>
+    </div>
+    <div id="heatmap-table-wrap"></div>
+    <div class="heatmap-legend">
+      <span class="hm-legend-label">WR%</span>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(255,58,26,0.85);"></div>&lt;50</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(255,120,0,0.75);"></div>50–60</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(255,184,0,0.7);"></div>60–70</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(107,255,184,0.55);"></div>70–80</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:rgba(107,255,184,0.85);"></div>80+</div>
+      <div class="hm-legend-item"><div class="hm-legend-swatch" style="background:var(--surface2); border:1px solid var(--border);"></div>No data</div>
+    </div>
+  </div>
+</div>
+
+<!-- Batch skip bar -->
+<div class="batch-bar" id="batch-bar">
+  <span id="batch-count" class="batch-bar-count">0 selected</span>
+  <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--green); border-color:#1a4a30; background:var(--green-bg);" onclick="batchMarkSent()">✓ Mark Sent</button>
+  <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchSkip()">Skip selected</button>
+  <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchUnskip()">Unskip selected</button>
+  <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--blue); border-color:#1a3a50; background:var(--blue-bg);" onclick="batchCopyNames()">📋 Copy names</button>
+  <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--text3);" onclick="clearBatchSelection()">Clear</button>
+  <span style="margin-left:auto; font-size:11px; color:var(--text3);">Click rows to select</span>
+</div>
+
 <!-- Add coach (collapsible) -->
 <button class="add-coach-toggle" onclick="toggleAddForm()" id="add-coach-toggle">+ Add coach</button>
 <button class="add-coach-toggle" onclick="newWeek()" style="margin-left:12px;">+ New week</button>
@@ -1595,6 +2834,13 @@
   </div>
 </div>
 
+<div id="table-view-wrap">
+<div class="search-wrap">
+  <input class="search-input" id="search-input" type="text" placeholder="Search coaches..."
+    oninput="handleSearch()" onkeydown="if(event.key==='Escape'){clearSearch();}" />
+  <button class="search-clear" id="search-clear" onclick="clearSearch()">✕ Clear</button>
+  <span id="search-results" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); display:none;"></span>
+</div>
 <div class="filters">
   <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
   <button class="filter-btn f-followup" data-filter="followup" onclick="setFilter('followup',this)">Follow-up</button>
@@ -1612,19 +2858,19 @@
   <table>
     <thead>
       <tr>
-        <th>Coach</th>
-        <th>Tier</th>
-        <th class="col-wr">WR%</th>
-        <th class="col-hex">Hex Priority</th>
-        <th>Standing</th>
+        <th class="col-hex sortable" onclick="sortBy('hex')" id="th-hex">Hex Priority</th>
+        <th class="sortable" onclick="sortBy('name')" id="th-name">Coach</th>
+        <th class="sortable" onclick="sortBy('tier')" id="th-tier">Tier</th>
+        <th class="col-wr sortable" onclick="sortBy('wr')" id="th-wr">WR%</th>
+        <th class="sortable" onclick="sortBy('standing')" id="th-standing">Standing</th>
         <th class="col-warning">Warning Sent</th>
         <th class="col-reeval">Re-eval</th>
-        <th>Feedback Status</th>
+        <th class="sortable" onclick="sortBy('status')" id="th-status">Feedback Status</th>
         <th>Sent</th>
         <th class="col-intervention">Client Intervention</th>
         <th class="col-resign">Resign Date</th>
-        <th class="col-notes col-hidden">Notes</th>
         <th class="col-skip col-hidden">Skip</th>
+        <th style="width:28px; padding:8px 4px 8px 10px;"><input type="checkbox" class="batch-check" id="select-all-check" onclick="toggleSelectAll(this)" title="Select all"></th>
         <th></th>
       </tr>
     </thead>
@@ -1633,6 +2879,12 @@
   <div class="empty-state" id="empty-state" style="display:none;">
     <div class="empty-icon">[ ]</div>
     No coaches in queue — use <strong>+ Add coach</strong> or <strong>Import roster</strong> to get started
+  </div>
+  <div class="caught-up-state" id="caught-up-state">
+    <div class="caught-up-emoji">🚌💨🔥</div>
+    <div class="caught-up-title">All caught up!</div>
+    <div class="caught-up-sub">Every Tier 1 and Tier 2 coach has been contacted this week. Nice work.</div>
+    <div class="caught-up-stat" id="caught-up-stat"></div>
   </div>
 </div>
 
@@ -1775,6 +3027,20 @@
       <button onclick="closeHistoryModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
     </div>
     <div class="history-timeline" id="history-timeline"></div>
+
+    <!-- Notes section inside history modal -->
+    <div style="border-top:1px solid var(--border); padding-top:14px; flex-shrink:0;">
+      <div id="history-note-banner" style="display:none; background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:8px 12px; margin-bottom:10px; font-size:12px; color:var(--text2); line-height:1.5;"></div>
+      <div style="font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text3); margin-bottom:8px;">Coach Notes</div>
+      <textarea id="history-notes-textarea"
+        style="width:100%; height:100px; resize:vertical; font-family:'DM Sans',sans-serif; font-size:13px; line-height:1.6; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); padding:10px 12px; outline:none; transition:border-color 0.15s;"
+        placeholder="Add notes about this coach — call summaries, patterns, context..."
+        oninput="autoSaveHistoryNotes()"></textarea>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+        <span id="history-notes-saved" style="font-size:11px; color:var(--text3); font-family:'DM Mono',monospace;">Type to save automatically</span>
+        <button class="btn" onclick="closeHistoryModal()">Done</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1842,6 +3108,78 @@
     <div style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
       <a class="briefing-open-btn" href="https://claude.ai" target="_blank">Open Claude.ai ↗</a>
       <button class="btn" onclick="closeBriefingModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Link Modal -->
+<div id="quick-link-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:500; align-items:center; justify-content:center;" onclick="handleQuickLinkOverlay(event)">
+  <div style="background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:28px; width:460px; max-width:92vw; display:flex; flex-direction:column; gap:16px;">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text);" id="quick-link-title">Set URL</div>
+        <div style="font-size:12px; color:var(--text3); margin-top:3px;">Paste your URL — saved automatically</div>
+      </div>
+      <button onclick="closeQuickLink()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+    <input type="url" id="quick-link-input" placeholder="https://..."
+      style="font-family:'DM Mono',monospace; font-size:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; color:var(--text); padding:9px 12px; outline:none; width:100%; transition:border-color 0.15s;"
+      onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'" />
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <button class="btn" style="color:var(--red); border-color:#3a2020;" onclick="clearQuickLink()">Clear</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" onclick="closeQuickLink()">Cancel</button>
+        <button class="btn btn-accent" onclick="saveQuickLink()">Save & Open</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Carry Over Modal -->
+<div class="carryover-overlay" id="carryover-overlay" onclick="handleCarryOverlayClick(event)">
+  <div class="carryover-modal">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text);">Start New Week</div>
+        <div style="font-size:12px; color:var(--text3); margin-top:3px;">Select coaches to carry forward from this week</div>
+      </div>
+      <button onclick="closeCarryOver()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <div style="font-size:11px; color:var(--text3);" id="carryover-count">0 coaches selected</div>
+      <div style="display:flex; gap:10px;">
+        <button class="carryover-select-all" onclick="carryoverSelectAll(true)">Select all</button>
+        <button class="carryover-select-all" onclick="carryoverSelectAll(false)">Deselect all</button>
+      </div>
+    </div>
+
+    <div class="carryover-list" id="carryover-list"></div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <button class="btn" onclick="startFreshWeek()">Start fresh (no carry over)</button>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" onclick="closeCarryOver()">Cancel</button>
+        <button class="btn btn-accent" onclick="confirmCarryOver()">Start new week →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tier Suggestion Modal -->
+<div class="tier-suggest-overlay" id="tier-suggest-overlay" onclick="handleTierSuggestOverlay(event)">
+  <div class="tier-suggest-modal">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text);">Tier Suggestions</div>
+        <div style="font-size:12px; color:var(--text3); margin-top:3px;">WR% data doesn't match current tier for these coaches</div>
+      </div>
+      <button onclick="closeTierSuggest()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+    <div class="tier-suggest-list" id="tier-suggest-list"></div>
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <button class="btn" onclick="applyAllTierSuggestions()" style="color:var(--accent); border-color:var(--accent);">Apply all suggestions</button>
+      <button class="btn" onclick="closeTierSuggest()">Done</button>
     </div>
   </div>
 </div>
@@ -2097,25 +3435,116 @@
   }
 
   function newWeek() {
+    // Find unfinished Tier 1 & 2 coaches from current week
+    const unfinished = currentEntries().filter(e =>
+      (e.tier === '1' || e.tier === '2') &&
+      (e.status === 'pending' || e.status === 'followup') &&
+      !e.skipped
+    );
+
+    if (unfinished.length === 0) {
+      startFreshWeek();
+      return;
+    }
+
+    // Build carry over list
+    const list = document.getElementById('carryover-list');
+    list.innerHTML = unfinished.map(e => {
+      const tierColor = e.tier === '1' ? 'var(--red)' : 'var(--yellow)';
+      const statusLabel = e.status === 'followup' ? '⚡ Follow-up' : '· Pending';
+      const statusColor = e.status === 'followup' ? 'var(--yellow)' : 'var(--text3)';
+      return `<label class="carryover-item">
+        <input type="checkbox" checked class="carryover-check" data-id="${e.id}" onchange="updateCarryoverCount()" />
+        <span class="carryover-item-name">${e.name}</span>
+        <span class="carryover-item-meta">
+          <span style="color:${tierColor};">Tier ${e.tier}</span>
+          ${e.wrPct != null ? `<span>${e.wrPct}%</span>` : ''}
+          <span style="color:${statusColor};">${statusLabel}</span>
+        </span>
+      </label>`;
+    }).join('');
+
+    updateCarryoverCount();
+    document.getElementById('carryover-overlay').classList.add('open');
+  }
+
+  function updateCarryoverCount() {
+    const checked = document.querySelectorAll('.carryover-check:checked').length;
+    document.getElementById('carryover-count').textContent = checked + ' coach' + (checked !== 1 ? 'es' : '') + ' selected';
+  }
+
+  function carryoverSelectAll(val) {
+    document.querySelectorAll('.carryover-check').forEach(cb => cb.checked = val);
+    updateCarryoverCount();
+  }
+
+  function closeCarryOver() {
+    document.getElementById('carryover-overlay').classList.remove('open');
+  }
+
+  function handleCarryOverlayClick(evt) {
+    if (evt.target === document.getElementById('carryover-overlay')) closeCarryOver();
+  }
+
+  function startFreshWeek() {
+    closeCarryOver();
     const key = weekKey(new Date());
     state.currentWeek = key;
     if (!state.weeks[key]) state.weeks[key] = { entries: [], created: new Date().toISOString() };
     save(); render(); toast('New week started');
   }
 
+  function confirmCarryOver() {
+    const checked = document.querySelectorAll('.carryover-check:checked');
+    const selectedIds = new Set([...checked].map(cb => parseInt(cb.dataset.id)));
+
+    // Get entries to carry over from current week
+    const toCarry = currentEntries().filter(e => selectedIds.has(e.id));
+
+    // Start new week
+    const key = weekKey(new Date());
+    state.currentWeek = key;
+    if (!state.weeks[key]) state.weeks[key] = { entries: [], created: new Date().toISOString() };
+
+    // Add carried over coaches with reset status to pending but preserve WR data
+    toCarry.forEach(e => {
+      const carried = { ...e,
+        id: nextId++,
+        status: 'pending',
+        date: null,
+        wrPct: e.wrPct,
+        wrHistory: e.wrHistory || [],
+        created: new Date().toISOString()
+      };
+      state.weeks[key].entries.push(carried);
+    });
+
+    closeCarryOver();
+    save(); render();
+    toast(`New week started — ${toCarry.length} coach${toCarry.length !== 1 ? 'es' : ''} carried over`);
+  }
+
   function archiveWeek() {
     if (!confirm('Archive this week and start a new one?')) return;
 
-    // Build snapshot before switching weeks
     const archivedKey = state.currentWeek;
     const archivedEntries = currentEntries();
+
+    // Ensure teamNotes are saved before archiving
+    const noteTA = document.getElementById('team-notepad-textarea');
+    if (noteTA && state.weeks[archivedKey]) {
+      state.weeks[archivedKey].teamNotes = noteTA.value;
+    }
+
+    // Show snapshot BEFORE switching week so data is accurate
     showSnapshotModal(archivedKey, archivedEntries);
 
-    // Actually archive
+    // Switch to new week
     const key = weekKey(new Date());
-    const newKey = key === state.currentWeek ? nextMondayKey() : key;
+    const newKey = key === archivedKey ? nextMondayKey() : key;
     state.currentWeek = newKey;
     if (!state.weeks[newKey]) state.weeks[newKey] = { entries: [], created: new Date().toISOString() };
+
     save(); render(); if (historyVisible) renderHistory();
   }
 
@@ -2157,21 +3586,34 @@
     const entries = currentEntries();
 
     // Stats
-    const total = entries.length;
-    const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
-    const followup = entries.filter(e => e.status === 'followup').length;
-    const pending = entries.filter(e => e.status === 'pending').length;
+    const active = entries.filter(e => !e.skipped);
+    const total = active.length;
+    const sent = active.filter(e => e.status === 'sent' || e.status === 'checkin').length;
+    const followup = active.filter(e => e.status === 'followup').length;
+    const pending = active.filter(e => e.status === 'pending').length;
     document.getElementById('s-total').textContent = total;
     document.getElementById('s-sent').textContent = sent;
     document.getElementById('s-followup').textContent = followup;
     document.getElementById('s-pending').textContent = pending;
 
+    // Team WR% average
+    const wrEntries = active.filter(e => e.wrPct !== null && e.wrPct !== undefined);
+    const wrAvgEl = document.getElementById('s-wr-avg');
+    if (wrEntries.length > 0) {
+      const avg = Math.round(wrEntries.reduce((sum, e) => sum + e.wrPct, 0) / wrEntries.length * 10) / 10;
+      wrAvgEl.textContent = avg + '%';
+      wrAvgEl.style.color = avg < 60 ? 'var(--red)' : avg < 70 ? 'var(--yellow)' : avg < 80 ? 'var(--text2)' : 'var(--green)';
+    } else {
+      wrAvgEl.textContent = '—';
+      wrAvgEl.style.color = 'var(--text3)';
+    }
+
     // Progress bar reflects current view (focus or full)
     const viewTotal = currentView === 'focus'
-      ? entries.filter(e => e.tier === '1' || e.tier === '2').length
+      ? entries.filter(e => (e.tier === '1' || e.tier === '2') && !e.skipped).length
       : total;
     const viewSent = currentView === 'focus'
-      ? entries.filter(e => (e.tier === '1' || e.tier === '2') && (e.status === 'sent' || e.status === 'checkin')).length
+      ? entries.filter(e => (e.tier === '1' || e.tier === '2') && !e.skipped && (e.status === 'sent' || e.status === 'checkin')).length
       : sent;
     const pct = viewTotal ? Math.round(viewSent / viewTotal * 100) : 0;
     document.getElementById('progress-fill').style.width = pct + '%';
@@ -2197,7 +3639,21 @@
       focusBanner.classList.remove('visible');
     }
 
-    const filtered = viewEntries.filter(e => {
+    // Apply name search
+    const searchEntries = searchQuery
+      ? viewEntries.filter(e => e.name.toLowerCase().includes(searchQuery))
+      : viewEntries;
+
+    // Update search results count
+    const resultsEl = document.getElementById('search-results');
+    if (searchQuery) {
+      resultsEl.textContent = searchEntries.length + ' result' + (searchEntries.length !== 1 ? 's' : '');
+      resultsEl.style.display = 'inline';
+    } else {
+      resultsEl.style.display = 'none';
+    }
+
+    const filtered = searchEntries.filter(e => {
       if (filter === 'all') return true;
       if (filter === 'followup') return e.status === 'followup';
       if (filter === 'pending') return e.status === 'pending';
@@ -2213,26 +3669,67 @@
     const tbody = document.getElementById('tbody');
     const empty = document.getElementById('empty-state');
 
+    const caughtUp = document.getElementById('caught-up-state');
+    const t1t2 = entries.filter(e => e.tier === '1' || e.tier === '2');
+    const t1t2Sent = t1t2.filter(e => e.status === 'sent' || e.status === 'checkin');
+    const allCaughtUp = currentView === 'focus' && t1t2.length > 0 && t1t2Sent.length === t1t2.length && filtered.length === 0;
+
     if (entries.length === 0) {
       tbody.innerHTML = '';
       empty.style.display = 'block';
+      caughtUp.classList.remove('visible');
+    } else if (allCaughtUp) {
+      tbody.innerHTML = '';
+      empty.style.display = 'none';
+      caughtUp.classList.add('visible');
+      document.getElementById('caught-up-stat').textContent = `${t1t2Sent.length} of ${t1t2.length} coaches contacted`;
     } else {
       empty.style.display = 'none';
-      tbody.innerHTML = filtered.map(e => {
+      caughtUp.classList.remove('visible');
+      const sorted = applySortToEntries(filtered);
+      tbody.innerHTML = sorted.map(e => {
         const initials = e.name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
         const avatarInner = e.photo
           ? `<img src="${e.photo}" alt="${e.name}" />`
           : `${initials}`;
-        const avatarClass = e.photo ? 'coach-avatar' : 'coach-avatar initials';
+        const priorityClass = e.photo ? '' :
+          e.hexPriority === 'red'    ? ' priority-hex-red' :
+          e.hexPriority === 'yellow' ? ' priority-hex-yellow' :
+          e.tier === '1'             ? ' priority-tier1' : ' initials';
+        const avatarClass = e.photo ? 'coach-avatar' : ('coach-avatar' + priorityClass);
         return `
-        <tr class="${e.skipped ? 'row-skipped' : ''}">
+        <tr class="${e.skipped ? 'row-skipped' : ''} tier-row-${e.tier}" onclick="handleRowClick(event, ${e.id})" style="cursor:pointer;">
+          <td class="col-hex">
+            ${e.hexPriority && e.hexPriority !== 'none' ? `
+            <div class="hex-tooltip-wrap">
+              <div class="hex-dot-wrap">
+                <div class="hex-dot ${e.hexPriority}"></div>
+                <span class="hex-score ${e.hexPriority}">${e.hexScore}</span>
+              </div>
+              <div class="hex-tooltip">
+                <div class="hex-tooltip-title">Hex Dashboard · ${e.hexTimeline || ''}</div>
+                <div class="hex-tooltip-row ${e.hexPriority}"><strong>Need Score:</strong> ${e.hexScore}</div>
+                <div class="hex-tooltip-row"><strong>Why:</strong> ${e.hexWhy || '—'}</div>
+                <div class="hex-tooltip-row"><strong>Root Cause:</strong> ${e.hexRootCause || '—'}</div>
+                <div class="hex-tooltip-row"><strong>At-Risk:</strong> ${e.hexLoad || '—'}</div>
+              </div>
+            </div>` : `<div class="hex-dot none" style="margin:0 auto;"></div>`}
+          </td>
           <td>
             <div class="td-coach-cell">
               <div class="${avatarClass}" onclick="triggerAvatarUpload(${e.id})" title="Upload photo">
                 ${avatarInner}
               </div>
               <input type="file" accept="image/*" class="avatar-file-input" id="av-${e.id}" onchange="uploadAvatar(${e.id}, this)" />
-              <span class="td-name-link" onclick="openHistoryModal(${e.id})" title="View coach history">${e.name}</span>
+              ${e.coachNotes ? `
+              <span class="name-tooltip-wrap">
+                <span class="td-name-link" onclick="openHistoryModal(${e.id})">📝 ${e.name}</span>
+                <div class="coach-notes-tooltip">
+                  <div class="coach-notes-tooltip-title">Notes</div>
+                  <div class="coach-notes-tooltip-text">${e.coachNotes.slice(0, 300)}${e.coachNotes.length > 300 ? '...' : ''}</div>
+                </div>
+              </span>` : `
+              <span class="td-name-link" onclick="openHistoryModal(${e.id})" title="View coach history">${e.name}</span>`}
             </div>
           </td>
           <td><span class="tier-badge tier-${e.tier}" onclick="cycleTier(${e.id})" title="Click to change tier">${tierLabel(e.tier)}</span></td>
@@ -2256,31 +3753,15 @@
               return `<span style="font-family:'DM Mono',monospace; font-size:11px; color:${wrColor}; font-weight:500;">${e.wrPct}%</span>${trendHtml}`;
             })()}
           </td>
-          <td class="col-hex">
-            ${e.hexPriority && e.hexPriority !== 'none' ? `
-            <div class="hex-tooltip-wrap">
-              <div class="hex-dot-wrap">
-                <div class="hex-dot ${e.hexPriority}"></div>
-                <span class="hex-score ${e.hexPriority}">${e.hexScore}</span>
-              </div>
-              <div class="hex-tooltip">
-                <div class="hex-tooltip-title">Hex Dashboard · ${e.hexTimeline || ''}</div>
-                <div class="hex-tooltip-row ${e.hexPriority}"><strong>Need Score:</strong> ${e.hexScore}</div>
-                <div class="hex-tooltip-row"><strong>Why:</strong> ${e.hexWhy || '—'}</div>
-                <div class="hex-tooltip-row"><strong>Root Cause:</strong> ${e.hexRootCause || '—'}</div>
-                <div class="hex-tooltip-row"><strong>At-Risk:</strong> ${e.hexLoad || '—'}</div>
-              </div>
-            </div>` : `<div class="hex-dot none" style="margin:0 auto;"></div>`}
-          </td>
           <td>
-            <select class="standing-select standing-${e.standing || 'none'}" onchange="updateStanding(${e.id}, this.value)">
+            <select class="standing-select standing-${e.standing || 'none'}" onchange="updateStanding(${e.id}, this.value)" title="${{'none':'—','warning1':'1st Warning','warning2':'2nd Warning','monitoring':'Monitoring','active':'Active','resignation':'Resignation','termination':'Termination'}[e.standing||'none']}">
               <option value="none"        ${(e.standing||'none')==='none'        ?'selected':''}>—</option>
-              <option value="warning1"    ${(e.standing||'none')==='warning1'    ?'selected':''}>1st Warning</option>
-              <option value="warning2"    ${(e.standing||'none')==='warning2'    ?'selected':''}>2nd Warning</option>
-              <option value="monitoring"  ${(e.standing||'none')==='monitoring'  ?'selected':''}>Monitoring</option>
+              <option value="warning1"    ${(e.standing||'none')==='warning1'    ?'selected':''}>W1</option>
+              <option value="warning2"    ${(e.standing||'none')==='warning2'    ?'selected':''}>W2</option>
+              <option value="monitoring"  ${(e.standing||'none')==='monitoring'  ?'selected':''}>MON</option>
               <option value="active"      ${(e.standing||'none')==='active'      ?'selected':''}>Active</option>
-              <option value="resignation" ${(e.standing||'none')==='resignation' ?'selected':''}>Resignation</option>
-              <option value="termination" ${(e.standing||'none')==='termination' ?'selected':''}>Termination</option>
+              <option value="resignation" ${(e.standing||'none')==='resignation' ?'selected':''}>Resign</option>
+              <option value="termination" ${(e.standing||'none')==='termination' ?'selected':''}>Term</option>
             </select>
           </td>
           <td class="col-warning">
@@ -2322,7 +3803,6 @@
               <option value="followup" ${(e.intervention||'none')==='followup' ?'selected':''}>Follow-up</option>
             </select>
           </td>
-          <td class="td-note" title="${e.note || ''}">${e.note || '—'}</td>
 
           <td class="col-resign">
             ${(e.standing === 'resignation' || e.standing === 'termination') ? `
@@ -2332,15 +3812,16 @@
             ` : '<span style=\"color:var(--text3);font-size:12px;\">—</span>'}
           </td>
           <td class="col-notes col-hidden">
-            <button class="notes-btn ${e.coachNotes ? 'notes-has' : ''}" onclick="openNotes(${e.id})" title="${e.coachNotes ? 'View notes' : 'Add notes'}">
+            <button class="notes-btn ${e.coachNotes ? 'notes-has' : ''}" onclick="openHistoryModal(${e.id})" title="${e.coachNotes ? 'View notes' : 'Add notes'}">
               ${e.coachNotes ? '📝' : '+'}
             </button>
           </td>
           <td class="col-skip col-hidden">
             <button class="skip-btn ${e.skipped ? 'skipped' : ''}" onclick="toggleSkip(${e.id})">
-              ${e.skipped ? 'Skip' : 'Skip'}
+              ${e.skipped ? '✓ Skipped' : 'Skip'}
             </button>
           </td>
+          <td class="td-check"><input type="checkbox" class="batch-check row-check" data-id="${e.id}" onclick="event.stopPropagation(); updateBatchBar();" /></td>
           <td><button class="del-btn" onclick="deleteEntry(${e.id})">✕</button></td>
         </tr>
       `}).join('');
@@ -2385,7 +3866,7 @@
   // ── Editable header ──────────────────────────────
   function editHeader(field) {
     const el = document.getElementById('header-title');
-    const current = state.headerTitle || 'Coach Feedback Tracker';
+    const current = state.headerTitle || '🚌📈 Coach Feedback Tracker';
     const input = document.createElement('input');
     input.type = 'text';
     input.value = current;
@@ -2393,7 +3874,7 @@
     input.style.width = Math.max(current.length * 13, 160) + 'px';
 
     function commit() {
-      const val = input.value.trim() || 'Coach Feedback Tracker';
+      const val = input.value.trim() || '🚌📈 Coach Feedback Tracker';
       state.headerTitle = val;
       save();
       el.textContent = val;
@@ -2624,6 +4105,9 @@
     save(); render();
     closeWRModal();
     toast(`WR data applied — ${updated} coaches updated`);
+
+    // Check for tier mismatches
+    setTimeout(() => checkTierSuggestions(), 300);
   }
 
   // ── Import Modal ─────────────────────────────────
@@ -2927,7 +4411,7 @@
   }
 
   // ── Pre-loaded roster ────────────────────────────
-  const PRESET_ROSTER = [{"id": 1, "name": "Allyssa Nease", "tier": "3", "pm": "none", "status": "pending", "note": "98% WR | 1st pctile | 10 churns, 0 transfers / 55 clients | Top performer", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 2, "name": "Paul Sterrett", "tier": "3", "pm": "none", "status": "pending", "note": "96% WR | 2nd pctile | 2 churns, 1 transfers / 16 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 3, "name": "Austin Tomaz", "tier": "3", "pm": "none", "status": "pending", "note": "93% WR | 3rd pctile | 7 churns, 0 transfers / 19 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 4, "name": "Seth Thomsen", "tier": "3", "pm": "none", "status": "pending", "note": "92% WR | 4th pctile | 3 churns, 1 transfers / 10 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 5, "name": "Nicole Schott", "tier": "3", "pm": "none", "status": "pending", "note": "90% WR | 5th pctile | 11 churns, 4 transfers / 80 clients | Strong at scale \u2014 80 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 6, "name": "Ryan Maitland", "tier": "3", "pm": "none", "status": "pending", "note": "88% WR | 6th pctile | 4 churns, 0 transfers / 17 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 7, "name": "Brandt Sutherland", "tier": "3", "pm": "none", "status": "pending", "note": "86% WR | 7th pctile | 6 churns, 1 transfers / 21 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 8, "name": "Natalie Kopchak", "tier": "3", "pm": "none", "status": "pending", "note": "83% WR | 8th pctile | 10 churns, 0 transfers / 25 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 9, "name": "Emily Janis", "tier": "3", "pm": "none", "status": "pending", "note": "82% WR | 9th pctile | 10 churns, 1 transfers / 32 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 10, "name": "Kelli Plemmons", "tier": "3", "pm": "none", "status": "pending", "note": "81% WR | 10th pctile | 8 churns, 0 transfers / 23 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 11, "name": "Krista Martinson", "tier": "3", "pm": "none", "status": "pending", "note": "79% WR | 11th pctile | 5 churns, 0 transfers / 57 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 12, "name": "Kerstin Youngs", "tier": "3", "pm": "none", "status": "pending", "note": "79% WR | 12th pctile | 23 churns, 1 transfers / 59 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 13, "name": "Bailei Mateer", "tier": "3", "pm": "none", "status": "pending", "note": "75% WR | 13th pctile | 13 churns, 0 transfers / 33 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 14, "name": "Erik Figueredo", "tier": "3", "pm": "none", "status": "pending", "note": "71% WR | 14th pctile | 8 churns, 0 transfers / 17 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 15, "name": "Demetrius Bailey", "tier": "2", "pm": "none", "status": "pending", "note": "67% WR | 15th pctile | 11 churns, 2 transfers / 34 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 16, "name": "Sharon Chamberlin", "tier": "2", "pm": "none", "status": "pending", "note": "63% WR | 16th pctile | 8 churns, 4 transfers / 33 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 17, "name": "Kevin Brazie", "tier": "2", "pm": "warning1", "status": "pending", "note": "61% WR | 17th pctile | 7 churns, 1 transfers / 19 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 18, "name": "Gavyn Clare", "tier": "2", "pm": "none", "status": "pending", "note": "60% WR | 18th pctile | 16 churns, 1 transfers / 40 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 19, "name": "Cassidy Turner", "tier": "2", "pm": "none", "status": "pending", "note": "57% WR | 19th pctile | 6 churns, 1 transfers / 17 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 20, "name": "Adam Meadows", "tier": "2", "pm": "none", "status": "pending", "note": "56% WR | 20th pctile | 13 churns, 1 transfers / 30 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 21, "name": "Mike Navratil", "tier": "2", "pm": "none", "status": "pending", "note": "51% WR | 21st pctile | 20 churns, 1 transfers / 45 clients | High churn relative to roster size", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 22, "name": "Rachel Hyde", "tier": "2", "pm": "none", "status": "pending", "note": "50% WR | 22nd pctile | 6 churns, 2 transfers / 17 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 23, "name": "Lauren Tamburrino", "tier": "1", "pm": "none", "status": "pending", "note": "48% WR | 23rd pctile | 16 churns, 3 transfers / 77 clients | Large roster, high churn volume", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 24, "name": "Matt Crawford", "tier": "1", "pm": "none", "status": "pending", "note": "47% WR | 24th pctile | 12 churns, 3 transfers / 36 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 25, "name": "Charlie Ottinger", "tier": "1", "pm": "none", "status": "pending", "note": "45% WR | 25th pctile | 14 churns, 1 transfers / 38 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 26, "name": "Claire Wood", "tier": "1", "pm": "none", "status": "pending", "note": "42% WR | 26th pctile | 14 churns, 4 transfers / 38 clients | 4 transfers \u2014 calibration concern", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 27, "name": "David Franz", "tier": "1", "pm": "none", "status": "pending", "note": "41% WR | 27th pctile | 11 churns, 0 transfers / 62 clients | Large roster, below threshold", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 28, "name": "Matt Smithwick", "tier": "1", "pm": "none", "status": "pending", "note": "35% WR | 28th pctile | 14 churns, 0 transfers / 27 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 29, "name": "Evan Delaney", "tier": "1", "pm": "none", "status": "pending", "note": "33% WR | 29th pctile | 6 churns, 0 transfers / 11 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 30, "name": "Jack Summers", "tier": "1", "pm": "none", "status": "pending", "note": "31% WR | 30th pctile | 9 churns, 1 transfers / 24 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 31, "name": "Hannah Putt", "tier": "1", "pm": "warning1", "status": "pending", "note": "30% WR | 31st pctile | 14 churns, 2 transfers / 26 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 85, "hexTimeline": "This week", "hexWhy": "Churn 33.1% \u00b7 0 / 5 benchmarks \u00b7 Conv 20.0% on 5 eligible \u00b7 Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "1 total at-risk"}, {"id": 32, "name": "Dawson Prince", "tier": "1", "pm": "none", "status": "pending", "note": "28% WR | 32nd pctile | 34 churns, 4 transfers / 87 clients | Largest roster \u2014 scale risk", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 33, "name": "McKenna Coughlin", "tier": "1", "pm": "none", "status": "pending", "note": "27% WR | 33rd pctile | 15 churns, 2 transfers / 35 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 69, "hexTimeline": "Next two weeks", "hexWhy": "Churn 33.7% \u00b7 Conv 0.0% on 2 eligible \u00b7 Urgent clients +4 WoW \u00b7 Responsiveness below 85%", "hexRootCause": "Skill Gap", "hexLoad": "9 total at-risk"}, {"id": 34, "name": "Alex Horwell", "tier": "1", "pm": "none", "status": "pending", "note": "25% WR | 34th pctile | 14 churns, 3 transfers / 56 clients | Below threshold, large client count", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 35, "name": "Hope Crosson", "tier": "1", "pm": "none", "status": "pending", "note": "22% WR | 35th pctile | 23 churns, 2 transfers / 74 clients | High volume + high churn", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 36, "name": "Toryn Middlekauff", "tier": "1", "pm": "warning1", "status": "pending", "note": "17% WR | 36th pctile | 22 churns, 3 transfers / 36 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 85, "hexTimeline": "This week", "hexWhy": "Churn 37.1% \u00b7 1 / 5 benchmarks \u00b7 Conv 25.0% on 8 eligible \u00b7 Urgent clients +1 WoW \u00b7 Low volume (2.9 msgs/wk) \u00b7 Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "7 total at-risk"}, {"id": 37, "name": "Neal Peduzzi", "tier": "1", "pm": "none", "status": "pending", "note": "15% WR | 37th pctile | 11 churns, 4 transfers / 24 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 73, "hexTimeline": "Next two weeks", "hexWhy": "Churn 39.1% \u00b7 1 / 5 benchmarks \u00b7 Urgent clients +2 WoW \u00b7 Low volume (3.2 msgs/wk)", "hexRootCause": "Communication Pattern", "hexLoad": "5 total at-risk"}, {"id": 38, "name": "Elle Smith", "tier": "1", "pm": "none", "status": "pending", "note": "14% WR | 38th pctile | 17 churns, 0 transfers / 22 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 69, "hexTimeline": "Next two weeks", "hexWhy": "Churn 41.0% \u00b7 1 / 5 benchmarks \u00b7 Urgent clients +3 WoW \u00b7 Low volume (3.0 msgs/wk) \u00b7 Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "3 total at-risk"}, {"id": 39, "name": "Megan McClary", "tier": "1", "pm": "none", "status": "pending", "note": "14% WR | 39th pctile | 11 churns, 1 transfers / 19 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 74, "hexTimeline": "Next two weeks", "hexWhy": "Churn 45.2% \u00b7 0 / 5 benchmarks \u00b7 Conv 25.0% on 4 eligible \u00b7 Responsiveness below 85%", "hexRootCause": "Skill Gap", "hexLoad": "2 total at-risk"}, {"id": 40, "name": "Jorge Roman", "tier": "1", "pm": "none", "status": "pending", "note": "13% WR | 40th pctile | 10 churns, 1 transfers / 20 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 41, "name": "Tucker Krech", "tier": "1", "pm": "none", "status": "pending", "note": "11% WR | 41st pctile | 28 churns, 9 transfers / 50 clients | Highest raw churn on roster", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 96, "hexTimeline": "This week", "hexWhy": "Churn 43.6% \u00b7 0 / 5 benchmarks \u00b7 Conv 0.0% on 9 eligible \u00b7 Low volume (2.5 msgs/wk) \u00b7 Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "total at-risk"}, {"id": 42, "name": "Andrea Barreda", "tier": "1", "pm": "none", "status": "pending", "note": "9% WR | 42nd pctile | 11 churns, 2 transfers / 24 clients | High churn rate for roster size", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 43, "name": "Jaquan Newsome", "tier": "1", "pm": "warning1", "status": "pending", "note": "7% WR | 43rd pctile | 10 churns, 0 transfers / 19 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 77, "hexTimeline": "This week", "hexWhy": "Churn 50.2% \u00b7 0 / 5 benchmarks \u00b7 Low volume (2.4 msgs/wk) \u00b7 Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "3 total at-risk"}, {"id": 44, "name": "Hans Straub", "tier": "1", "pm": "none", "status": "pending", "note": "6% WR | 44th pctile | 9 churns, 2 transfers / 17 clients | Near-total client loss", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 65, "hexTimeline": "Next two weeks", "hexWhy": "Churn 48.7% \u00b7 0 / 5 benchmarks \u00b7 Urgent clients +1 WoW \u00b7 Low volume (1.0 msgs/wk) \u00b7 Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "2 total at-risk"}, {"id": 45, "name": "Logan Fletcher", "tier": "1", "pm": "none", "status": "pending", "note": "3% WR | 45th pctile | 8 churns, 1 transfers / 15 clients | Bottom of roster \u2014 escalation likely needed", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 81, "hexTimeline": "This week", "hexWhy": "Churn 51.1% \u00b7 0 / 5 benchmarks \u00b7 Urgent clients +2 WoW \u00b7 Low volume (2.3 msgs/wk) \u00b7 Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "5 total at-risk"}];
+  const PRESET_ROSTER = [{"id": 1, "name": "Allyssa Nease", "tier": "3", "pm": "none", "status": "pending", "note": "98% WR | 1st pctile | 10 churns, 0 transfers / 55 clients | Top performer", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 2, "name": "Paul Sterrett", "tier": "3", "pm": "none", "status": "pending", "note": "96% WR | 2nd pctile | 2 churns, 1 transfers / 16 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 3, "name": "Austin Tomaz", "tier": "3", "pm": "none", "status": "pending", "note": "93% WR | 3rd pctile | 7 churns, 0 transfers / 19 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 5, "name": "Nicole Schott", "tier": "3", "pm": "none", "status": "pending", "note": "90% WR | 5th pctile | 11 churns, 4 transfers / 80 clients | Strong at scale — 80 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 7, "name": "Brandt Sutherland", "tier": "3", "pm": "none", "status": "pending", "note": "86% WR | 7th pctile | 6 churns, 1 transfers / 21 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 8, "name": "Natalie Kopchak", "tier": "3", "pm": "none", "status": "pending", "note": "83% WR | 8th pctile | 10 churns, 0 transfers / 25 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 9, "name": "Emily Janis", "tier": "3", "pm": "none", "status": "pending", "note": "82% WR | 9th pctile | 10 churns, 1 transfers / 32 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 10, "name": "Kelli Plemmons", "tier": "3", "pm": "none", "status": "pending", "note": "81% WR | 10th pctile | 8 churns, 0 transfers / 23 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 11, "name": "Krista Martinson", "tier": "3", "pm": "none", "status": "pending", "note": "79% WR | 11th pctile | 5 churns, 0 transfers / 57 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 12, "name": "Kerstin Youngs", "tier": "3", "pm": "none", "status": "pending", "note": "79% WR | 12th pctile | 23 churns, 1 transfers / 59 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 13, "name": "Bailei Mateer", "tier": "3", "pm": "none", "status": "pending", "note": "75% WR | 13th pctile | 13 churns, 0 transfers / 33 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 14, "name": "Erik Figueredo", "tier": "3", "pm": "none", "status": "pending", "note": "71% WR | 14th pctile | 8 churns, 0 transfers / 17 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 15, "name": "Demetrius Bailey", "tier": "2", "pm": "none", "status": "pending", "note": "67% WR | 15th pctile | 11 churns, 2 transfers / 34 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 16, "name": "Sharon Chamberlin", "tier": "2", "pm": "none", "status": "pending", "note": "63% WR | 16th pctile | 8 churns, 4 transfers / 33 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 17, "name": "Kevin Brazie", "tier": "2", "pm": "warning1", "status": "pending", "note": "61% WR | 17th pctile | 7 churns, 1 transfers / 19 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 18, "name": "Gavyn Clare", "tier": "2", "pm": "none", "status": "pending", "note": "60% WR | 18th pctile | 16 churns, 1 transfers / 40 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 19, "name": "Cassidy Turner", "tier": "2", "pm": "none", "status": "pending", "note": "57% WR | 19th pctile | 6 churns, 1 transfers / 17 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 20, "name": "Adam Meadows", "tier": "2", "pm": "none", "status": "pending", "note": "56% WR | 20th pctile | 13 churns, 1 transfers / 30 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 21, "name": "Mike Navratil", "tier": "2", "pm": "none", "status": "pending", "note": "51% WR | 21st pctile | 20 churns, 1 transfers / 45 clients | High churn relative to roster size", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 22, "name": "Rachel Hyde", "tier": "2", "pm": "none", "status": "pending", "note": "50% WR | 22nd pctile | 6 churns, 2 transfers / 17 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 23, "name": "Lauren Tamburrino", "tier": "1", "pm": "none", "status": "pending", "note": "48% WR | 23rd pctile | 16 churns, 3 transfers / 77 clients | Large roster, high churn volume", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 24, "name": "Matt Crawford", "tier": "1", "pm": "none", "status": "pending", "note": "47% WR | 24th pctile | 12 churns, 3 transfers / 36 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 25, "name": "Charlie Ottinger", "tier": "1", "pm": "none", "status": "pending", "note": "45% WR | 25th pctile | 14 churns, 1 transfers / 38 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 26, "name": "Claire Wood", "tier": "1", "pm": "none", "status": "pending", "note": "42% WR | 26th pctile | 14 churns, 4 transfers / 38 clients | 4 transfers — calibration concern", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 27, "name": "David Franz", "tier": "1", "pm": "none", "status": "pending", "note": "41% WR | 27th pctile | 11 churns, 0 transfers / 62 clients | Large roster, below threshold", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 28, "name": "Matt Smithwick", "tier": "1", "pm": "none", "status": "pending", "note": "35% WR | 28th pctile | 14 churns, 0 transfers / 27 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 29, "name": "Evan Delaney", "tier": "1", "pm": "none", "status": "pending", "note": "33% WR | 29th pctile | 6 churns, 0 transfers / 11 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 30, "name": "Jack Summers", "tier": "1", "pm": "none", "status": "pending", "note": "31% WR | 30th pctile | 9 churns, 1 transfers / 24 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 31, "name": "Hannah Putt", "tier": "1", "pm": "warning1", "status": "pending", "note": "30% WR | 31st pctile | 14 churns, 2 transfers / 26 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 85, "hexTimeline": "This week", "hexWhy": "Churn 33.1% · 0 / 5 benchmarks · Conv 20.0% on 5 eligible · Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "1 total at-risk"}, {"id": 32, "name": "Dawson Prince", "tier": "1", "pm": "none", "status": "pending", "note": "28% WR | 32nd pctile | 34 churns, 4 transfers / 87 clients | Largest roster — scale risk", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 33, "name": "McKenna Coughlin", "tier": "1", "pm": "none", "status": "pending", "note": "27% WR | 33rd pctile | 15 churns, 2 transfers / 35 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 69, "hexTimeline": "Next two weeks", "hexWhy": "Churn 33.7% · Conv 0.0% on 2 eligible · Urgent clients +4 WoW · Responsiveness below 85%", "hexRootCause": "Skill Gap", "hexLoad": "9 total at-risk"}, {"id": 34, "name": "Alex Horwell", "tier": "1", "pm": "none", "status": "pending", "note": "25% WR | 34th pctile | 14 churns, 3 transfers / 56 clients | Below threshold, large client count", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 35, "name": "Hope Crosson", "tier": "1", "pm": "none", "status": "pending", "note": "22% WR | 35th pctile | 23 churns, 2 transfers / 74 clients | High volume + high churn", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 36, "name": "Toryn Middlekauff", "tier": "1", "pm": "warning1", "status": "pending", "note": "17% WR | 36th pctile | 22 churns, 3 transfers / 36 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 85, "hexTimeline": "This week", "hexWhy": "Churn 37.1% · 1 / 5 benchmarks · Conv 25.0% on 8 eligible · Urgent clients +1 WoW · Low volume (2.9 msgs/wk) · Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "7 total at-risk"}, {"id": 37, "name": "Neal Peduzzi", "tier": "1", "pm": "none", "status": "pending", "note": "15% WR | 37th pctile | 11 churns, 4 transfers / 24 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 73, "hexTimeline": "Next two weeks", "hexWhy": "Churn 39.1% · 1 / 5 benchmarks · Urgent clients +2 WoW · Low volume (3.2 msgs/wk)", "hexRootCause": "Communication Pattern", "hexLoad": "5 total at-risk"}, {"id": 39, "name": "Megan McClary", "tier": "1", "pm": "none", "status": "pending", "note": "14% WR | 39th pctile | 11 churns, 1 transfers / 19 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 74, "hexTimeline": "Next two weeks", "hexWhy": "Churn 45.2% · 0 / 5 benchmarks · Conv 25.0% on 4 eligible · Responsiveness below 85%", "hexRootCause": "Skill Gap", "hexLoad": "2 total at-risk"}, {"id": 40, "name": "Jorge Roman", "tier": "1", "pm": "none", "status": "pending", "note": "13% WR | 40th pctile | 10 churns, 1 transfers / 20 clients", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 41, "name": "Tucker Krech", "tier": "1", "pm": "none", "status": "pending", "note": "11% WR | 41st pctile | 28 churns, 9 transfers / 50 clients | Highest raw churn on roster", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 96, "hexTimeline": "This week", "hexWhy": "Churn 43.6% · 0 / 5 benchmarks · Conv 0.0% on 9 eligible · Low volume (2.5 msgs/wk) · Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "total at-risk"}, {"id": 42, "name": "Andrea Barreda", "tier": "1", "pm": "none", "status": "pending", "note": "9% WR | 42nd pctile | 11 churns, 2 transfers / 24 clients | High churn rate for roster size", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "none", "hexScore": 0, "hexTimeline": "", "hexWhy": "", "hexRootCause": "", "hexLoad": ""}, {"id": 44, "name": "Hans Straub", "tier": "1", "pm": "none", "status": "pending", "note": "6% WR | 44th pctile | 9 churns, 2 transfers / 17 clients | Near-total client loss", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "yellow", "hexScore": 65, "hexTimeline": "Next two weeks", "hexWhy": "Churn 48.7% · 0 / 5 benchmarks · Urgent clients +1 WoW · Low volume (1.0 msgs/wk) · Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "2 total at-risk"}, {"id": 45, "name": "Logan Fletcher", "tier": "1", "pm": "none", "status": "pending", "note": "3% WR | 45th pctile | 8 churns, 1 transfers / 15 clients | Bottom of roster — escalation likely needed", "date": null, "created": "2026-03-23T00:00:00.000Z", "hexPriority": "red", "hexScore": 81, "hexTimeline": "This week", "hexWhy": "Churn 51.1% · 0 / 5 benchmarks · Urgent clients +2 WoW · Low volume (2.3 msgs/wk) · Responsiveness below 85%", "hexRootCause": "Communication Pattern", "hexLoad": "5 total at-risk"}];
 
   function resetRoster() {
     if (!confirm('This will clear all coaches in the current week and reload the pre-categorized roster. Continue?')) return;
@@ -3078,64 +4562,23 @@
   function openBriefingModal() {
     const entries = currentEntries();
     const wl = weekLabel(state.currentWeek);
-
-    // Sort: T1 first, then T2, then T3
-    const sorted = [...entries].sort((a, b) => parseInt(a.tier) - parseInt(b.tier));
-
-    const t1 = entries.filter(e => e.tier === '1');
-    const t2 = entries.filter(e => e.tier === '2');
-    const t3 = entries.filter(e => e.tier === '3');
     const warnings = entries.filter(e => e.standing === 'warning1' || e.standing === 'warning2');
-    const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
-    const sentPct = entries.length ? Math.round(sent / entries.length * 100) : 0;
-    const hexRed = entries.filter(e => e.hexPriority === 'red');
-    const hexYellow = entries.filter(e => e.hexPriority === 'yellow');
 
-    // Format a coach row
-    const fmtCoach = (e) => {
-      const parts = [];
-      if (e.wrPct != null) parts.push(`WR: ${e.wrPct}%`);
-      if (e.wrHistory && e.wrHistory.length >= 2) {
-        const diff = Math.round((e.wrHistory[e.wrHistory.length-1].wr - e.wrHistory[e.wrHistory.length-2].wr) * 10) / 10;
-        const sign = diff > 0 ? '+' : '';
-        parts.push(`trend: ${sign}${diff}%`);
-      }
-      if (e.standing && e.standing !== 'none' && e.standing !== 'active') parts.push(`standing: ${e.standing.replace('warning1','1st warning').replace('warning2','2nd warning')}`);
-      if (e.hexPriority && e.hexPriority !== 'none') parts.push(`Hex: ${e.hexPriority} (score ${e.hexScore})`);
-      if (e.status) parts.push(`feedback: ${e.status}`);
-      if (e.note) parts.push(`note: ${e.note}`);
-      if (e.coachNotes) parts.push(`coach notes: ${e.coachNotes.slice(0, 120)}${e.coachNotes.length > 120 ? '...' : ''}`);
-      return `  - ${e.name}${parts.length ? ' (' + parts.join(' · ') + ')' : ''}`;
-    };
+    // Top 3 by WR%
+    const topPerformers = [...entries]
+      .filter(e => e.wrPct != null)
+      .sort((a, b) => b.wrPct - a.wrPct)
+      .slice(0, 3);
 
-    const prompt = `You are helping me, a Performance Coach Manager, prepare for my weekly coaching sessions. Here is my current roster data for ${wl}. Please give me:
+    const warningsSection = warnings.length
+      ? `WARNINGS\n${warnings.map(e => `• ${e.name} — ${e.standing === 'warning1' ? '1st warning' : '2nd warning'}${e.warningDate ? ', sent ' + e.warningDate : ''}${e.wrPct != null ? ', ' + e.wrPct + '% WR' : ''}`).join('\n')}`
+      : 'WARNINGS\n• None';
 
-1. A prioritized list of coaches I should focus on most this week and why
-2. Any patterns you notice across the team (e.g. common struggles, WR trends, warning clusters)
-3. Suggested talking points or coaching approaches for my top 3-5 priority coaches
-4. Any coaches who appear to be improving that I should acknowledge
+    const topSection = topPerformers.length
+      ? `TOP PERFORMERS\n${topPerformers.map(e => `• ${e.name} — ${e.wrPct}% WR`).join('\n')}`
+      : '';
 
----
-ROSTER SUMMARY
-Total coaches: ${entries.length} | Tier 1: ${t1.length} | Tier 2: ${t2.length} | Tier 3: ${t3.length}
-Active warnings: ${warnings.length} | Feedback sent this week: ${sentPct}%
-Hex priority (this week): ${hexRed.length} red, ${hexYellow.length} yellow
-
----
-TIER 1 — URGENT (${t1.length} coaches)
-${t1.length ? t1.map(fmtCoach).join('\n') : '  None'}
-
-TIER 2 — DEVELOPING (${t2.length} coaches)
-${t2.length ? t2.map(fmtCoach).join('\n') : '  None'}
-
-TIER 3 — ON TRACK (${t3.length} coaches)
-${t3.length ? t3.map(fmtCoach).join('\n') : '  None'}
-${warnings.length ? `
----
-ACTIVE WARNINGS (${warnings.length} coaches)
-${warnings.map(e => `  - ${e.name} (${e.standing === 'warning1' ? '1st warning' : '2nd warning'}${e.warningDate ? ', sent ' + e.warningDate : ''})`).join('\n')}` : ''}
----
-Please be specific and direct. I have limited time this week so focus on who needs the most attention and what to actually say to them.`;
+    const prompt = [warningsSection, topSection].filter(Boolean).join('\n\n');
 
     document.getElementById('briefing-week-label').textContent = wl;
     document.getElementById('briefing-prompt').textContent = prompt;
@@ -3165,8 +4608,30 @@ Please be specific and direct. I have limited time this week so focus on who nee
     });
   }
 
+
+  // ── History modal notes ───────────────────────────
+  let historyNotesSaveTimer = null;
+
+  function autoSaveHistoryNotes() {
+    if (historyNotesSaveTimer) clearTimeout(historyNotesSaveTimer);
+    const indicator = document.getElementById('history-notes-saved');
+    indicator.textContent = 'Saving...';
+    indicator.style.color = 'var(--text3)';
+    historyNotesSaveTimer = setTimeout(() => {
+      const e = currentEntries().find(e => e.id === historyActiveId);
+      if (!e) return;
+      e.coachNotes = document.getElementById('history-notes-textarea').value;
+      save();
+      indicator.textContent = '✓ Saved';
+      indicator.style.color = 'var(--green)';
+      render();
+    }, 600);
+  }
+
   // ── Coach History Modal ───────────────────────────
+  let historyActiveId = null;
   function openHistoryModal(id) {
+    historyActiveId = id;
     const currentEntry = currentEntries().find(e => e.id === id);
     if (!currentEntry) return;
     const name = currentEntry.name;
@@ -3264,6 +4729,22 @@ Please be specific and direct. I have limited time this week so focus on who nee
       timeline.innerHTML = header + dataRows.join('');
     }
 
+    // Show roster note if exists
+    const noteBanner = document.getElementById('history-note-banner');
+    if (currentEntry.note) {
+      noteBanner.textContent = '📋 ' + currentEntry.note;
+      noteBanner.style.display = 'block';
+    } else {
+      noteBanner.style.display = 'none';
+    }
+
+    // Populate notes
+    const notesTA = document.getElementById('history-notes-textarea');
+    const notesSaved = document.getElementById('history-notes-saved');
+    notesTA.value = currentEntry.coachNotes || '';
+    notesSaved.textContent = 'Type to save automatically';
+    notesSaved.style.color = 'var(--text3)';
+
     document.getElementById('history-modal-overlay').classList.add('open');
   }
 
@@ -3275,6 +4756,640 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (evt.target === document.getElementById('history-modal-overlay')) closeHistoryModal();
   }
 
+
+
+  // ── Column sorting ────────────────────────────────
+  let sortCol = 'tier';  // default sort by tier
+  let sortDir = 'asc';
+
+  function sortBy(col) {
+    if (sortCol === col) {
+      sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+    } else {
+      sortCol = col;
+      // Default directions per column
+      sortDir = col === 'wr' ? 'asc' : col === 'hex' ? 'desc' : 'asc';
+    }
+    // Update header indicators
+    document.querySelectorAll('thead th').forEach(th => {
+      th.classList.remove('sort-asc', 'sort-desc');
+    });
+    const thId = 'th-' + col;
+    const thEl = document.getElementById(thId);
+    if (thEl) thEl.classList.add(sortDir === 'asc' ? 'sort-asc' : 'sort-desc');
+    render();
+  }
+
+  function applySortToEntries(entries) {
+    const dir = sortDir === 'asc' ? 1 : -1;
+    return [...entries].sort((a, b) => {
+      switch (sortCol) {
+        case 'name':
+          return dir * a.name.localeCompare(b.name);
+        case 'tier':
+          return dir * (parseInt(a.tier) - parseInt(b.tier));
+        case 'wr': {
+          const wa = a.wrPct ?? (sortDir === 'asc' ? 999 : -1);
+          const wb = b.wrPct ?? (sortDir === 'asc' ? 999 : -1);
+          return dir * (wa - wb);
+        }
+        case 'hex': {
+          const hexRank = { red: 3, yellow: 2, none: 1 };
+          const ha = hexRank[a.hexPriority] || 1;
+          const hb = hexRank[b.hexPriority] || 1;
+          return dir * (ha - hb);
+        }
+        case 'standing': {
+          const sRank = { warning2: 6, warning1: 5, monitoring: 4, termination: 3, resignation: 2, active: 1, none: 0 };
+          const sa = sRank[a.standing || 'none'] ?? 0;
+          const sb = sRank[b.standing || 'none'] ?? 0;
+          return dir * (sa - sb);
+        }
+        case 'status': {
+          const stRank = { followup: 3, pending: 2, sent: 1, checkin: 0 };
+          const sta = stRank[a.status] ?? 0;
+          const stb = stRank[b.status] ?? 0;
+          return dir * (sta - stb);
+        }
+        default:
+          return 0;
+      }
+    });
+  }
+
+
+  // ── Quick Links ───────────────────────────────────
+  let quickLinkActive = null;
+
+  function openQuickLink(type) {
+    quickLinkActive = type;
+    const urls = { hex: state.hexUrl || '', looker: state.lookerUrl || '', github: state.githubUrl || '', trainer: state.trainerUrl || '', gcal: state.gcalUrl || '' };
+    const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL', trainer: 'Trainer Dash URL', gcal: 'Google Calendar URL' };
+    const url = urls[type];
+
+    // If URL already set, go straight there
+    if (url) {
+      window.open(url, '_blank');
+      return;
+    }
+
+    // Otherwise open setup modal
+    document.getElementById('quick-link-title').textContent = titles[type];
+    document.getElementById('quick-link-input').value = '';
+    document.getElementById('quick-link-overlay').style.display = 'flex';
+    setTimeout(() => document.getElementById('quick-link-input').focus(), 50);
+  }
+
+  function closeQuickLink() {
+    document.getElementById('quick-link-overlay').style.display = 'none';
+    quickLinkActive = null;
+  }
+
+  function handleQuickLinkOverlay(evt) {
+    if (evt.target === document.getElementById('quick-link-overlay')) closeQuickLink();
+  }
+
+  function saveQuickLink() {
+    const url = document.getElementById('quick-link-input').value.trim();
+    if (!url) return;
+    if (quickLinkActive === 'hex')    { state.hexUrl = url; }
+    if (quickLinkActive === 'looker') { state.lookerUrl = url; }
+    if (quickLinkActive === 'github') { state.githubUrl = url; }
+    if (quickLinkActive === 'trainer') { state.trainerUrl = url; }
+    if (quickLinkActive === 'gcal') { state.gcalUrl = url; }
+    save();
+    updateQuickLinkButtons();
+    closeQuickLink();
+    window.open(url, '_blank');
+  }
+
+  function clearQuickLink() {
+    if (quickLinkActive === 'hex')    { delete state.hexUrl; }
+    if (quickLinkActive === 'looker') { delete state.lookerUrl; }
+    if (quickLinkActive === 'github') { delete state.githubUrl; }
+    if (quickLinkActive === 'trainer') { delete state.trainerUrl; }
+    if (quickLinkActive === 'gcal') { delete state.gcalUrl; }
+    save();
+    updateQuickLinkButtons();
+    closeQuickLink();
+    toast((quickLinkActive === 'hex' ? 'Hex' : quickLinkActive === 'looker' ? 'Looker' : quickLinkActive === 'github' ? 'GitHub' : quickLinkActive === 'trainer' ? 'Trainer Dash' : 'Google Calendar') + ' URL cleared');
+  }
+
+  function updateQuickLinkButtons() {
+    const githubBtn = document.getElementById('github-link-btn');
+    const hexBtn = document.getElementById('hex-link-btn');
+    const lookerBtn = document.getElementById('looker-link-btn');
+    if (githubBtn) {
+      githubBtn.classList.toggle('not-set', !state.githubUrl);
+      githubBtn.title = state.githubUrl ? 'Open GitHub Pages (hold to edit)' : 'Click to set your GitHub Pages URL';
+    }
+    const trainerBtn = document.getElementById('trainer-link-btn');
+    if (trainerBtn) {
+      trainerBtn.classList.toggle('not-set', !state.trainerUrl);
+      trainerBtn.title = state.trainerUrl ? 'Open Trainer Dash (hold to edit)' : 'Click to set your Trainer Dash URL';
+    }
+    const gcalBtn = document.getElementById('gcal-link-btn');
+    if (gcalBtn) {
+      gcalBtn.classList.toggle('not-set', !state.gcalUrl);
+      gcalBtn.title = state.gcalUrl ? 'Open Google Calendar (hold to edit)' : 'Click to set your Google Calendar URL';
+    }
+    if (hexBtn) {
+      hexBtn.classList.toggle('not-set', !state.hexUrl);
+      hexBtn.title = state.hexUrl ? 'Open Hex Dashboard (click & hold to change URL)' : 'Click to set your Hex URL';
+    }
+    if (lookerBtn) {
+      lookerBtn.classList.toggle('not-set', !state.lookerUrl);
+      lookerBtn.title = state.lookerUrl ? 'Open Looker Dashboard (click & hold to change URL)' : 'Click to set your Looker URL';
+    }
+  }
+
+  // Long press to edit an already-set URL
+  let quickLinkPressTimer = null;
+  ['github', 'hex', 'looker', 'trainer', 'gcal'].forEach(type => {
+    const btn = document.getElementById(type + '-link-btn');
+    if (!btn) return;
+    btn.addEventListener('mousedown', () => {
+      quickLinkPressTimer = setTimeout(() => {
+        // Long press — open edit modal even if URL is set
+        quickLinkActive = type;
+        const titles = { hex: 'Hex Dashboard URL', looker: 'Looker Dashboard URL', github: 'GitHub Pages URL', trainer: 'Trainer Dash URL', gcal: 'Google Calendar URL' };
+        document.getElementById('quick-link-title').textContent = titles[type];
+        document.getElementById('quick-link-input').value = (type === 'hex' ? state.hexUrl : type === 'looker' ? state.lookerUrl : type === 'github' ? state.githubUrl : type === 'trainer' ? state.trainerUrl : state.gcalUrl) || '';
+        document.getElementById('quick-link-overlay').style.display = 'flex';
+        setTimeout(() => document.getElementById('quick-link-input').focus(), 50);
+      }, 600);
+    });
+    btn.addEventListener('mouseup', () => clearTimeout(quickLinkPressTimer));
+    btn.addEventListener('mouseleave', () => clearTimeout(quickLinkPressTimer));
+  });
+
+
+  // ── Batch skip ────────────────────────────────────
+  function handleRowClick(evt, id) {
+    // Don't trigger on interactive elements
+    if (['SELECT','INPUT','BUTTON','A'].includes(evt.target.tagName)) return;
+    const cb = evt.currentTarget.querySelector('.row-check');
+    if (cb) { cb.checked = !cb.checked; updateBatchBar(); }
+  }
+
+  function updateBatchBar() {
+    const checked = document.querySelectorAll('.row-check:checked');
+    const bar = document.getElementById('batch-bar');
+    const count = document.getElementById('batch-count');
+    count.textContent = checked.length + ' selected';
+    bar.classList.toggle('visible', checked.length > 0);
+    // Update select-all state
+    const all = document.querySelectorAll('.row-check');
+    const selectAll = document.getElementById('select-all-check');
+    if (selectAll) {
+      selectAll.checked = all.length > 0 && checked.length === all.length;
+      selectAll.indeterminate = checked.length > 0 && checked.length < all.length;
+    }
+  }
+
+  function toggleSelectAll(cb) {
+    document.querySelectorAll('.row-check').forEach(r => r.checked = cb.checked);
+    updateBatchBar();
+  }
+
+  function getSelectedIds() {
+    return [...document.querySelectorAll('.row-check:checked')].map(cb => parseInt(cb.dataset.id));
+  }
+
+
+  function batchCopyNames() {
+    const ids = getSelectedIds();
+    if (!ids.length) return;
+    const names = ids.map(id => {
+      const e = currentEntries().find(e => e.id === id);
+      return e ? e.name : null;
+    }).filter(Boolean);
+    navigator.clipboard.writeText(names.join('\n')).then(() => {
+      toast(`${names.length} name${names.length !== 1 ? 's' : ''} copied to clipboard`);
+    });
+  }
+
+  function batchMarkSent() {
+    const ids = getSelectedIds();
+    if (!ids.length) return;
+    ids.forEach(id => {
+      const e = currentEntries().find(e => e.id === id);
+      if (e) {
+        e.status = 'sent';
+        e.date = e.date || fmtDate(new Date());
+      }
+    });
+    save(); render();
+    clearBatchSelection();
+    toast(`${ids.length} coach${ids.length !== 1 ? 'es' : ''} marked as Sent`);
+  }
+
+  function batchSkip() {
+    const ids = getSelectedIds();
+    if (!ids.length) return;
+    ids.forEach(id => {
+      const e = currentEntries().find(e => e.id === id);
+      if (e) e.skipped = true;
+    });
+    save(); render();
+    toast(`${ids.length} coach${ids.length !== 1 ? 'es' : ''} skipped`);
+  }
+
+  function batchUnskip() {
+    const ids = getSelectedIds();
+    if (!ids.length) return;
+    ids.forEach(id => {
+      const e = currentEntries().find(e => e.id === id);
+      if (e) e.skipped = false;
+    });
+    save(); render();
+    toast(`${ids.length} coach${ids.length !== 1 ? 'es' : ''} unskipped`);
+  }
+
+  function clearBatchSelection() {
+    document.querySelectorAll('.row-check').forEach(cb => cb.checked = false);
+    const selectAll = document.getElementById('select-all-check');
+    if (selectAll) { selectAll.checked = false; selectAll.indeterminate = false; }
+    document.getElementById('batch-bar').classList.remove('visible');
+  }
+
+
+  // ── Team Notepad ──────────────────────────────────
+  let notepadOpen = false;
+  let notepadSaveTimer = null;
+
+  function toggleNotepad() {
+    notepadOpen = !notepadOpen;
+    document.getElementById('team-notepad-body').classList.toggle('open', notepadOpen);
+    document.getElementById('notepad-arrow').textContent = notepadOpen ? '▲' : '▼';
+    state.notepadOpen = notepadOpen;
+    if (notepadOpen) {
+      const weekNotes = (state.weeks[state.currentWeek] || {}).teamNotes || '';
+      document.getElementById('team-notepad-textarea').value = weekNotes;
+      document.getElementById('team-notepad-saved').textContent = 'Type to save automatically';
+      document.getElementById('team-notepad-saved').classList.remove('saved');
+      setTimeout(() => document.getElementById('team-notepad-textarea').focus(), 50);
+    }
+    save();
+  }
+
+  function autoSaveNotepad() {
+    if (notepadSaveTimer) clearTimeout(notepadSaveTimer);
+    const indicator = document.getElementById('team-notepad-saved');
+    indicator.textContent = 'Saving...';
+    indicator.classList.remove('saved');
+    notepadSaveTimer = setTimeout(() => {
+      if (!state.weeks[state.currentWeek]) return;
+      state.weeks[state.currentWeek].teamNotes = document.getElementById('team-notepad-textarea').value;
+      save();
+      indicator.textContent = '✓ Saved';
+      indicator.classList.add('saved');
+      updateNotepadTitle();
+    }, 600);
+  }
+
+  function updateNotepadTitle() {
+    const notes = (state.weeks[state.currentWeek] || {}).teamNotes || '';
+    const title = document.getElementById('team-notepad-title');
+    if (title) {
+      title.textContent = notes.trim() ? '📋 Week Notes — ' + notes.trim().slice(0, 40) + (notes.length > 40 ? '...' : '') : '📋 Week Notes';
+      title.classList.toggle('has-notes', !!notes.trim());
+    }
+  }
+
+  function restoreNotepad() {
+    if (state.notepadOpen) {
+      notepadOpen = true;
+      document.getElementById('team-notepad-body').classList.add('open');
+      document.getElementById('notepad-arrow').textContent = '▲';
+      const weekNotes = (state.weeks[state.currentWeek] || {}).teamNotes || '';
+      document.getElementById('team-notepad-textarea').value = weekNotes;
+    }
+    updateNotepadTitle();
+  }
+
+
+  // ── Auto-tier suggestion ──────────────────────────
+  let pendingTierSuggestions = [];
+
+  function suggestedTier(wr) {
+    if (wr === null || wr === undefined) return null;
+    if (wr < 60)  return '1';
+    if (wr < 75)  return '2';
+    return '3';
+  }
+
+  function checkTierSuggestions() {
+    const entries = currentEntries();
+    pendingTierSuggestions = entries
+      .filter(e => e.wrPct !== null && e.wrPct !== undefined)
+      .map(e => ({ e, suggested: suggestedTier(e.wrPct) }))
+      .filter(({ e, suggested }) => suggested && e.tier !== suggested);
+
+    if (pendingTierSuggestions.length === 0) return;
+
+    const tierLabels = { '1': 'Tier 1', '2': 'Tier 2', '3': 'Tier 3' };
+    const tierColors = { '1': 'var(--red)', '2': 'var(--yellow)', '3': 'var(--green)' };
+
+    document.getElementById('tier-suggest-list').innerHTML = pendingTierSuggestions.map(({ e, suggested }, i) =>
+      `<div class="tier-suggest-item">
+        <span class="tier-suggest-name">${e.name}</span>
+        <span class="tier-suggest-detail">${e.wrPct}% WR</span>
+        <span class="tier-suggest-detail" style="color:${tierColors[e.tier]};">${tierLabels[e.tier]}</span>
+        <span class="tier-suggest-arrow">→</span>
+        <span class="tier-suggest-detail" style="color:${tierColors[suggested]};">${tierLabels[suggested]}</span>
+        <button class="btn" style="font-size:11px; padding:3px 10px; margin-left:6px;" onclick="applyTierSuggestion(${i})">Apply</button>
+      </div>`
+    ).join('');
+
+    document.getElementById('tier-suggest-overlay').classList.add('open');
+  }
+
+  function applyTierSuggestion(i) {
+    const { e, suggested } = pendingTierSuggestions[i];
+    const entry = currentEntries().find(en => en.id === e.id);
+    if (entry) { entry.tier = suggested; save(); render(); }
+    // Remove from list
+    pendingTierSuggestions.splice(i, 1);
+    checkTierSuggestions();
+    if (pendingTierSuggestions.length === 0) closeTierSuggest();
+    else document.getElementById('tier-suggest-list').children[i] && document.getElementById('tier-suggest-list').removeChild(document.getElementById('tier-suggest-list').children[i]);
+  }
+
+  function applyAllTierSuggestions() {
+    pendingTierSuggestions.forEach(({ e, suggested }) => {
+      const entry = currentEntries().find(en => en.id === e.id);
+      if (entry) entry.tier = suggested;
+    });
+    save(); render();
+    closeTierSuggest();
+    toast(`${pendingTierSuggestions.length} tier${pendingTierSuggestions.length !== 1 ? 's' : ''} updated`);
+    pendingTierSuggestions = [];
+  }
+
+  function closeTierSuggest() {
+    document.getElementById('tier-suggest-overlay').classList.remove('open');
+  }
+
+  function handleTierSuggestOverlay(evt) {
+    if (evt.target === document.getElementById('tier-suggest-overlay')) closeTierSuggest();
+  }
+
+
+  // ── Re-eval calendar export (.ics) ───────────────
+  function exportReEvalCalendar() {
+    const entries = currentEntries();
+    const warningCoaches = entries.filter(e =>
+      (e.standing === 'warning1' || e.standing === 'warning2') && e.warningDate
+    );
+
+    if (warningCoaches.length === 0) {
+      toast('No coaches with active warnings and re-eval dates set');
+      return;
+    }
+
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Energy Bus Coach Tracker//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+    ];
+
+    warningCoaches.forEach(e => {
+      const days = e.standing === 'warning1' ? 14 : 7;
+      const sent = new Date(e.warningDate + 'T12:00:00');
+      const due = new Date(sent);
+      due.setDate(sent.getDate() + days);
+
+      const fmt = (d) => d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+      const dateStr = due.toISOString().slice(0,10).replace(/-/g,'');
+      const uid = `reeval-${e.id}-${dateStr}@energy-bus-tracker`;
+      const label = e.standing === 'warning1' ? '1st Warning' : '2nd Warning';
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${uid}`);
+      lines.push(`DTSTAMP:${fmt(new Date())}`);
+      lines.push(`DTSTART;VALUE=DATE:${dateStr}`);
+      lines.push(`DTEND;VALUE=DATE:${dateStr}`);
+      lines.push(`SUMMARY:Re-eval: ${e.name} (${label})`);
+      lines.push(`DESCRIPTION:Coach: ${e.name}\nStanding: ${label}\nWarning sent: ${e.warningDate}\nWR%: ${e.wrPct ?? '—'}`);
+      lines.push('END:VEVENT');
+    });
+
+    lines.push('END:VCALENDAR');
+
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/calendar' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'reeval-dates.ics';
+    a.click();
+    toast(`${warningCoaches.length} re-eval date${warningCoaches.length !== 1 ? 's' : ''} exported`);
+  }
+
+
+  // ── Column resize ─────────────────────────────────
+  function initColumnResize() {
+    const ths = document.querySelectorAll('thead th');
+    ths.forEach(th => {
+      // Skip if already has resizer
+      if (th.querySelector('.col-resizer')) return;
+      const resizer = document.createElement('div');
+      resizer.className = 'col-resizer';
+      th.appendChild(resizer);
+
+      let startX, startW;
+
+      resizer.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        startX = e.pageX;
+        startW = th.offsetWidth;
+        resizer.classList.add('resizing');
+
+        const onMove = (e) => {
+          const diff = e.pageX - startX;
+          th.style.width = Math.max(40, startW + diff) + 'px';
+        };
+
+        const onUp = () => {
+          resizer.classList.remove('resizing');
+          document.removeEventListener('mousemove', onMove);
+          document.removeEventListener('mouseup', onUp);
+        };
+
+        document.addEventListener('mousemove', onMove);
+        document.addEventListener('mouseup', onUp);
+      });
+    });
+  }
+
+
+  // ── Password gate ─────────────────────────────────
+  const PW_HASH = '3defe9adcd27b66d2e780194e64d0045c6f5f1536303ba0cff7479ab89e020c9';
+
+  async function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    const errEl = document.getElementById('pw-error');
+    const input = document.getElementById('pw-input');
+
+    const hash = await sha256(val);
+    if (hash === PW_HASH) {
+      document.getElementById('pw-gate').classList.add('hidden');
+      document.getElementById('app').style.display = '';
+      sessionStorage.setItem('eb_auth', '1');
+    } else {
+      errEl.textContent = 'Incorrect password';
+      input.classList.add('error');
+      input.value = '';
+      setTimeout(() => { input.classList.remove('error'); errEl.textContent = ''; }, 1500);
+    }
+  }
+
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Skip gate if already authenticated this session
+  if (sessionStorage.getItem('eb_auth') === '1') {
+    document.getElementById('pw-gate').classList.add('hidden');
+    document.getElementById('app').style.display = '';
+  }
+
+
+  // ── Name search ───────────────────────────────────
+  let searchQuery = '';
+
+  function handleSearch() {
+    searchQuery = document.getElementById('search-input').value.trim().toLowerCase();
+    const clearBtn = document.getElementById('search-clear');
+    clearBtn.classList.toggle('visible', searchQuery.length > 0);
+    render();
+  }
+
+  function clearSearch() {
+    searchQuery = '';
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-clear').classList.remove('visible');
+    document.getElementById('search-results').style.display = 'none';
+    document.getElementById('search-input').focus();
+    render();
+  }
+
+
+  // ── Heatmap view ──────────────────────────────────
+  let heatmapOpen = false;
+
+  function toggleHeatmapView() {
+    heatmapOpen = !heatmapOpen;
+    document.getElementById('heatmap-view').classList.toggle('open', heatmapOpen);
+    document.getElementById('table-view-wrap').style.display = heatmapOpen ? 'none' : '';
+
+    // Also hide focus banner, filters, batch bar when in heatmap
+    const toHide = ['focus-banner', 'batch-bar'];
+    toHide.forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = heatmapOpen ? 'none' : '';
+    });
+
+    const btn = document.getElementById('heatmap-more-btn');
+    if (btn) btn.style.color = heatmapOpen ? 'var(--accent)' : '';
+
+    if (heatmapOpen) renderHeatmap();
+  }
+
+  function wrClass(wr) {
+    if (wr === null || wr === undefined) return '';
+    if (wr < 50) return 'wr-critical';
+    if (wr < 60) return 'wr-low';
+    if (wr < 70) return 'wr-mid';
+    if (wr < 80) return 'wr-good';
+    return 'wr-great';
+  }
+
+  function renderHeatmap() {
+    // Gather all weeks sorted oldest → newest
+    const allWeeks = Object.entries(state.weeks)
+      .sort((a, b) => a[0].localeCompare(b[0]));
+
+    if (allWeeks.length === 0) {
+      document.getElementById('heatmap-table-wrap').innerHTML =
+        '<div style="padding:40px; text-align:center; color:var(--text3); font-size:13px;">No week data yet — archive some weeks to populate the heatmap.</div>';
+      return;
+    }
+
+    // Collect all unique coach names across all weeks
+    const coachSet = new Map();
+    allWeeks.forEach(([key, weekData]) => {
+      (weekData.entries || []).forEach(e => {
+        if (!coachSet.has(e.name)) coachSet.set(e.name, { name: e.name, tier: e.tier });
+      });
+    });
+
+    // Also include current week coaches
+    currentEntries().forEach(e => {
+      if (!coachSet.has(e.name)) coachSet.set(e.name, { name: e.name, tier: e.tier });
+    });
+
+    const coaches = [...coachSet.values()].sort((a, b) => {
+      // Sort by tier then name
+      if (a.tier !== b.tier) return parseInt(a.tier || 3) - parseInt(b.tier || 3);
+      return a.name.localeCompare(b.name);
+    });
+
+    // Include current week in columns
+    const weekCols = [...allWeeks];
+    const currentWeekEntries = currentEntries();
+    if (!weekCols.find(([k]) => k === state.currentWeek)) {
+      weekCols.push([state.currentWeek, { entries: currentWeekEntries }]);
+    }
+
+    document.getElementById('heatmap-meta').textContent =
+      `${coaches.length} coaches · ${weekCols.length} week${weekCols.length !== 1 ? 's' : ''}`;
+
+    // Build table
+    let html = '<table class="heatmap-table"><thead><tr>';
+    html += '<th class="hm-name-col">Coach</th>';
+    weekCols.forEach(([key]) => {
+      const label = weekLabel(key).replace('Week of ', '').replace(/[0-9]{4}/, '').trim();
+      const isCurrent = key === state.currentWeek;
+      html += `<th style="${isCurrent ? 'color:var(--accent);' : ''}">${label}${isCurrent ? ' ←' : ''}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    coaches.forEach(({ name, tier }) => {
+      const tierColor = tier === '1' ? '#ff5a36' : tier === '2' ? '#ffb800' : 'var(--green)';
+      html += `<tr>`;
+      html += `<td class="hm-name" onclick="openHistoryModalByName('${name.replace(/'/g, "\'")}')" title="View history">
+        <span style="display:inline-block; width:6px; height:6px; border-radius:50%; background:${tierColor}; margin-right:7px; vertical-align:middle; flex-shrink:0;"></span>${name}
+      </td>`;
+
+      weekCols.forEach(([key, weekData]) => {
+        const entries = weekData.entries || (key === state.currentWeek ? currentWeekEntries : []);
+        const entry = entries.find(e => e.name.toLowerCase() === name.toLowerCase());
+        const wr = entry?.wrPct ?? null;
+        const cls = wrClass(wr);
+        const isCurrent = key === state.currentWeek;
+        html += `<td style="${isCurrent ? 'border-right:2px solid var(--accent);' : ''}">
+          <div class="hm-cell ${cls}" title="${name} — ${wr !== null ? wr + '% WR' : 'No data'}">
+            ${wr !== null ? wr + '%' : '<span class="hm-empty">—</span>'}
+          </div>
+        </td>`;
+      });
+
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    document.getElementById('heatmap-table-wrap').innerHTML = html;
+  }
+
+  function openHistoryModalByName(name) {
+    const entry = currentEntries().find(e => e.name.toLowerCase() === name.toLowerCase());
+    if (entry) openHistoryModal(entry.id);
+  }
 
   // ── Add coach form ────────────────────────────────
   let addFormOpen = false;
@@ -3297,10 +5412,107 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (dashboardOpen && typeof Chart !== 'undefined') {
       renderRings();
       renderTrend();
+      renderGauge();
     }
   }
 
-  function renderTrend() {
+  function renderGauge() {
+    const canvas = document.getElementById('gauge-canvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const entries = currentEntries();
+    const active = entries.filter(e => !e.skipped);
+    const total = active.length || 1;
+    const sent = active.filter(e => e.status === 'sent' || e.status === 'checkin').length;
+    const followup = active.filter(e => e.status === 'followup').length;
+    const pending = active.filter(e => e.status === 'pending').length;
+    const pct = Math.round(sent / total * 100);
+
+    const W = 130, H = 72;
+    const cx = W / 2, cy = H - 10;
+    const r = 88, rInner = 58;
+    const startAngle = Math.PI;
+
+    ctx.clearRect(0, 0, W, H);
+
+    // Energy Bus colors: deep red → orange → yellow → bright yellow
+    const segs = [
+      { from: 0,    to: 0.25, color: '#ff3a1a' },
+      { from: 0.25, to: 0.5,  color: '#ff7800' },
+      { from: 0.5,  to: 0.75, color: '#ffb800' },
+      { from: 0.75, to: 1.0,  color: '#ffe44d' },
+    ];
+
+    segs.forEach(seg => {
+      const a1 = startAngle + seg.from * Math.PI;
+      const a2 = startAngle + seg.to * Math.PI;
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, a1, a2);
+      ctx.arc(cx, cy, rInner, a2, a1, true);
+      ctx.closePath();
+      ctx.fillStyle = seg.color;
+      ctx.fill();
+    });
+
+    // Dark overlay on unused portion — lighter so colors stay vivid
+    const usedAngle = startAngle + (pct / 100) * Math.PI;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, usedAngle, 2 * Math.PI);
+    ctx.arc(cx, cy, rInner, 2 * Math.PI, usedAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(10,10,10,0.82)';
+    ctx.fill();
+
+    // Divider lines
+    segs.forEach(seg => {
+      const a = startAngle + seg.from * Math.PI;
+      ctx.beginPath();
+      ctx.moveTo(cx + rInner * Math.cos(a), cy + rInner * Math.sin(a));
+      ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+      ctx.strokeStyle = 'rgba(0,0,0,0.95)';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+    });
+
+    // Needle
+    const na = startAngle + (pct / 100) * Math.PI;
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + (r - 6) * Math.cos(na), cy + (r - 6) * Math.sin(na));
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 2.5;
+    ctx.lineCap = 'round';
+    ctx.shadowColor = 'rgba(255,255,255,0.9)';
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // Hub
+    ctx.beginPath();
+    ctx.arc(cx, cy, 6, 0, 2 * Math.PI);
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = 'rgba(255,255,255,0.8)';
+    ctx.shadowBlur = 10;
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
+    // Axis labels
+    ctx.font = '10px monospace';
+    ctx.fillStyle = '#555350';
+    ctx.textAlign = 'right';  ctx.fillText('0%',   cx - r - 4,  cy + 4);
+    ctx.textAlign = 'center'; ctx.fillText('50%',  cx,          cy - r - 6);
+    ctx.textAlign = 'left';   ctx.fillText('100%', cx + r + 4,  cy + 4);
+
+    // Update pct label + color
+    const pctEl = document.getElementById('gauge-pct-label');
+    pctEl.textContent = pct + '%';
+    pctEl.style.color = pct < 25 ? '#ff3a1a' : pct < 50 ? '#ff7800' : pct < 75 ? '#ffb800' : '#ffe44d';
+
+    // Breakdown
+    document.getElementById('gauge-breakdown').innerHTML = '';
+  }
+
+    function renderTrend() {
     const weeks = Object.entries(state.weeks)
       .sort((a, b) => a[0].localeCompare(b[0]));
 
@@ -3430,14 +5642,43 @@ Please be specific and direct. I have limited time this week so focus on who nee
     const sent = entries.filter(e => e.status === 'sent' || e.status === 'checkin').length;
     const pct = total ? Math.round(sent/total*100) : 0;
     document.getElementById('dashboard-chips').innerHTML =
-      `<span class="dashboard-chip" style="color:#ff6b6b; border-color:#4a2828;">${t1} T1</span>` +
-      `<span class="dashboard-chip" style="color:#ff8aff; border-color:#4a2040;">${warn} warnings</span>` +
-      `<span class="dashboard-chip" style="color:#6bffb8; border-color:#1a4a30;">${pct}% sent</span>`;
+      `<span class="dashboard-chip" style="color:#ff5a36; border-color:#ff5a36; background:rgba(255,90,54,0.15); box-shadow:0 0 12px rgba(255,90,54,0.35);">${t1} Tier 1</span>` +
+      `<span class="dashboard-chip" style="color:#ff8c00; border-color:#ff8c00; background:rgba(255,140,0,0.12); box-shadow:0 0 12px rgba(255,140,0,0.3);">${warn} Warning${warn !== 1 ? 's' : ''}</span>` +
+      `<span class="dashboard-chip" style="color:#ffb800; border-color:#ffb800; background:rgba(255,184,0,0.12); box-shadow:0 0 12px rgba(255,184,0,0.3);">${pct}% Sent</span>`;
   }
 
-  // ── More dropdown ─────────────────────────────────
+  // ── Source + More dropdowns ───────────────────────
+  function toggleSourceDropdown() {
+    const dropdown = document.getElementById('source-dropdown');
+    const btn = document.getElementById('source-toggle-btn');
+    const isOpen = dropdown.classList.toggle('open');
+    closeMoreDropdown();
+    if (isOpen && btn) {
+      const rect = btn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 6) + 'px';
+      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+      dropdown.style.left = 'auto';
+    }
+  }
+  function closeSourceDropdown() {
+    document.getElementById('source-dropdown').classList.remove('open');
+  }
+  document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.sources-wrap');
+    if (wrap && !wrap.contains(e.target)) closeSourceDropdown();
+  });
+
   function toggleMoreDropdown() {
-    document.getElementById('more-dropdown').classList.toggle('open');
+    const dropdown = document.getElementById('more-dropdown');
+    const btn = document.querySelector('.more-wrap > .btn');
+    const isOpen = dropdown.classList.toggle('open');
+    closeSourceDropdown();
+    if (isOpen && btn) {
+      const rect = btn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 6) + 'px';
+      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+      dropdown.style.left = 'auto';
+    }
   }
   function closeMoreDropdown() {
     document.getElementById('more-dropdown').classList.remove('open');
@@ -3451,7 +5692,14 @@ Please be specific and direct. I have limited time this week so focus on who nee
   const colState = {};
 
   function toggleColDropdown() {
-    document.getElementById('col-dropdown').classList.toggle('open');
+    const dropdown = document.getElementById('col-dropdown');
+    const btn = document.getElementById('col-toggle-btn');
+    const isOpen = dropdown.classList.toggle('open');
+    if (isOpen && btn) {
+      const rect = btn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 6) + 'px';
+      dropdown.style.left = rect.left + 'px';
+    }
   }
 
   // Close dropdown when clicking outside
@@ -3527,6 +5775,11 @@ Please be specific and direct. I have limited time this week so focus on who nee
     document.getElementById('dashboard-toggle').classList.add('open');
     document.getElementById('dashboard-body').classList.add('open');
   }
+  // Set initial sort indicator
+  const initTh = document.getElementById('th-' + sortCol);
+  if (initTh) initTh.classList.add('sort-asc');
+  updateQuickLinkButtons();
+  restoreNotepad();
   restoreColState();
   if (state.currentView) {
     currentView = state.currentView;
@@ -3655,6 +5908,8 @@ Please be specific and direct. I have limited time this week so focus on who nee
     if (dashboardOpen && typeof Chart !== 'undefined') {
       renderRings();
     }
+    renderGauge();
+    initColumnResize();
   };
 
   if (dashboardOpen && typeof Chart !== 'undefined') {
