@@ -77,10 +77,15 @@
   body.light .quick-link { background: #1a1a1a; color: #8a8780; border-color: #3a3a3a; }
   body.light .quick-link:hover { color: #f0ede8; border-color: #555350; }
   body.light .quick-link.not-set { border-style: dashed; color: #555350; }
-  body.light .more-dropdown { background: #1a1a1a; border-color: #3a3a3a; }
+  body.light .more-dropdown,
+  body.light .source-dropdown { background: #1a1a1a; border-color: #3a3a3a; }
   body.light .more-item { color: #8a8780; }
   body.light .more-item:hover { background: #222222; color: #f0ede8; }
   body.light .more-item.danger { color: #ff6b6b; }
+  body.light .source-label,
+  body.light .source-dropdown .quick-link.not-set { color: #555350; }
+  body.light .source-dropdown .quick-link { color: #8a8780; }
+  body.light .source-dropdown .quick-link:hover { background: #222222; color: #f0ede8; }
   body.light .col-toggle-dropdown { background: #1a1a1a; border-color: #3a3a3a; }
   body.light .col-toggle-title { color: #555350; }
   body.light .col-toggle-item { color: #8a8780; }
@@ -264,16 +269,16 @@
     color: #ff6b6b !important;
     border-color: rgba(255,107,107,0.25) !important;
   }
-  .header-actions .quick-link {
+  .header-actions > .quick-link {
     background: rgba(255,255,255,0.06) !important;
     border-color: rgba(255,255,255,0.12) !important;
     color: #a0b4cc !important;
   }
-  .header-actions .quick-link:hover {
+  .header-actions > .quick-link:hover {
     background: rgba(255,255,255,0.12) !important;
     color: #f0ede8 !important;
   }
-  .header-actions .quick-link.not-set {
+  .header-actions > .quick-link.not-set {
     border-style: dashed !important;
     color: #4a6a8a !important;
   }
@@ -1215,6 +1220,61 @@
   .quick-link:hover { color: var(--text); border-color: var(--text3); }
   .quick-link.not-set { color: var(--text3); border-style: dashed; }
   .quick-link.not-set:hover { color: var(--accent); border-color: var(--accent); border-style: dashed; }
+
+  /* Sources menu */
+  .sources-wrap {
+    position: relative;
+    display: inline-block;
+  }
+  .source-dropdown {
+    display: none;
+    position: fixed;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    padding: 6px;
+    z-index: 9999;
+    min-width: 190px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    flex-direction: column;
+    gap: 2px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .source-dropdown.open { display: flex; }
+  .source-dropdown .quick-link {
+    width: 100%;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 7px 12px;
+    border: none;
+    border-radius: 5px;
+    background: transparent;
+    color: var(--text2);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+  }
+  .source-dropdown .quick-link:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+  .source-dropdown .quick-link.not-set {
+    border: none;
+    color: var(--text3);
+    font-style: italic;
+  }
+  .source-dropdown .quick-link.not-set:hover {
+    background: var(--surface2);
+    color: var(--accent);
+  }
+  .source-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text3);
+    padding: 5px 12px 4px;
+  }
 
 
   /* Carry over modal */
@@ -2230,24 +2290,30 @@
       <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
       <button class="btn btn-hex" onclick="openHexModal()">⬆ Hex priority</button>
       <button class="btn btn-wr" onclick="openWRModal()">⬆ WR data</button>
-      <button class="quick-link" id="github-link-btn" onclick="openQuickLink('github')" title="Click to set your GitHub Pages URL">
-        <span>GitHub ↗</span>
-      </button>
-      <a class="quick-link" href="slack://" title="Open Slack" style="text-decoration:none;">
-        <span>Slack 💬</span>
-      </a>
-      <button class="quick-link" id="gcal-link-btn" onclick="openQuickLink('gcal')" title="Click to set your Google Calendar URL">
-        <span>GCal ↗</span>
-      </button>
-      <button class="quick-link" id="trainer-link-btn" onclick="openQuickLink('trainer')" title="Click to set your Trainer Dash URL">
-        <span>Trainer Dash ↗</span>
-      </button>
-      <button class="quick-link" id="hex-link-btn" onclick="openQuickLink('hex')" title="Click to set your Hex URL">
-        <span>Hex ↗</span>
-      </button>
-      <button class="quick-link" id="looker-link-btn" onclick="openQuickLink('looker')" title="Click to set your Looker URL">
-        <span>Looker ↗</span>
-      </button>
+      <div class="sources-wrap">
+        <button class="btn" onclick="toggleSourceDropdown()" id="source-toggle-btn">Sources ▾</button>
+        <div class="source-dropdown" id="source-dropdown">
+          <div class="source-label">Source Links</div>
+          <button class="quick-link" id="github-link-btn" onclick="openQuickLink('github'); closeSourceDropdown()" title="Click to set your GitHub Pages URL">
+            <span>GitHub</span><span>↗</span>
+          </button>
+          <a class="quick-link" href="slack://" onclick="closeSourceDropdown()" title="Open Slack" style="text-decoration:none;">
+            <span>Slack</span><span>↗</span>
+          </a>
+          <button class="quick-link" id="gcal-link-btn" onclick="openQuickLink('gcal'); closeSourceDropdown()" title="Click to set your Google Calendar URL">
+            <span>GCal</span><span>↗</span>
+          </button>
+          <button class="quick-link" id="trainer-link-btn" onclick="openQuickLink('trainer'); closeSourceDropdown()" title="Click to set your Trainer Dash URL">
+            <span>Trainer Dash</span><span>↗</span>
+          </button>
+          <button class="quick-link" id="hex-link-btn" onclick="openQuickLink('hex'); closeSourceDropdown()" title="Click to set your Hex URL">
+            <span>Hex</span><span>↗</span>
+          </button>
+          <button class="quick-link" id="looker-link-btn" onclick="openQuickLink('looker'); closeSourceDropdown()" title="Click to set your Looker URL">
+            <span>Looker</span><span>↗</span>
+          </button>
+        </div>
+      </div>
       <div class="more-wrap">
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
@@ -5281,11 +5347,32 @@
       `<span class="dashboard-chip" style="color:#ffb800; border-color:#ffb800; background:rgba(255,184,0,0.12); box-shadow:0 0 12px rgba(255,184,0,0.3);">${pct}% Sent</span>`;
   }
 
-  // ── More dropdown ─────────────────────────────────
+  // ── Source + More dropdowns ───────────────────────
+  function toggleSourceDropdown() {
+    const dropdown = document.getElementById('source-dropdown');
+    const btn = document.getElementById('source-toggle-btn');
+    const isOpen = dropdown.classList.toggle('open');
+    closeMoreDropdown();
+    if (isOpen && btn) {
+      const rect = btn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 6) + 'px';
+      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+      dropdown.style.left = 'auto';
+    }
+  }
+  function closeSourceDropdown() {
+    document.getElementById('source-dropdown').classList.remove('open');
+  }
+  document.addEventListener('click', function(e) {
+    const wrap = document.querySelector('.sources-wrap');
+    if (wrap && !wrap.contains(e.target)) closeSourceDropdown();
+  });
+
   function toggleMoreDropdown() {
     const dropdown = document.getElementById('more-dropdown');
     const btn = document.querySelector('.more-wrap > .btn');
     const isOpen = dropdown.classList.toggle('open');
+    closeSourceDropdown();
     if (isOpen && btn) {
       const rect = btn.getBoundingClientRect();
       dropdown.style.top = (rect.bottom + 6) + 'px';
