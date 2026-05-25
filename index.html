@@ -1738,6 +1738,78 @@
   .table-view { display: block; }
   .table-view.hidden { display: none; }
 
+
+  /* Notion export modal */
+  .notion-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+  }
+  .notion-overlay.open { display: flex; }
+  .notion-modal {
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 12px;
+    padding: 28px;
+    width: 600px;
+    max-width: 94vw;
+    max-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden;
+  }
+  .notion-preview {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 18px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    white-space: pre-wrap;
+    font-family: 'DM Mono', monospace;
+  }
+  .notion-copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text3);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .notion-copy-btn:hover { color: var(--accent); border-color: var(--accent); }
+  .notion-copy-btn.copied { color: var(--green); border-color: var(--green); }
+  .notion-preview-wrap {
+    position: relative;
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+  .notion-steps {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: var(--text3);
+    line-height: 1.7;
+  }
+  .notion-steps strong { color: var(--text2); }
+
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -2614,6 +2686,7 @@
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
           <button class="more-item" onclick="toggleHeatmapView(); closeMoreDropdown()" id="heatmap-more-btn">🗂 WR% Heatmap</button>
+          <button class="more-item" onclick="openNotionExport(); closeMoreDropdown()">📋 Export to Notion</button>
           <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
@@ -3180,6 +3253,33 @@
     <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
       <button class="btn" onclick="applyAllTierSuggestions()" style="color:var(--accent); border-color:var(--accent);">Apply all suggestions</button>
       <button class="btn" onclick="closeTierSuggest()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Notion Export Modal -->
+<div class="notion-overlay" id="notion-overlay" onclick="handleNotionOverlay(event)">
+  <div class="notion-modal">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-shrink:0;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text);">Export to Notion</div>
+        <div style="font-size:12px; color:var(--text3); margin-top:3px;" id="notion-week-label"></div>
+      </div>
+      <button onclick="closeNotionExport()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
+    </div>
+
+    <div class="notion-steps" style="flex-shrink:0;">
+      <strong>How to paste into Notion:</strong> Copy below → open your Notion page → click where you want it → paste (<strong>Cmd+V</strong>). Notion will auto-format the headers and bullets.
+    </div>
+
+    <div class="notion-preview-wrap">
+      <button class="notion-copy-btn" id="notion-copy-btn" onclick="copyNotionExport()">Copy</button>
+      <div class="notion-preview" id="notion-preview"></div>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-shrink:0;">
+      <a href="https://www.notion.so/futurefit/a3b893f7893a4779adae962ff275ccb2?v=3455ecc6bbcc8183a124000c1f9513dd" target="_blank" class="briefing-open-btn">Open Notion page ↗</a>
+      <button class="btn" onclick="closeNotionExport()">Done</button>
     </div>
   </div>
 </div>
@@ -5389,6 +5489,164 @@
   function openHistoryModalByName(name) {
     const entry = currentEntries().find(e => e.name.toLowerCase() === name.toLowerCase());
     if (entry) openHistoryModal(entry.id);
+  }
+
+
+  // ── Notion Export ─────────────────────────────────
+  function openNotionExport() {
+    const entries = currentEntries();
+    const wl = weekLabel(state.currentWeek);
+    const total    = entries.filter(e => !e.skipped).length;
+    const t1       = entries.filter(e => e.tier === '1');
+    const t2       = entries.filter(e => e.tier === '2');
+    const t3       = entries.filter(e => e.tier === '3');
+    const warnings = entries.filter(e => e.standing === 'warning1' || e.standing === 'warning2');
+    const sent     = entries.filter(e => !e.skipped && (e.status === 'sent' || e.status === 'checkin')).length;
+    const sentPct  = total ? Math.round(sent / total * 100) : 0;
+    const followup = entries.filter(e => e.status === 'followup').length;
+    const skipped  = entries.filter(e => e.skipped).length;
+
+    // WR avg
+    const wrEntries = entries.filter(e => !e.skipped && e.wrPct != null);
+    const wrAvg = wrEntries.length
+      ? Math.round(wrEntries.reduce((s, e) => s + e.wrPct, 0) / wrEntries.length * 10) / 10
+      : null;
+
+    // Top performers
+    const top3 = [...entries]
+      .filter(e => e.wrPct != null)
+      .sort((a, b) => b.wrPct - a.wrPct)
+      .slice(0, 3);
+
+    // Tier improved vs last week
+    const prevWeeks = Object.entries(state.weeks)
+      .filter(([k]) => k < state.currentWeek)
+      .sort((a, b) => b[0].localeCompare(a[0]));
+    const prevEntries = prevWeeks.length ? (prevWeeks[0][1].entries || []) : [];
+    let improved = 0, declined = 0;
+    entries.forEach(e => {
+      const prev = prevEntries.find(p => p.name.toLowerCase() === e.name.toLowerCase());
+      if (prev) {
+        if (parseInt(e.tier) < parseInt(prev.tier)) improved++;
+        if (parseInt(e.tier) > parseInt(prev.tier)) declined++;
+      }
+    });
+
+    const separations = entries.filter(e => e.standing === 'resignation' || e.standing === 'termination');
+
+    const now = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+    // Build markdown
+    const lines = [];
+    lines.push(`# Weekly Coaching Summary — ${wl}`);
+    lines.push(`*Updated ${now}*`);
+    lines.push('');
+    lines.push('## 📊 At a Glance');
+    lines.push(`| Metric | Value |`);
+    lines.push(`| --- | --- |`);
+    lines.push(`| Total coaches | ${total} |`);
+    lines.push(`| Tier 1 (urgent) | ${t1.length} |`);
+    lines.push(`| Tier 2 (developing) | ${t2.length} |`);
+    lines.push(`| Tier 3 (on track) | ${t3.length} |`);
+    lines.push(`| Feedback sent | ${sent} / ${total} (${sentPct}%) |`);
+    if (followup > 0) lines.push(`| Follow-up needed | ${followup} |`);
+    if (skipped > 0) lines.push(`| Skipped | ${skipped} |`);
+    if (wrAvg !== null) lines.push(`| Team avg WR% | ${wrAvg}% |`);
+    if (improved > 0) lines.push(`| Tier improved | ${improved} coach${improved !== 1 ? 'es' : ''} |`);
+    if (declined > 0) lines.push(`| Tier declined | ${declined} coach${declined !== 1 ? 'es' : ''} |`);
+    lines.push('');
+
+    if (warnings.length > 0) {
+      lines.push('## ⚠️ Active Warnings');
+      warnings.forEach(e => {
+        const days = e.standing === 'warning1' ? 14 : 7;
+        let reeval = '';
+        if (e.warningDate) {
+          const due = new Date(e.warningDate + 'T12:00:00');
+          due.setDate(due.getDate() + days);
+          reeval = ` · Re-eval ${due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`;
+        }
+        lines.push(`- **${e.name}** — ${e.standing === 'warning1' ? '1st warning' : '2nd warning'}${e.warningDate ? ', sent ' + e.warningDate : ''}${reeval}${e.wrPct != null ? ' · ' + e.wrPct + '% WR' : ''}`);
+      });
+      lines.push('');
+    }
+
+    if (top3.length > 0) {
+      lines.push('## 🏆 Top Performers');
+      top3.forEach((e, i) => {
+        lines.push(`${i + 1}. **${e.name}** — ${e.wrPct}% WR`);
+      });
+      lines.push('');
+    }
+
+    if (t1.length > 0) {
+      lines.push('## 🔴 Tier 1 — Urgent');
+      t1.forEach(e => {
+        const parts = [];
+        if (e.wrPct != null) parts.push(`${e.wrPct}% WR`);
+        if (e.standing && e.standing !== 'none' && e.standing !== 'active') parts.push(e.standing.replace('warning1','W1').replace('warning2','W2').replace('monitoring','MON'));
+        if (e.status === 'sent' || e.status === 'checkin') parts.push('✓ sent');
+        else if (e.status === 'followup') parts.push('⚡ follow-up');
+        if (e.coachNotes) parts.push(`"${e.coachNotes.slice(0,60)}${e.coachNotes.length>60?'...':''}"`);
+        lines.push(`- ${e.name}${parts.length ? ' — ' + parts.join(' · ') : ''}`);
+      });
+      lines.push('');
+    }
+
+    if (t2.length > 0) {
+      lines.push('## 🟡 Tier 2 — Developing');
+      t2.forEach(e => {
+        const parts = [];
+        if (e.wrPct != null) parts.push(`${e.wrPct}% WR`);
+        if (e.status === 'sent' || e.status === 'checkin') parts.push('✓ sent');
+        else if (e.status === 'followup') parts.push('⚡ follow-up');
+        lines.push(`- ${e.name}${parts.length ? ' — ' + parts.join(' · ') : ''}`);
+      });
+      lines.push('');
+    }
+
+    if (separations.length > 0) {
+      lines.push('## 🚪 Separations');
+      separations.forEach(e => {
+        lines.push(`- **${e.name}** — ${e.standing}${e.resignDate ? ', date: ' + e.resignDate : ''}`);
+      });
+      lines.push('');
+    }
+
+    const teamNotes = (state.weeks[state.currentWeek] || {}).teamNotes || '';
+    if (teamNotes.trim()) {
+      lines.push('## 📋 Week Notes');
+      lines.push(teamNotes.trim());
+      lines.push('');
+    }
+
+    const text = lines.join('\n');
+    document.getElementById('notion-week-label').textContent = wl;
+    document.getElementById('notion-preview').textContent = text;
+
+    const copyBtn = document.getElementById('notion-copy-btn');
+    copyBtn.textContent = 'Copy';
+    copyBtn.classList.remove('copied');
+
+    document.getElementById('notion-overlay').classList.add('open');
+  }
+
+  function closeNotionExport() {
+    document.getElementById('notion-overlay').classList.remove('open');
+  }
+
+  function handleNotionOverlay(evt) {
+    if (evt.target === document.getElementById('notion-overlay')) closeNotionExport();
+  }
+
+  function copyNotionExport() {
+    const text = document.getElementById('notion-preview').textContent;
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('notion-copy-btn');
+      btn.textContent = '✓ Copied';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+    });
   }
 
   // ── Add coach form ────────────────────────────────
