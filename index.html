@@ -56,14 +56,10 @@
 
   /* Keep header and stats dark in light mode */
   body.light .header {
-    background:
-      radial-gradient(ellipse 55% 180% at 18% 50%, rgba(255, 140, 0, 0.22) 0%, transparent 70%),
-      radial-gradient(ellipse 35% 140% at 72% 60%, rgba(255, 80, 30, 0.14) 0%, transparent 65%),
-      radial-gradient(ellipse 60% 200% at 50% -20%, rgba(255, 184, 0, 0.11) 0%, transparent 60%),
-      linear-gradient(160deg, #111008 0%, #0d0d0d 40%, #0a0a0a 100%);
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
     padding: 16px 24px;
     margin: -32px -24px 24px;
-    border-image: linear-gradient(to right, #ff5a3644, #ff8c0077, #ffb800aa, #ffe566aa, #ffb80077, #ff8c0044) 1;
+    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
   }
   body.light .header-left h1 { color: #f0ede8; }
   body.light .header-left .week-label { color: #8a8780; background: #1a1a1a; border-color: #3a3a3a; }
@@ -106,9 +102,9 @@
     background: #222222 !important;
     border-color: #3a3a3a !important;
   }
-  body.light #gauge-stats-bar #s-total { color: #7a5f00; }
-  body.light #gauge-stats-bar #s-sent  { color: #1a6040; }
-  body.light #gauge-stats-bar #s-followup { color: #7a5f00; }
+  body.light #gauge-stats-bar #s-total,
+  body.light #gauge-stats-bar #s-sent { color: #d4ff6e; }
+  body.light #gauge-stats-bar #s-followup { color: #ffc85e; }
   body.light #gauge-stats-bar #s-pending { color: #555350; }
   body.light #gauge-stats-bar #s-wr-avg { color: inherit; }
   body.light #gauge-stats-bar #progress-count { color: #555350; }
@@ -147,15 +143,15 @@
 
   /* futurePro text logo */
   .futurepro-text {
-    font-size: 22px;
-    letter-spacing: -0.02em;
+    font-size: 16px;
+    letter-spacing: -0.01em;
     color: rgba(255,255,255,0.9);
-    margin-bottom: 6px;
+    margin-bottom: 5px;
     display: block;
     line-height: 1;
     font-family: 'DM Sans', sans-serif;
   }
-  .futurepro-text span { font-weight: 300; color: rgba(255,255,255,0.55); }
+  .futurepro-text span { font-weight: 300; color: rgba(255,255,255,0.7); }
   .futurepro-text strong { font-weight: 700; color: #fff; }
 
 
@@ -238,9 +234,6 @@
     25% { transform: translateX(-6px); }
     75% { transform: translateX(6px); }
   }
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
 
 
   .header-actions .btn:hover {
@@ -310,10 +303,7 @@
 
   body {
     font-family: 'DM Sans', sans-serif;
-    background:
-      radial-gradient(ellipse 80% 40% at 20% 0%, rgba(255, 140, 0, 0.07) 0%, transparent 60%),
-      radial-gradient(ellipse 50% 30% at 80% 0%, rgba(255, 70, 20, 0.05) 0%, transparent 55%),
-      var(--bg);
+    background: var(--bg);
     color: var(--text);
     min-height: 100vh;
     padding: 32px 24px;
@@ -329,27 +319,9 @@
     margin-bottom: 24px;
     padding: 20px 24px;
     margin: -32px -24px 24px;
-    background:
-      radial-gradient(ellipse 55% 180% at 18% 50%, rgba(255, 140, 0, 0.18) 0%, transparent 70%),
-      radial-gradient(ellipse 35% 140% at 72% 60%, rgba(255, 80, 30, 0.10) 0%, transparent 65%),
-      radial-gradient(ellipse 60% 200% at 50% -20%, rgba(255, 184, 0, 0.09) 0%, transparent 60%),
-      linear-gradient(160deg, #111008 0%, #0d0d0d 40%, #0a0a0a 100%);
-    border-bottom: 1px solid transparent;
-    border-image: linear-gradient(to right, #ff5a3644, #ff8c0077, #ffb800aa, #ffe566aa, #ffb80077, #ff8c0044) 1;
-    position: sticky;
-    top: -32px;
-    z-index: 100;
-    overflow: hidden;
-  }
-
-  .header::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse 30% 90% at 0% 50%, rgba(255, 100, 20, 0.07) 0%, transparent 70%),
-      radial-gradient(ellipse 20% 60% at 100% 50%, rgba(255, 184, 0, 0.05) 0%, transparent 70%);
-    pointer-events: none;
+    background: linear-gradient(135deg, #0d0d0d 0%, #1a1200 60%, #0d0d0d 100%);
+    border-bottom: 2px solid transparent;
+    border-image: linear-gradient(to right, #ff5a36, #ff8c00, #ffb800, #ffe566) 1;
   }
   .header-row {
     display: flex;
@@ -359,12 +331,11 @@
   }
 
   .header-left h1 {
-    font-size: 26px;
-    font-weight: 700;
-    letter-spacing: -0.03em;
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
     white-space: nowrap;
-    color: #fff8ee;
-    line-height: 1.1;
+    color: #f0ede8;
   }
   .header-left .week-label {
     font-family: 'DM Mono', monospace;
@@ -582,13 +553,6 @@
     gap: 4px;
     margin-bottom: 14px;
     flex-wrap: wrap;
-    position: sticky;
-    top: calc(var(--sticky-header-h) + 106px);
-    z-index: 98;
-    background: var(--bg);
-    padding: 6px 0 8px;
-    margin-left: -2px;
-    margin-right: -2px;
   }
   .filter-btn {
     font-family: 'DM Mono', monospace;
@@ -675,14 +639,7 @@
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .table-scroll-inner {
     overflow-x: auto;
-    overflow-y: auto;
-    max-height: calc(100vh - 320px);
-    min-height: 200px;
     -webkit-overflow-scrolling: touch;
   }
   table {
@@ -694,12 +651,12 @@
     font-family: 'DM Mono', monospace;
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.06em;
     color: var(--text3);
-    padding: 10px 10px;
+    padding: 8px 10px;
     border-bottom: 1px solid var(--border);
     text-align: left;
-    font-weight: 500;
+    font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -719,26 +676,10 @@
   thead th.sort-desc::after { content: ' ↓'; color: var(--accent); }
 
 
-  :root {
-    --sticky-header-h: 82px;
+  /* Resizable columns */
+  thead th {
+    position: relative;
   }
-
-  /* Gauge bar sticky */
-  #gauge-stats-bar {
-    position: sticky;
-    top: var(--sticky-header-h);
-    z-index: 99;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-  }
-  /* Shadow when stuck */
-  .header.is-stuck {
-    box-shadow: 0 4px 24px rgba(0,0,0,0.5);
-  }
-  #gauge-stats-bar.is-stuck {
-    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
-  }
-
   .col-resizer {
     position: absolute;
     right: 0;
@@ -755,19 +696,18 @@
     opacity: 0.5;
   }
 
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s, border-left-color 0.15s; border-left: 4px solid transparent; }
-  tbody tr.tier-row-1 { background: rgba(255, 90, 54, 0.04); border-left-color: rgba(255, 90, 54, 0.5); border-bottom-color: rgba(255, 90, 54, 0.1); }
-  tbody tr.tier-row-2 { background: rgba(255, 184, 0, 0.035); border-left-color: rgba(255, 184, 0, 0.45); border-bottom-color: rgba(255, 184, 0, 0.08); }
-  tbody tr.tier-row-3 { background: rgba(107, 255, 184, 0.025); border-left-color: rgba(107, 255, 184, 0.35); border-bottom-color: rgba(107, 255, 184, 0.07); }
-  tbody tr.tier-row-1:hover { background: rgba(255, 90, 54, 0.09); border-left-color: #ff5a36; }
-  tbody tr.tier-row-2:hover { background: rgba(255, 184, 0, 0.08); border-left-color: #ffb800; }
-  tbody tr.tier-row-3:hover { background: rgba(107, 255, 184, 0.07); border-left-color: var(--green); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; border-left: 3px solid transparent; }
+  tbody tr.tier-row-1 { border-left-color: #ff5a3655; }
+  tbody tr.tier-row-2 { border-left-color: #ffb80055; }
+  tbody tr.tier-row-3 { border-left-color: #6bffb855; }
+  tbody tr.tier-row-1:hover { border-left-color: #ff5a36; }
+  tbody tr.tier-row-2:hover { border-left-color: #ffb800; }
+  tbody tr.tier-row-3:hover { border-left-color: var(--green); }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:nth-child(even).tier-row-1 { background: rgba(255, 90, 54, 0.06); }
-  tbody tr:nth-child(even).tier-row-2 { background: rgba(255, 184, 0, 0.05); }
-  tbody tr:nth-child(even).tier-row-3 { background: rgba(107, 255, 184, 0.04); }
-  td { padding: 9px 10px; font-size: 12px; vertical-align: middle; color: var(--text2); }
-  .td-name { font-weight: 600; color: #f5f0e8; font-size: 14px; letter-spacing: -0.01em; }
+  tbody tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+  tbody tr:hover { background: var(--surface2); }
+  td { padding: 8px 10px; font-size: 12px; vertical-align: middle; }
+  .td-name { font-weight: 500; color: var(--text); font-size: 13px; }
 
   /* Column widths */
   th:nth-child(1)  { width: 60px;  } /* Hex Priority */
@@ -880,18 +820,15 @@
   .td-date {
     font-family: 'DM Mono', monospace;
     font-size: 11px;
-    color: var(--text2);
-    font-variant-numeric: tabular-nums;
+    color: var(--text3);
   }
   .td-note {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text3);
     max-width: 180px;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    letter-spacing: 0.01em;
-    margin-top: 1px;
   }
   .del-btn {
     background: none;
@@ -1831,13 +1768,12 @@
   /* Clickable coach name */
   .td-name-link {
     cursor: pointer;
-    font-weight: 600;
-    color: #f5f0e8;
-    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    font-size: 13px;
     transition: color 0.15s;
     text-decoration: none;
     display: inline;
-    letter-spacing: -0.01em;
   }
   .td-name-link:hover { color: var(--accent); }
 
@@ -2085,16 +2021,16 @@
   }
   .col-toggle-dropdown {
     display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    position: fixed;
     background: var(--surface);
     border: 1px solid var(--border2);
     border-radius: 8px;
     padding: 10px 14px;
-    z-index: 100;
-    min-width: 180px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 9999;
+    min-width: 200px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    max-height: 80vh;
+    overflow-y: auto;
   }
   .col-toggle-dropdown.open { display: block; }
   .col-toggle-title {
@@ -2137,18 +2073,18 @@
   }
   .more-dropdown {
     display: none;
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 0;
+    position: fixed;
     background: var(--surface);
     border: 1px solid var(--border2);
     border-radius: 8px;
     padding: 6px;
-    z-index: 100;
-    min-width: 160px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+    z-index: 9999;
+    min-width: 200px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     flex-direction: column;
     gap: 2px;
+    max-height: 80vh;
+    overflow-y: auto;
   }
   .more-dropdown.open { display: flex; }
   .more-item {
@@ -2318,7 +2254,6 @@
           <button class="more-item" onclick="toggleHeatmapView(); closeMoreDropdown()" id="heatmap-more-btn">🗂 WR% Heatmap</button>
           <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
-          <button class="more-item" onclick="openSlackSummaryModal(); closeMoreDropdown()">✦ AI Slack summary</button>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
           <button class="more-item" onclick="showHistory(); closeMoreDropdown()" id="history-btn">Week history</button>
           <div class="more-divider"></div>
@@ -2341,11 +2276,11 @@
   <!-- Pct + emoji + progress -->
   <div style="display:flex; flex-direction:column; gap:3px; flex-shrink:0; min-width:110px;">
     <div style="display:flex; align-items:baseline; gap:6px;">
-      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:26px; font-weight:600; color:var(--text); line-height:1; letter-spacing:-0.02em;">0%</span>
-      <span style="font-size:10px; color:var(--text3); letter-spacing:0.04em; text-transform:uppercase;">sent</span>
+      <span id="gauge-pct-label" style="font-family:'DM Mono',monospace; font-size:24px; font-weight:500; color:var(--text); line-height:1;">0%</span>
+      <span style="font-size:10px; color:var(--text3);">sent</span>
       <span style="font-size:16px; line-height:1;">🚌💨</span>
     </div>
-    <div class="progress-track" style="width:120px; height:4px; border-radius:2px;"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    <div class="progress-track" style="width:120px;"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
     <span id="progress-count" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3);">0 / 0 coaches</span>
     <span id="progress-text" style="display:none;">0%</span>
     <div id="gauge-breakdown"></div>
@@ -2354,53 +2289,28 @@
   <!-- Divider -->
   <div style="width:1px; background:var(--border); align-self:stretch; flex-shrink:0;"></div>
 
-  <!-- Stat chips (upgraded) -->
-  <div style="display:flex; gap:8px; flex:1; align-items:stretch; flex-wrap:wrap;">
-
-    <!-- Total -->
-    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(255,184,0,0.07); border:1px solid rgba(255,184,0,0.22); gap:2px;">
-      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#a07800;">Total</span>
-      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--accent); line-height:1; letter-spacing:-0.02em;" id="s-total">0</span>
-      <span style="font-size:10px; color:var(--text3);">coaches</span>
+  <!-- Stat chips (compact) -->
+  <div style="display:flex; gap:8px; flex:1; align-items:center; flex-wrap:wrap;">
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-total">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Total</span>
     </div>
-
-    <!-- Sent -->
-    <div style="display:flex; flex-direction:column; flex:1; min-width:100px; padding:8px 12px; border-radius:8px; background:rgba(107,255,184,0.07); border:1px solid rgba(107,255,184,0.2); gap:2px;">
-      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#2a7a52;">Sent</span>
-      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--green); line-height:1; letter-spacing:-0.02em;" id="s-sent">0</span>
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-top:2px;">
-        <span style="font-size:10px; color:var(--text3);" id="s-sent-trend-label">complete</span>
-        <svg id="sent-sparkline" width="60" height="22" viewBox="0 0 60 22" style="overflow:visible; opacity:0; transition:opacity 0.3s;"></svg>
-      </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-sent">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Sent</span>
     </div>
-
-    <!-- Follow-up -->
-    <div style="display:flex; flex-direction:column; flex:1; min-width:100px; padding:8px 12px; border-radius:8px; background:rgba(255,184,0,0.06); border:1px solid rgba(255,184,0,0.18); gap:2px;">
-      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:#a07800;">Follow-up</span>
-      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--yellow); line-height:1; letter-spacing:-0.02em;" id="s-followup">0</span>
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-top:2px;">
-        <span style="font-size:10px; color:var(--text3);" id="s-followup-trend-label">needs action</span>
-        <svg id="followup-sparkline" width="60" height="22" viewBox="0 0 60 22" style="overflow:visible; opacity:0; transition:opacity 0.3s;"></svg>
-      </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--yellow); line-height:1;" id="s-followup">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Follow-up</span>
     </div>
-
-    <!-- Pending -->
-    <div style="display:flex; flex-direction:column; flex:1; min-width:64px; padding:8px 12px; border-radius:8px; background:rgba(255,255,255,0.03); border:1px solid var(--border); gap:2px;">
-      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:var(--text3);">Pending</span>
-      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; color:var(--text2); line-height:1; letter-spacing:-0.02em;" id="s-pending">0</span>
-      <span style="font-size:10px; color:var(--text3);">open</span>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--text3); line-height:1;" id="s-pending">0</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Pending</span>
     </div>
-
-    <!-- Avg WR% — border/color set dynamically by JS -->
-    <div style="display:flex; flex-direction:column; flex:1; min-width:100px; padding:8px 12px; border-radius:8px; gap:2px;" id="s-wr-card">
-      <span style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.09em; color:var(--text3);" id="s-wr-label">Avg WR%</span>
-      <span style="font-family:'DM Mono',monospace; font-size:22px; font-weight:600; line-height:1; letter-spacing:-0.02em;" id="s-wr-avg">—</span>
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:6px; margin-top:2px;">
-        <span style="font-size:10px; color:var(--text3);" id="s-wr-trend-label">team avg</span>
-        <svg id="wr-sparkline" width="60" height="22" viewBox="0 0 60 22" style="overflow:visible; opacity:0; transition:opacity 0.3s;"></svg>
-      </div>
+    <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
+      <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; line-height:1;" id="s-wr-avg">—</span>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Avg WR%</span>
     </div>
-
   </div>
 
 </div>
@@ -2579,11 +2489,6 @@
 
 <!-- Table -->
 <div class="table-wrap">
-  <div style="display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-bottom:1px solid var(--border);">
-    <span id="table-title-label" style="font-family:'DM Mono',monospace; font-size:11px; font-weight:500; text-transform:uppercase; letter-spacing:0.09em; color:var(--text2);">Focus Roster</span>
-    <span id="table-visible-count" style="font-family:'DM Mono',monospace; font-size:11px; color:var(--text3);">0 visible</span>
-  </div>
-  <div class="table-scroll-inner">
   <table>
     <thead>
       <tr>
@@ -2614,7 +2519,6 @@
     <div class="caught-up-title">All caught up!</div>
     <div class="caught-up-sub">Every Tier 1 and Tier 2 coach has been contacted this week. Nice work.</div>
     <div class="caught-up-stat" id="caught-up-stat"></div>
-  </div>
   </div>
 </div>
 
@@ -2743,73 +2647,16 @@
       <span class="notes-saved-indicator" id="notes-saved-indicator">Type to save automatically</span>
       <button class="btn" onclick="closeNotes()">Done</button>
     </div>
-
-    <!-- AI Feedback Draft -->
-    <div style="border-top:1px solid var(--border); margin-top:16px; padding-top:14px;">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:10px;">
-        <span style="font-family:'DM Mono',monospace; font-size:10px; text-transform:uppercase; letter-spacing:0.07em; color:var(--text3);">AI Feedback Draft</span>
-        <span style="display:inline-flex; padding:1px 6px; border-radius:4px; background:linear-gradient(135deg,#ffcf48,#f06f2e); color:#0f0f0f; font-size:9px; font-weight:700; letter-spacing:0.04em;">AI</span>
-      </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
-        <select id="ai-draft-tone" style="font-family:'DM Mono',monospace; font-size:11px; background:var(--surface2); border:1px solid var(--border); border-radius:5px; color:var(--text2); padding:5px 10px; outline:none; flex:1; min-width:120px;">
-          <option value="direct">Direct</option>
-          <option value="supportive">Supportive</option>
-          <option value="urgent">Urgent</option>
-          <option value="developmental">Developmental</option>
-        </select>
-        <button class="btn" id="ai-draft-btn" onclick="generateAIDraft()" style="white-space:nowrap;">✦ Generate Draft</button>
-        <button class="btn" id="ai-draft-copy-btn" onclick="copyAIDraft()" style="display:none; white-space:nowrap;">Copy</button>
-      </div>
-      <div id="ai-draft-loading" style="display:none; align-items:center; gap:10px; padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:12px; color:var(--text3);">
-        <span id="ai-draft-spinner" style="display:inline-block; width:14px; height:14px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; flex-shrink:0;"></span>
-        Generating feedback draft…
-      </div>
-      <div id="ai-draft-output" style="display:none; padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:13px; color:var(--text); line-height:1.65; white-space:pre-wrap;"></div>
-    </div>
   </div>
 </div>
 
-<!-- AI Slack Summary Modal -->
-<div id="slack-summary-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.65); z-index:600; align-items:center; justify-content:center;" onclick="handleSlackSummaryOverlay(event)">
-  <div style="background:var(--surface); border:1px solid var(--border2); border-radius:12px; padding:24px; width:520px; max-width:92vw; display:flex; flex-direction:column; gap:14px;">
-    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-      <div>
-        <div style="font-size:15px; font-weight:500; color:var(--text); display:flex; align-items:center; gap:8px;">
-          AI Slack Summary
-          <span style="display:inline-flex; padding:1px 6px; border-radius:4px; background:linear-gradient(135deg,#ffcf48,#f06f2e); color:#0f0f0f; font-size:9px; font-weight:700; letter-spacing:0.04em;">AI</span>
-        </div>
-        <div id="slack-summary-week" style="font-family:'DM Mono',monospace; font-size:10px; color:var(--text3); text-transform:uppercase; letter-spacing:0.07em; margin-top:4px;"></div>
-      </div>
-      <button onclick="closeSlackSummaryModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
-    </div>
-    <p style="font-size:12px; color:var(--text3); line-height:1.5; margin:0;">Generates a concise leadership Slack message summarising this week's coaching activity.</p>
-    <div style="display:flex; gap:8px;">
-      <button class="btn btn-accent" id="slack-gen-btn" onclick="generateSlackSummary()" style="flex:1;">✦ Generate</button>
-      <button class="btn" id="slack-copy-btn" onclick="copySlackSummary()" style="display:none;">Copy</button>
-    </div>
-    <div id="slack-loading" style="display:none; align-items:center; gap:10px; padding:12px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:12px; color:var(--text3);">
-      <span style="display:inline-block; width:14px; height:14px; border:2px solid var(--border2); border-top-color:var(--accent); border-radius:50%; animation:spin 0.7s linear infinite; flex-shrink:0;"></span>
-      Writing summary…
-    </div>
-    <div id="slack-output" style="display:none; padding:14px; background:var(--surface2); border:1px solid var(--border); border-radius:6px; font-size:13px; color:var(--text); line-height:1.65; white-space:pre-wrap;"></div>
-  </div>
-</div>
+<!-- Coach History Modal -->
 <div class="history-modal-overlay" id="history-modal-overlay" onclick="handleHistoryOverlayClick(event)">
   <div class="history-modal">
     <div class="history-modal-header">
       <div>
         <div class="history-modal-name" id="history-modal-name"></div>
         <div class="history-modal-sub">Coach history — last 4 weeks</div>
-        <div id="history-spark-wrap" style="display:none; align-items:center; gap:10px; margin-top:8px; padding:7px 10px; background:var(--surface2); border:1px solid var(--border); border-radius:6px;">
-          <div style="flex:1;">
-            <div style="font-size:9px; font-family:'DM Mono',monospace; text-transform:uppercase; letter-spacing:0.08em; color:var(--text3); margin-bottom:4px;">WR% trend</div>
-            <svg id="history-sparkline" width="100%" height="32" viewBox="0 0 180 32" preserveAspectRatio="none" style="overflow:visible; display:block;"></svg>
-          </div>
-          <div style="flex-shrink:0; text-align:right;">
-            <div id="history-spark-delta" style="font-family:'DM Mono',monospace; font-size:13px; font-weight:600; line-height:1;"></div>
-            <div id="history-spark-range" style="font-size:10px; color:var(--text3); margin-top:2px;"></div>
-          </div>
-        </div>
       </div>
       <button onclick="closeHistoryModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;line-height:1;">✕</button>
     </div>
@@ -3293,12 +3140,14 @@
     state.currentWeek = key;
     if (!state.weeks[key]) state.weeks[key] = { entries: [], created: new Date().toISOString() };
 
-    // Add carried over coaches with reset status to pending
+    // Add carried over coaches with reset status to pending but preserve WR data
     toCarry.forEach(e => {
       const carried = { ...e,
         id: nextId++,
         status: 'pending',
         date: null,
+        wrPct: e.wrPct,
+        wrHistory: e.wrHistory || [],
         created: new Date().toISOString()
       };
       state.weeks[key].entries.push(carried);
@@ -3312,16 +3161,24 @@
   function archiveWeek() {
     if (!confirm('Archive this week and start a new one?')) return;
 
-    // Build snapshot before switching weeks
     const archivedKey = state.currentWeek;
     const archivedEntries = currentEntries();
+
+    // Ensure teamNotes are saved before archiving
+    const noteTA = document.getElementById('team-notepad-textarea');
+    if (noteTA && state.weeks[archivedKey]) {
+      state.weeks[archivedKey].teamNotes = noteTA.value;
+    }
+
+    // Show snapshot BEFORE switching week so data is accurate
     showSnapshotModal(archivedKey, archivedEntries);
 
-    // Actually archive
+    // Switch to new week
     const key = weekKey(new Date());
-    const newKey = key === state.currentWeek ? nextMondayKey() : key;
+    const newKey = key === archivedKey ? nextMondayKey() : key;
     state.currentWeek = newKey;
     if (!state.weeks[newKey]) state.weeks[newKey] = { entries: [], created: new Date().toISOString() };
+
     save(); render(); if (historyVisible) renderHistory();
   }
 
@@ -3362,10 +3219,6 @@
   function render() {
     const entries = currentEntries();
 
-    // Preserve table scroll position across re-renders
-    const scrollEl = document.querySelector('.table-scroll-inner');
-    const savedScroll = scrollEl ? scrollEl.scrollTop : 0;
-
     // Stats
     const active = entries.filter(e => !e.skipped);
     const total = active.length;
@@ -3377,143 +3230,17 @@
     document.getElementById('s-followup').textContent = followup;
     document.getElementById('s-pending').textContent = pending;
 
-    // Sent sparkline — sent count per week
-    (function() {
-      const sentVals = weeklyStats(entries => {
-        const a = entries.filter(e => !e.skipped);
-        if (!a.length) return null;
-        return a.filter(e => e.status === 'sent' || e.status === 'checkin').length;
-      });
-      const svg = document.getElementById('sent-sparkline');
-      const lbl = document.getElementById('s-sent-trend-label');
-      if (sentVals.length >= 2) {
-        const diff = sentVals[sentVals.length-1] - sentVals[0];
-        const color = diff > 0 ? '#6bffb8' : diff < 0 ? '#ff5a36' : '#ffb800';
-        drawSparkline(svg, sentVals, color);
-        const sign = diff > 0 ? '+' : '';
-        lbl.textContent = `${diff > 0 ? '↑' : diff < 0 ? '↓' : '→'} ${sign}${diff} ${sentVals.length}wk`;
-        lbl.style.color = color;
-      } else {
-        if (svg) svg.style.opacity = '0';
-        lbl.textContent = 'complete';
-        lbl.style.color = 'var(--text3)';
-      }
-    })();
-
-    // Follow-up sparkline — followup count per week
-    (function() {
-      const fuVals = weeklyStats(entries => {
-        const a = entries.filter(e => !e.skipped);
-        if (!a.length) return null;
-        return a.filter(e => e.status === 'followup').length;
-      });
-      const svg = document.getElementById('followup-sparkline');
-      const lbl = document.getElementById('s-followup-trend-label');
-      if (fuVals.length >= 2) {
-        const diff = fuVals[fuVals.length-1] - fuVals[0];
-        // For follow-up, rising is BAD (red), falling is GOOD (green)
-        const color = diff < 0 ? '#6bffb8' : diff > 0 ? '#ff5a36' : '#ffb800';
-        drawSparkline(svg, fuVals, color);
-        const sign = diff > 0 ? '+' : '';
-        lbl.textContent = `${diff > 0 ? '↑' : diff < 0 ? '↓' : '→'} ${sign}${diff} ${fuVals.length}wk`;
-        lbl.style.color = color;
-      } else {
-        if (svg) svg.style.opacity = '0';
-        lbl.textContent = 'needs action';
-        lbl.style.color = 'var(--text3)';
-      }
-    })();
-
     // Team WR% average
     const wrEntries = active.filter(e => e.wrPct !== null && e.wrPct !== undefined);
     const wrAvgEl = document.getElementById('s-wr-avg');
-    const wrCard  = document.getElementById('s-wr-card');
-    const wrLabel = document.getElementById('s-wr-label');
     if (wrEntries.length > 0) {
       const avg = Math.round(wrEntries.reduce((sum, e) => sum + e.wrPct, 0) / wrEntries.length * 10) / 10;
       wrAvgEl.textContent = avg + '%';
-      if (avg < 60) {
-        wrAvgEl.style.color = 'var(--red)';
-        wrCard.style.background = 'rgba(255,90,54,0.07)';
-        wrCard.style.border = '1px solid rgba(255,90,54,0.22)';
-        wrLabel.style.color = '#7a3020';
-      } else if (avg < 70) {
-        wrAvgEl.style.color = 'var(--yellow)';
-        wrCard.style.background = 'rgba(255,184,0,0.06)';
-        wrCard.style.border = '1px solid rgba(255,184,0,0.18)';
-        wrLabel.style.color = '#a07800';
-      } else if (avg < 80) {
-        wrAvgEl.style.color = 'var(--text2)';
-        wrCard.style.background = 'rgba(255,255,255,0.03)';
-        wrCard.style.border = '1px solid var(--border)';
-        wrLabel.style.color = 'var(--text3)';
-      } else {
-        wrAvgEl.style.color = 'var(--green)';
-        wrCard.style.background = 'rgba(107,255,184,0.07)';
-        wrCard.style.border = '1px solid rgba(107,255,184,0.20)';
-        wrLabel.style.color = '#2a7a52';
-      }
+      wrAvgEl.style.color = avg < 60 ? 'var(--red)' : avg < 70 ? 'var(--yellow)' : avg < 80 ? 'var(--text2)' : 'var(--green)';
     } else {
       wrAvgEl.textContent = '—';
       wrAvgEl.style.color = 'var(--text3)';
-      wrCard.style.background = 'rgba(255,255,255,0.03)';
-      wrCard.style.border = '1px solid var(--border)';
-      wrLabel.style.color = 'var(--text3)';
     }
-
-    // WR sparkline — avg WR per week, last 8 weeks
-    (function() {
-      const svg = document.getElementById('wr-sparkline');
-      const trendLabel = document.getElementById('s-wr-trend-label');
-      if (!svg) return;
-
-      const weekAvgs = Object.entries(state.weeks)
-        .sort((a, b) => a[0].localeCompare(b[0]))
-        .slice(-8)
-        .map(([key, w]) => {
-          const es = (w.entries || []).filter(e => !e.skipped && e.wrPct != null);
-          if (!es.length) return null;
-          return Math.round(es.reduce((s, e) => s + e.wrPct, 0) / es.length * 10) / 10;
-        })
-        .filter(v => v !== null);
-
-      if (weekAvgs.length < 2) { svg.style.opacity = '0'; return; }
-
-      const W = 60, H = 22, pad = 2;
-      const min = Math.min(...weekAvgs) - 3;
-      const max = Math.max(...weekAvgs) + 3;
-      const xStep = (W - pad * 2) / (weekAvgs.length - 1);
-      const toY = v => H - pad - ((v - min) / (max - min)) * (H - pad * 2);
-      const pts = weekAvgs.map((v, i) => [pad + i * xStep, toY(v)]);
-      const first = weekAvgs[0], last = weekAvgs[weekAvgs.length - 1];
-      const diff = Math.round((last - first) * 10) / 10;
-      const trending = diff > 0.5 ? 'up' : diff < -0.5 ? 'down' : 'flat';
-      const lineColor = trending === 'up' ? '#6bffb8' : trending === 'down' ? '#ff5a36' : '#ffb800';
-
-      // Area fill path
-      const linePts = pts.map(([x, y]) => `${x},${y}`).join(' ');
-      const areaPath = `M${pts[0][0]},${H} ` +
-        pts.map(([x, y]) => `L${x},${y}`).join(' ') +
-        ` L${pts[pts.length-1][0]},${H} Z`;
-
-      svg.innerHTML = `
-        <defs>
-          <linearGradient id="spark-fill-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="${lineColor}" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="${lineColor}" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path d="${areaPath}" fill="url(#spark-fill-grad)"/>
-        <polyline points="${linePts}" fill="none" stroke="${lineColor}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-        <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="2" fill="${lineColor}"/>
-      `;
-      svg.style.opacity = '1';
-
-      const sign = diff > 0 ? '+' : '';
-      const arrow = trending === 'up' ? '↑' : trending === 'down' ? '↓' : '→';
-      trendLabel.textContent = `${arrow} ${sign}${diff}% ${weekAvgs.length}wk`;
-      trendLabel.style.color = lineColor;
-    })();
 
     // Progress bar reflects current view (focus or full)
     const viewTotal = currentView === 'focus'
@@ -3580,12 +3307,6 @@
     const t1t2 = entries.filter(e => e.tier === '1' || e.tier === '2');
     const t1t2Sent = t1t2.filter(e => e.status === 'sent' || e.status === 'checkin');
     const allCaughtUp = currentView === 'focus' && t1t2.length > 0 && t1t2Sent.length === t1t2.length && filtered.length === 0;
-
-    // Update table title and count
-    const titleLabel = document.getElementById('table-title-label');
-    const visibleCount = document.getElementById('table-visible-count');
-    if (titleLabel) titleLabel.textContent = currentView === 'focus' ? 'Focus Roster' : 'Full Roster';
-    if (visibleCount) visibleCount.textContent = `${filtered.length} visible`;
 
     if (entries.length === 0) {
       tbody.innerHTML = '';
@@ -3663,7 +3384,7 @@
                 const sign = diff > 0 ? '+' : '';
                 trendHtml = ` <span style="font-size:10px; color:${trendColor}; font-family:'DM Mono',monospace;">${arrow} ${sign}${diff}%</span>`;
               }
-              return `<span style="font-family:'DM Mono',monospace; font-size:13px; color:${wrColor}; font-weight:600; font-variant-numeric:tabular-nums; letter-spacing:-0.01em;">${e.wrPct}%</span>${trendHtml}`;
+              return `<span style="font-family:'DM Mono',monospace; font-size:11px; color:${wrColor}; font-weight:500;">${e.wrPct}%</span>${trendHtml}`;
             })()}
           </td>
           <td>
@@ -3739,9 +3460,6 @@
         </tr>
       `}).join('');
     }
-
-    // Restore scroll position after re-render
-    if (scrollEl && savedScroll) scrollEl.scrollTop = savedScroll;
   }
 
   function renderHistory() {
@@ -4592,7 +4310,7 @@
           e.wrPct < 70 ? 'var(--yellow)' :
           e.wrPct < 80 ? 'var(--text2)' : 'var(--green)';
         const wrCell = e.wrPct != null
-          ? `<span style="font-family:'DM Mono',monospace; color:${wrColor}; font-weight:600; font-size:13px; font-variant-numeric:tabular-nums;">${e.wrPct}%</span>`
+          ? `<span style="font-family:'DM Mono',monospace; color:${wrColor}; font-weight:500;">${e.wrPct}%</span>`
           : `<span style="color:var(--text3);">—</span>`;
 
         // WR trend vs previous week
@@ -4643,51 +4361,6 @@
       }).reverse(); // most recent first
 
       timeline.innerHTML = header + dataRows.join('');
-    }
-
-    // WR sparkline in modal header
-    const sparkWrap  = document.getElementById('history-spark-wrap');
-    const sparkSvg   = document.getElementById('history-sparkline');
-    const sparkDelta = document.getElementById('history-spark-delta');
-    const sparkRange = document.getElementById('history-spark-range');
-    const wrPoints   = rows.map(r => r.entry.wrPct).filter(v => v != null);
-
-    if (wrPoints.length >= 2) {
-      const first = wrPoints[0], last = wrPoints[wrPoints.length - 1];
-      const diff  = Math.round((last - first) * 10) / 10;
-      const color = diff > 0 ? '#6bffb8' : diff < 0 ? '#ff5a36' : '#ffb800';
-      const sign  = diff > 0 ? '+' : '';
-      const arrow = diff > 0 ? '↑' : diff < 0 ? '↓' : '→';
-
-      // Draw wider sparkline for the modal (180×32 viewBox)
-      const W = 180, H = 32, pad = 3;
-      const min = Math.min(...wrPoints) - 3;
-      const max = Math.max(...wrPoints) + 3;
-      const range = max - min || 1;
-      const xStep = (W - pad * 2) / (wrPoints.length - 1);
-      const toY = v => H - pad - ((v - min) / range) * (H - pad * 2);
-      const pts = wrPoints.map((v, i) => [pad + i * xStep, toY(v)]);
-      const linePts = pts.map(p => p.join(',')).join(' ');
-      const areaPath = `M${pts[0][0]},${H} ${pts.map(p => `L${p[0]},${p[1]}`).join(' ')} L${pts[pts.length-1][0]},${H} Z`;
-
-      sparkSvg.innerHTML = `
-        <defs>
-          <linearGradient id="hsg" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="${color}" stop-opacity="0.25"/>
-            <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
-          </linearGradient>
-        </defs>
-        <path d="${areaPath}" fill="url(#hsg)"/>
-        <polyline points="${linePts}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>
-        ${pts.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="${i === pts.length-1 ? 3 : 1.5}" fill="${color}" opacity="${i === pts.length-1 ? 1 : 0.5}"/>`).join('')}
-      `;
-
-      sparkDelta.textContent = `${arrow} ${sign}${diff}%`;
-      sparkDelta.style.color = color;
-      sparkRange.textContent = `${wrPoints[0]}% → ${last}% · ${wrPoints.length} wks`;
-      sparkWrap.style.display = 'flex';
-    } else {
-      sparkWrap.style.display = 'none';
     }
 
     // Show roster note if exists
@@ -5610,7 +5283,15 @@
 
   // ── More dropdown ─────────────────────────────────
   function toggleMoreDropdown() {
-    document.getElementById('more-dropdown').classList.toggle('open');
+    const dropdown = document.getElementById('more-dropdown');
+    const btn = document.querySelector('.more-wrap > .btn');
+    const isOpen = dropdown.classList.toggle('open');
+    if (isOpen && btn) {
+      const rect = btn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 6) + 'px';
+      dropdown.style.right = (window.innerWidth - rect.right) + 'px';
+      dropdown.style.left = 'auto';
+    }
   }
   function closeMoreDropdown() {
     document.getElementById('more-dropdown').classList.remove('open');
@@ -5624,7 +5305,14 @@
   const colState = {};
 
   function toggleColDropdown() {
-    document.getElementById('col-dropdown').classList.toggle('open');
+    const dropdown = document.getElementById('col-dropdown');
+    const btn = document.getElementById('col-toggle-btn');
+    const isOpen = dropdown.classList.toggle('open');
+    if (isOpen && btn) {
+      const rect = btn.getBoundingClientRect();
+      dropdown.style.top = (rect.bottom + 6) + 'px';
+      dropdown.style.left = rect.left + 'px';
+    }
   }
 
   // Close dropdown when clicking outside
@@ -5716,207 +5404,6 @@
   if (state.logoSrc) applyLogo(state.logoSrc);
   if (state.headerTitle) document.getElementById('header-title').textContent = state.headerTitle;
   render();
-
-  // ── Shared sparkline utility ──────────────────────
-  function drawSparkline(svgEl, values, color, W = 60, H = 22) {
-    if (!svgEl || values.length < 2) { svgEl.style.opacity = '0'; return; }
-    const pad = 2;
-    const min = Math.min(...values) - 2;
-    const max = Math.max(...values) + 2;
-    const range = max - min || 1;
-    const xStep = (W - pad * 2) / (values.length - 1);
-    const toY = v => H - pad - ((v - min) / range) * (H - pad * 2);
-    const pts = values.map((v, i) => [pad + i * xStep, toY(v)]);
-    const linePts = pts.map(p => p.join(',')).join(' ');
-    const areaPath = `M${pts[0][0]},${H} ${pts.map(p => `L${p[0]},${p[1]}`).join(' ')} L${pts[pts.length-1][0]},${H} Z`;
-    const gradId = 'sg-' + svgEl.id;
-    svgEl.innerHTML = `
-      <defs>
-        <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stop-color="${color}" stop-opacity="0.22"/>
-          <stop offset="100%" stop-color="${color}" stop-opacity="0"/>
-        </linearGradient>
-      </defs>
-      <path d="${areaPath}" fill="url(#${gradId})"/>
-      <polyline points="${linePts}" fill="none" stroke="${color}" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
-      <circle cx="${pts[pts.length-1][0]}" cy="${pts[pts.length-1][1]}" r="2" fill="${color}"/>
-    `;
-    svgEl.style.opacity = '1';
-  }
-
-  // ── Shared helper: per-week stat across state.weeks ──
-  function weeklyStats(statFn, limit = 8) {
-    return Object.entries(state.weeks)
-      .sort((a, b) => a[0].localeCompare(b[0]))
-      .slice(-limit)
-      .map(([, w]) => statFn(w.entries || []))
-      .filter(v => v !== null);
-  }
-
-  // Sticky shadow on scroll
-  (function() {
-    const header = document.querySelector('.header');
-    const gauge  = document.getElementById('gauge-stats-bar');
-    window.addEventListener('scroll', () => {
-      const stuck = window.scrollY > 10;
-      header?.classList.toggle('is-stuck', stuck);
-      gauge?.classList.toggle('is-stuck', stuck);
-    }, { passive: true });
-  })();
-
-  // ── AI Feedback Draft ─────────────────────────────
-  let aiDraftCoachId = null;
-
-  // Patch openNotes to track current coach for AI draft
-  const _origOpenNotes = openNotes;
-  function openNotes(id) {
-    aiDraftCoachId = id;
-    _origOpenNotes(id);
-    // Reset draft UI
-    document.getElementById('ai-draft-output').style.display = 'none';
-    document.getElementById('ai-draft-loading').style.display = 'none';
-    document.getElementById('ai-draft-copy-btn').style.display = 'none';
-    document.getElementById('ai-draft-btn').disabled = false;
-  }
-
-  async function generateAIDraft() {
-    const e = currentEntries().find(e => e.id === aiDraftCoachId);
-    if (!e) return;
-
-    const loadEl = document.getElementById('ai-draft-loading');
-    const outEl  = document.getElementById('ai-draft-output');
-    const copyBtn = document.getElementById('ai-draft-copy-btn');
-    const genBtn  = document.getElementById('ai-draft-btn');
-    const tone    = document.getElementById('ai-draft-tone').value;
-    const notes   = document.getElementById('notes-textarea').value.trim();
-
-    outEl.style.display = 'none';
-    copyBtn.style.display = 'none';
-    loadEl.style.display = 'flex';
-    genBtn.disabled = true;
-
-    const tierLabel = e.tier === '1' ? 'Tier 1 (needs improvement)' : e.tier === '2' ? 'Tier 2 (developing)' : 'Tier 3 (strong performer)';
-    const priorityMap = { red: 'High — contact this week', yellow: 'Medium — contact next 2 weeks', none: 'No urgent flag' };
-    const standingMap = { none: 'None', warning1: '1st Warning', warning2: '2nd Warning', monitoring: 'Monitoring', resignation: 'Resignation', termination: 'Termination' };
-
-    const prompt = `You are a Performance Coach Manager writing a weekly feedback message to a coach on your team.
-
-Coach: ${e.name}
-${tierLabel}
-Weighted Retention (WR%): ${e.wrPct != null ? e.wrPct + '%' : 'Unknown'}
-Hex Priority: ${priorityMap[e.hexPriority || 'none'] || 'No urgent flag'}
-${e.hexWhy ? 'Driver: ' + e.hexWhy : ''}
-Standing: ${standingMap[e.standing || 'none']}
-Status: ${e.status || 'pending'}
-${notes ? 'Coach Notes: ' + notes : ''}
-
-Write a ${tone} weekly feedback message using the SBI (Situation-Behavior-Impact) framework where relevant. Be specific, actionable, and professional. 3–5 sentences. No bullet points. No subject line. Write only the message body.`;
-
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-      });
-      const data = await res.json();
-      const text = data.content?.map(b => b.text || '').join('') || 'Unable to generate draft.';
-      outEl.textContent = text;
-      outEl.style.display = 'block';
-      copyBtn.style.display = 'inline-flex';
-    } catch {
-      outEl.textContent = 'Error generating draft. Please try again.';
-      outEl.style.display = 'block';
-    } finally {
-      loadEl.style.display = 'none';
-      genBtn.disabled = false;
-    }
-  }
-
-  function copyAIDraft() {
-    const text = document.getElementById('ai-draft-output').textContent;
-    navigator.clipboard.writeText(text).then(() => toast('Draft copied to clipboard'));
-  }
-
-  // ── AI Slack Summary ──────────────────────────────
-  function openSlackSummaryModal() {
-    const wl = document.getElementById('current-week-label')?.textContent || '';
-    document.getElementById('slack-summary-week').textContent = wl;
-    document.getElementById('slack-output').style.display = 'none';
-    document.getElementById('slack-loading').style.display = 'none';
-    document.getElementById('slack-copy-btn').style.display = 'none';
-    document.getElementById('slack-gen-btn').disabled = false;
-    document.getElementById('slack-summary-overlay').style.display = 'flex';
-  }
-
-  function closeSlackSummaryModal() {
-    document.getElementById('slack-summary-overlay').style.display = 'none';
-  }
-
-  function handleSlackSummaryOverlay(evt) {
-    if (evt.target === document.getElementById('slack-summary-overlay')) closeSlackSummaryModal();
-  }
-
-  async function generateSlackSummary() {
-    const entries = currentEntries();
-    const active  = entries.filter(e => !e.skipped);
-    const sent    = active.filter(e => e.status === 'sent' || e.status === 'checkin').length;
-    const pending = active.filter(e => e.status === 'pending').length;
-    const followup = active.filter(e => e.status === 'followup').length;
-    const t1      = active.filter(e => e.tier === '1').length;
-    const redPrio = active.filter(e => e.hexPriority === 'red');
-    const warnings = active.filter(e => e.standing === 'warning1' || e.standing === 'warning2').length;
-    const wrEntries = active.filter(e => e.wrPct != null);
-    const wrAvg  = wrEntries.length ? Math.round(wrEntries.reduce((s, e) => s + e.wrPct, 0) / wrEntries.length * 10) / 10 : null;
-    const weekLabel = document.getElementById('current-week-label')?.textContent || '';
-    const teamNotes = document.getElementById('team-notepad-textarea')?.value?.trim() || '';
-
-    const loadEl  = document.getElementById('slack-loading');
-    const outEl   = document.getElementById('slack-output');
-    const copyBtn = document.getElementById('slack-copy-btn');
-    const genBtn  = document.getElementById('slack-gen-btn');
-
-    outEl.style.display = 'none';
-    copyBtn.style.display = 'none';
-    loadEl.style.display = 'flex';
-    genBtn.disabled = true;
-
-    const prompt = `You are a Performance Coach Manager writing a weekly Slack update for your leadership team.
-
-Week: ${weekLabel}
-Total coaches: ${active.length}
-Feedback sent: ${sent} (${active.length ? Math.round(sent / active.length * 100) : 0}% complete)
-Pending: ${pending} | Follow-up: ${followup}
-Tier 1 coaches: ${t1}
-Red priority: ${redPrio.length}${redPrio.length ? ' (' + redPrio.map(e => e.name).slice(0, 3).join(', ') + ')' : ''}
-Active warnings: ${warnings}
-Team avg WR%: ${wrAvg != null ? wrAvg + '%' : 'N/A'}
-${teamNotes ? 'Manager notes: ' + teamNotes : ''}
-
-Write a concise Slack message (3–5 sentences) summarising this week's coaching activity for leadership. Highlight progress, any urgent situations, and your plan. Professional but casual Slack tone. Start with the week. No bullets, no headers.`;
-
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1000, messages: [{ role: 'user', content: prompt }] })
-      });
-      const data = await res.json();
-      const text = data.content?.map(b => b.text || '').join('') || 'Unable to generate summary.';
-      outEl.textContent = text;
-      outEl.style.display = 'block';
-      copyBtn.style.display = 'inline-flex';
-    } catch {
-      outEl.textContent = 'Error generating summary. Please try again.';
-      outEl.style.display = 'block';
-    } finally {
-      loadEl.style.display = 'none';
-      genBtn.disabled = false;
-    }
-  }
-
-  function copySlackSummary() {
-    navigator.clipboard.writeText(document.getElementById('slack-output').textContent).then(() => toast('Slack summary copied'));
-  }
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
