@@ -2749,23 +2749,28 @@
   <div style="display:flex; gap:8px; flex:1; align-items:center; flex-wrap:wrap;">
     <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
       <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-total">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Total</span>
+      <canvas id="spark-total" width="60" height="18" style="margin-top:3px; opacity:0.6;"></canvas>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">Total</span>
     </div>
     <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
       <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--accent); line-height:1;" id="s-sent">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Sent</span>
+      <canvas id="spark-sent" width="60" height="18" style="margin-top:3px; opacity:0.6;"></canvas>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">Sent</span>
     </div>
     <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
       <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--yellow); line-height:1;" id="s-followup">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Follow-up</span>
+      <canvas id="spark-followup" width="60" height="18" style="margin-top:3px; opacity:0.6;"></canvas>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">Follow-up</span>
     </div>
     <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
       <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; color:var(--text3); line-height:1;" id="s-pending">0</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Pending</span>
+      <canvas id="spark-pending" width="60" height="18" style="margin-top:3px; opacity:0.6;"></canvas>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">Pending</span>
     </div>
     <div style="display:flex; flex-direction:column; align-items:center; padding:6px 14px; background:var(--surface2); border:1px solid var(--border); border-radius:8px; flex:1; min-width:60px;">
       <span style="font-family:'DM Mono',monospace; font-size:20px; font-weight:500; line-height:1;" id="s-wr-avg">—</span>
-      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:3px;">Avg WR%</span>
+      <canvas id="spark-wr" width="60" height="18" style="margin-top:3px; opacity:0.6;"></canvas>
+      <span style="font-size:9px; color:var(--text3); text-transform:uppercase; letter-spacing:0.06em; margin-top:2px;">Avg WR%</span>
     </div>
   </div>
 
@@ -3772,6 +3777,7 @@
     // Week label
     document.getElementById('current-week-label').textContent = weekLabel(state.currentWeek);
     updateDashboardChips();
+    renderSparklines();
 
     // Filter
     const viewEntries = currentView === 'focus'
@@ -5769,6 +5775,69 @@
     document.getElementById('batch-standing-menu').style.display = 'none';
     const labels = { active:'Active', warning1:'1st Warning', warning2:'2nd Warning', monitoring:'Monitoring', resignation:'Resignation', termination:'Termination' };
     toast(`${ids.length} coach${ids.length !== 1 ? 'es' : ''} set to ${labels[val]}`);
+  }
+
+
+  // ── Sparklines ────────────────────────────────────
+  function drawSparkline(canvasId, data, color) {
+    const canvas = document.getElementById(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const W = canvas.width, H = canvas.height;
+    ctx.clearRect(0, 0, W, H);
+
+    const points = data.filter(v => v !== null && v !== undefined);
+    if (points.length < 2) {
+      // Draw flat dim line if no data
+      ctx.beginPath();
+      ctx.moveTo(0, H / 2);
+      ctx.lineTo(W, H / 2);
+      ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+      return;
+    }
+
+    const min = Math.min(...points);
+    const max = Math.max(...points);
+    const range = max - min || 1;
+    const step = W / (points.length - 1);
+
+    ctx.beginPath();
+    points.forEach((v, i) => {
+      const x = i * step;
+      const y = H - ((v - min) / range) * (H - 2) - 1;
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1.5;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.stroke();
+  }
+
+  function renderSparklines() {
+    // Get last 8 weeks sorted oldest → newest
+    const weeks = Object.entries(state.weeks)
+      .sort((a, b) => a[0].localeCompare(b[0]))
+      .slice(-8);
+
+    if (weeks.length < 2) return;
+
+    const totalData   = weeks.map(([, w]) => (w.entries || []).filter(e => !e.skipped).length);
+    const sentData    = weeks.map(([, w]) => (w.entries || []).filter(e => !e.skipped && (e.status === 'sent' || e.status === 'checkin')).length);
+    const followData  = weeks.map(([, w]) => (w.entries || []).filter(e => e.status === 'followup').length);
+    const pendingData = weeks.map(([, w]) => (w.entries || []).filter(e => !e.skipped && e.status === 'pending').length);
+    const wrData      = weeks.map(([, w]) => {
+      const wr = (w.entries || []).filter(e => !e.skipped && e.wrPct != null);
+      return wr.length ? Math.round(wr.reduce((s, e) => s + e.wrPct, 0) / wr.length * 10) / 10 : null;
+    });
+
+    drawSparkline('spark-total',   totalData,   '#ffb800');
+    drawSparkline('spark-sent',    sentData,    '#ffb800');
+    drawSparkline('spark-followup',followData,  '#ffc85e');
+    drawSparkline('spark-pending', pendingData, '#555350');
+    drawSparkline('spark-wr',      wrData,      '#6bffb8');
   }
 
   // ── Add coach form ────────────────────────────────
