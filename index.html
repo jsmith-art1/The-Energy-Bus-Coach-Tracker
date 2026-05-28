@@ -2292,6 +2292,14 @@
     background: var(--border);
     margin: 4px 6px;
   }
+  .more-group-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text3);
+    padding: 6px 10px 2px;
+  }
 
 
   /* Dashboard toggle */
@@ -2689,17 +2697,21 @@
       <div class="more-wrap">
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
+          <div class="more-group-label">Reporting</div>
           <button class="more-item" onclick="toggleHeatmapView(); closeMoreDropdown()" id="heatmap-more-btn">🗂 WR% Heatmap</button>
-          <button class="more-item" onclick="openNotionExport(); closeMoreDropdown()">📋 Export to Notion</button>
-          <button class="more-item" onclick="document.getElementById('restore-input').click(); closeMoreDropdown()">♻️ Restore from backup</button>
-          <input type="file" id="restore-input" accept=".json" style="display:none;" onchange="restoreFromBackup(this)" />
-          <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
+          <button class="more-item" onclick="openNotionExport(); closeMoreDropdown()">📋 Export to Notion</button>
+          <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Re-eval dates to calendar</button>
+          <div class="more-divider"></div>
+          <div class="more-group-label">Data</div>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
           <button class="more-item" onclick="showHistory(); closeMoreDropdown()" id="history-btn">Week history</button>
+          <button class="more-item" onclick="document.getElementById('restore-input').click(); closeMoreDropdown()">♻️ Restore from backup</button>
+          <input type="file" id="restore-input" accept=".json" style="display:none;" onchange="restoreFromBackup(this)" />
           <div class="more-divider"></div>
-          <button class="more-item danger" onclick="resetRoster(); closeMoreDropdown()">Reset roster</button>
+          <div class="more-group-label">Danger zone</div>
           <button class="more-item danger" onclick="archiveWeek(); closeMoreDropdown()">Archive week</button>
+          <button class="more-item danger" onclick="resetRoster(); closeMoreDropdown()">Reset roster</button>
         </div>
       </div>
     </div>
