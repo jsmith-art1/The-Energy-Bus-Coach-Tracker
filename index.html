@@ -2687,6 +2687,8 @@
         <div class="more-dropdown" id="more-dropdown">
           <button class="more-item" onclick="toggleHeatmapView(); closeMoreDropdown()" id="heatmap-more-btn">🗂 WR% Heatmap</button>
           <button class="more-item" onclick="openNotionExport(); closeMoreDropdown()">📋 Export to Notion</button>
+          <button class="more-item" onclick="document.getElementById('restore-input').click(); closeMoreDropdown()">♻️ Restore from backup</button>
+          <input type="file" id="restore-input" accept=".json" style="display:none;" onchange="restoreFromBackup(this)" />
           <button class="more-item" onclick="exportReEvalCalendar(); closeMoreDropdown()">📅 Export re-eval dates to calendar</button>
           <button class="more-item" onclick="openBriefingModal(); closeMoreDropdown()">✦ Weekly prep briefing</button>
           <button class="more-item" onclick="openImportModal(); closeMoreDropdown()">Import roster</button>
@@ -2869,6 +2871,17 @@
   <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchSkip()">Skip selected</button>
   <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="batchUnskip()">Unskip selected</button>
   <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--blue); border-color:#1a3a50; background:var(--blue-bg);" onclick="batchCopyNames()">📋 Copy names</button>
+  <div style="position:relative; display:inline-block;" id="batch-standing-wrap">
+    <button class="btn" style="font-size:11px; padding:4px 10px;" onclick="toggleBatchStandingMenu()">Set standing ▾</button>
+    <div id="batch-standing-menu" style="display:none; position:fixed; background:var(--surface); border:1px solid var(--border2); border-radius:8px; padding:6px; z-index:9999; min-width:150px; box-shadow:0 8px 24px rgba(0,0,0,0.4); flex-direction:column; gap:2px;">
+      <button class="more-item" onclick="batchSetStanding('active')">Active</button>
+      <button class="more-item" onclick="batchSetStanding('warning1')">W1 — 1st Warning</button>
+      <button class="more-item" onclick="batchSetStanding('warning2')">W2 — 2nd Warning</button>
+      <button class="more-item" onclick="batchSetStanding('monitoring')">Monitoring</button>
+      <button class="more-item" onclick="batchSetStanding('resignation')">Resignation</button>
+      <button class="more-item" onclick="batchSetStanding('termination')">Termination</button>
+    </div>
+  </div>
   <button class="btn" style="font-size:11px; padding:4px 10px; color:var(--text3);" onclick="clearBatchSelection()">Clear</button>
   <span style="margin-left:auto; font-size:11px; color:var(--text3);">Click rows to select</span>
 </div>
@@ -3358,7 +3371,7 @@
     tier: '2', pm: 'none', status: 'pending', note: '', date: null,
     hexPriority: 'none', hexScore: 0, hexTimeline: '', hexWhy: '',
     hexRootCause: '', hexLoad: '', intervention: 'none',
-    warningDate: '', coachNotes: '', skipped: false, empStatus: 'active', resignDate: '', standing: 'none', wrPct: null, wrHistory: [],
+    warningDate: '', coachNotes: '', skipped: false, empStatus: 'active', resignDate: '', standing: 'active', wrPct: null, wrHistory: [],
     created: new Date().toISOString()
   };
 
@@ -3646,6 +3659,16 @@
     if (!state.weeks[newKey]) state.weeks[newKey] = { entries: [], created: new Date().toISOString() };
 
     save(); render(); if (historyVisible) renderHistory();
+
+    // Auto-download backup
+    const filename = `energy-bus-backup-${archivedKey}.json`;
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast(`Week archived + backup saved: ${filename}`);
   }
 
   function nextMondayKey() {
@@ -4545,7 +4568,7 @@
         skipped: c.skipped || false,
         empStatus: c.empStatus || 'active',
         resignDate: c.resignDate || '',
-        standing: c.pm && c.pm !== 'none' ? c.pm : (c.empStatus && c.empStatus !== 'active' ? c.empStatus : 'none'),
+        standing: c.pm && c.pm !== 'none' ? c.pm : (c.empStatus && c.empStatus !== 'active' ? c.empStatus : (c.standing || 'active')),
         wrPct: c.wrPct || null,
         wrHistory: c.wrHistory || [],
 
@@ -5647,6 +5670,72 @@
       btn.classList.add('copied');
       setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
     });
+  }
+
+
+  // ── Restore from backup ───────────────────────────
+  function restoreFromBackup(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      try {
+        const imported = JSON.parse(ev.target.result);
+        if (!imported.weeks || !imported.currentWeek) {
+          toast('Invalid backup file');
+          return;
+        }
+        if (!confirm(`Restore from ${file.name}? This will replace your current data.`)) return;
+        Object.assign(state, imported);
+        // Re-sync nextId
+        const all = Object.values(state.weeks).flatMap(w => w.entries || []);
+        if (all.length) nextId = Math.max(...all.map(e => e.id)) + 1;
+        all.forEach(applyDefaults);
+        save(); render();
+        if (historyVisible) renderHistory();
+        toast(`✓ Restored from ${file.name}`);
+      } catch(e) {
+        toast('Could not read backup file');
+      }
+    };
+    reader.readAsText(file);
+    input.value = '';
+  }
+
+
+  // ── Batch set standing ────────────────────────────
+  function toggleBatchStandingMenu() {
+    const menu = document.getElementById('batch-standing-menu');
+    const btn = document.querySelector('#batch-standing-wrap > .btn');
+    const isOpen = menu.style.display === 'flex';
+    menu.style.display = isOpen ? 'none' : 'flex';
+    if (!isOpen && btn) {
+      const rect = btn.getBoundingClientRect();
+      menu.style.top = (rect.bottom + 4) + 'px';
+      menu.style.left = rect.left + 'px';
+    }
+  }
+
+  document.addEventListener('click', function(e) {
+    const wrap = document.getElementById('batch-standing-wrap');
+    if (wrap && !wrap.contains(e.target)) {
+      const menu = document.getElementById('batch-standing-menu');
+      if (menu) menu.style.display = 'none';
+    }
+  });
+
+  function batchSetStanding(val) {
+    const ids = getSelectedIds();
+    if (!ids.length) return;
+    ids.forEach(id => {
+      const e = currentEntries().find(e => e.id === id);
+      if (e) e.standing = val;
+    });
+    save(); render();
+    clearBatchSelection();
+    document.getElementById('batch-standing-menu').style.display = 'none';
+    const labels = { active:'Active', warning1:'1st Warning', warning2:'2nd Warning', monitoring:'Monitoring', resignation:'Resignation', termination:'Termination' };
+    toast(`${ids.length} coach${ids.length !== 1 ? 'es' : ''} set to ${labels[val]}`);
   }
 
   // ── Add coach form ────────────────────────────────
