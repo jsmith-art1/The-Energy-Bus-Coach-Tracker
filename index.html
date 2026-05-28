@@ -923,6 +923,10 @@
     text-decoration: line-through;
   }
   tr.row-skipped { opacity: 0.35; }
+  tr.row-sent { opacity: 0.45; }
+  tr.row-sent:hover { opacity: 0.75; }
+  tr.row-sent .td-name-link { color: var(--text3); }
+  tr.row-sent .tier-badge { opacity: 0.5; }
 
   /* Notes modal */
   .notes-modal-overlay {
@@ -3461,6 +3465,14 @@
     const e = currentEntries().find(e => e.id === id);
     if (!e) return;
     e.standing = val;
+    // Auto-fill warning date when set to W1 or W2
+    if ((val === 'warning1' || val === 'warning2') && !e.warningDate) {
+      e.warningDate = fmtDate(new Date());
+    }
+    // Clear warning date when no longer on warning
+    if (val !== 'warning1' && val !== 'warning2') {
+      e.warningDate = '';
+    }
     // keep pm/empStatus in sync for backward compat
     if (['none','warning1','warning2','monitoring'].includes(val)) e.pm = val;
     else e.pm = 'none';
@@ -3548,37 +3560,36 @@
   }
 
   function newWeek() {
-    // Find unfinished Tier 1 & 2 coaches from current week
+    // Smart carry over — auto-carry all unfinished T1/T2 coaches, no modal
     const unfinished = currentEntries().filter(e =>
       (e.tier === '1' || e.tier === '2') &&
       (e.status === 'pending' || e.status === 'followup') &&
       !e.skipped
     );
 
-    if (unfinished.length === 0) {
-      startFreshWeek();
-      return;
+    const key = weekKey(new Date());
+    const newKey = key === state.currentWeek ? nextMondayKey() : key;
+    state.currentWeek = newKey;
+    if (!state.weeks[newKey]) state.weeks[newKey] = { entries: [], created: new Date().toISOString() };
+
+    unfinished.forEach(e => {
+      const carried = { ...e,
+        id: nextId++,
+        status: 'pending',
+        date: null,
+        wrPct: e.wrPct,
+        wrHistory: e.wrHistory || [],
+        created: new Date().toISOString()
+      };
+      state.weeks[newKey].entries.push(carried);
+    });
+
+    save(); render();
+    if (unfinished.length > 0) {
+      toast(`New week started — ${unfinished.length} coach${unfinished.length !== 1 ? 'es' : ''} carried over automatically`);
+    } else {
+      toast('New week started');
     }
-
-    // Build carry over list
-    const list = document.getElementById('carryover-list');
-    list.innerHTML = unfinished.map(e => {
-      const tierColor = e.tier === '1' ? 'var(--red)' : 'var(--yellow)';
-      const statusLabel = e.status === 'followup' ? '⚡ Follow-up' : '· Pending';
-      const statusColor = e.status === 'followup' ? 'var(--yellow)' : 'var(--text3)';
-      return `<label class="carryover-item">
-        <input type="checkbox" checked class="carryover-check" data-id="${e.id}" onchange="updateCarryoverCount()" />
-        <span class="carryover-item-name">${e.name}</span>
-        <span class="carryover-item-meta">
-          <span style="color:${tierColor};">Tier ${e.tier}</span>
-          ${e.wrPct != null ? `<span>${e.wrPct}%</span>` : ''}
-          <span style="color:${statusColor};">${statusLabel}</span>
-        </span>
-      </label>`;
-    }).join('');
-
-    updateCarryoverCount();
-    document.getElementById('carryover-overlay').classList.add('open');
   }
 
   function updateCarryoverCount() {
@@ -3821,7 +3832,7 @@
           e.tier === '1'             ? ' priority-tier1' : ' initials';
         const avatarClass = e.photo ? 'coach-avatar' : ('coach-avatar' + priorityClass);
         return `
-        <tr class="${e.skipped ? 'row-skipped' : ''} tier-row-${e.tier}" onclick="handleRowClick(event, ${e.id})" style="cursor:pointer;">
+        <tr class="${e.skipped ? 'row-skipped' : (e.status === 'sent' || e.status === 'checkin' ? 'row-sent' : '')} tier-row-${e.tier}" onclick="handleRowClick(event, ${e.id})" style="cursor:pointer;">
           <td class="col-hex">
             ${e.hexPriority && e.hexPriority !== 'none' ? `
             <div class="hex-tooltip-wrap">
@@ -5729,7 +5740,14 @@
     if (!ids.length) return;
     ids.forEach(id => {
       const e = currentEntries().find(e => e.id === id);
-      if (e) e.standing = val;
+      if (!e) return;
+      e.standing = val;
+      if ((val === 'warning1' || val === 'warning2') && !e.warningDate) {
+        e.warningDate = fmtDate(new Date());
+      }
+      if (val !== 'warning1' && val !== 'warning2') {
+        e.warningDate = '';
+      }
     });
     save(); render();
     clearBatchSelection();
