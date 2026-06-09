@@ -6,7 +6,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🚌📈 Coach Feedback Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <style>
   :root {
     --bg: #0d0d0d;
@@ -160,6 +159,81 @@
   .futurepro-text span { font-weight: 300; color: rgba(255,255,255,0.7); }
   .futurepro-text strong { font-weight: 700; color: #fff; }
 
+
+  /* Password gate */
+  .pw-gate {
+    position: fixed;
+    inset: 0;
+    background: #0f0f0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .pw-gate.hidden { display: none; }
+  .pw-box {
+    background: #1a1a1a;
+    border: 1px solid #2e2e2e;
+    border-radius: 12px;
+    padding: 32px 36px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 320px;
+  }
+  .pw-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: #f0ede8;
+    text-align: center;
+  }
+  .pw-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: #555350;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    margin-top: -8px;
+  }
+  .pw-input {
+    width: 100%;
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    background: #222222;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    color: #f0ede8;
+    padding: 10px 14px;
+    outline: none;
+    text-align: center;
+    letter-spacing: 0.1em;
+    transition: border-color 0.15s;
+  }
+  .pw-input:focus { border-color: #d4ff6e; }
+  .pw-input.error { border-color: #ff6b6b; animation: shake 0.3s; }
+  .pw-btn {
+    width: 100%;
+    padding: 10px;
+    background: #d4ff6e;
+    color: #0f0f0f;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .pw-btn:hover { background: #c8f060; }
+  .pw-error {
+    font-size: 12px;
+    color: #ff6b6b;
+    font-family: 'DM Mono', monospace;
+    min-height: 16px;
+  }
   @keyframes shake {
     0%, 100% { transform: translateX(0); }
     25% { transform: translateX(-6px); }
@@ -190,6 +264,11 @@
     background: rgba(107,255,184,0.1) !important;
     color: #6bffb8 !important;
     border-color: rgba(107,255,184,0.2) !important;
+  }
+  .header-actions .btn-actions {
+    background: rgba(255,184,0,0.1) !important;
+    color: #ffb800 !important;
+    border-color: rgba(255,184,0,0.2) !important;
   }
   .header-actions .btn-danger {
     color: #ff6b6b !important;
@@ -1743,6 +1822,7 @@
   }
   .notion-steps strong { color: var(--text2); }
 
+  .col-actions { white-space: nowrap; }
   /* Coach history modal */
   .history-modal-overlay {
     display: none;
@@ -2567,8 +2647,6 @@
 </head>
 <body>
 
-<div id="app" style="display:none;">
-
 <div class="header">
   <!-- Row 1: Title + primary actions -->
   <div class="header-row">
@@ -2587,6 +2665,7 @@
         <div class="col-toggle-dropdown" id="col-dropdown">
           <div class="col-toggle-title">Show / Hide Columns</div>
           <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-wr', this.checked)"> WR%</label>
+        <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-actions', this.checked)"> Coach Actions</label>
         <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-hex', this.checked)"> Hex Priority</label>
           <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-warning', this.checked)"> Warning Sent</label>
           <label class="col-toggle-item"><input type="checkbox" checked onchange="toggleCol('col-reeval', this.checked)"> Re-eval</label>
@@ -2598,6 +2677,7 @@
       <button class="theme-toggle" id="theme-toggle-btn" onclick="toggleTheme()" title="Toggle light/dark mode">🌙</button>
       <button class="btn btn-hex" onclick="openHexModal()">⬆ Hex priority</button>
       <button class="btn btn-wr" onclick="openWRModal()">⬆ WR data</button>
+      <button class="btn btn-actions" onclick="openActionsModal()">⬆ Coach Actions</button>
       <div class="sources-wrap">
         <button class="btn" onclick="toggleSourceDropdown()" id="source-toggle-btn">Sources ▾</button>
         <div class="source-dropdown" id="source-dropdown">
@@ -2625,7 +2705,6 @@
           </button>
         </div>
       </div>
-      <button class="btn" onclick="signOut()" style="font-size:11px; color:var(--text3);" title="Sign out">Sign out</button>
       <div class="more-wrap">
         <button class="btn" onclick="toggleMoreDropdown()">More ▾</button>
         <div class="more-dropdown" id="more-dropdown">
@@ -2901,6 +2980,7 @@
         <th class="sortable" onclick="sortBy('name')" id="th-name">Coach</th>
         <th class="sortable" onclick="sortBy('tier')" id="th-tier">Tier</th>
         <th class="col-wr sortable" onclick="sortBy('wr')" id="th-wr">WR%</th>
+        <th class="col-actions">Coach Actions</th>
         <th class="sortable" onclick="sortBy('standing')" id="th-standing">Standing</th>
         <th class="col-warning">Warning Sent</th>
         <th class="col-reeval">Re-eval</th>
@@ -3250,6 +3330,54 @@
   </div>
 </div>
 
+<!-- Coach Actions Import Modal -->
+<div id="actions-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:200; align-items:center; justify-content:center;">
+  <div style="background:var(--surface); border:1px solid #4a3818; border-radius:12px; padding:28px; width:520px; max-width:92vw; position:relative;">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px;">
+      <div>
+        <div style="font-size:15px; font-weight:500; color:var(--text); margin-bottom:4px;">Import Coach Actions</div>
+        <div style="font-size:12px; color:var(--text3);">Drop in your Hex squad performance CSV</div>
+      </div>
+      <button onclick="closeActionsModal()" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:0 0 0 12px;line-height:1;">✕</button>
+    </div>
+
+    <div style="background:var(--surface2); border:1px solid var(--border); border-radius:6px; padding:10px 12px; margin-bottom:16px; font-family:'DM Mono',monospace; font-size:11px; color:var(--text3); line-height:1.7;">
+      Expected columns: <span style="color:var(--text2);">Coach · 4-Week Trend</span>
+    </div>
+
+    <div id="actions-drop-zone" onclick="document.getElementById('actions-file-input').click()"
+      style="border:2px dashed #4a3818; border-radius:8px; padding:32px 20px; text-align:center; cursor:pointer; transition:all 0.15s;"
+      ondragover="event.preventDefault(); this.style.borderColor='var(--yellow)'"
+      ondragleave="this.style.borderColor='#4a3818'"
+      ondrop="handleActionsDrop(event)">
+      <div style="font-family:'DM Mono',monospace; font-size:22px; color:#4a3818; margin-bottom:10px;">📈</div>
+      <div style="font-size:13px; color:var(--text3);">Click to browse or drag & drop your Hex CSV</div>
+    </div>
+    <input type="file" id="actions-file-input" accept=".csv,text/csv" style="display:none;" onchange="handleActionsFile(this)" />
+
+    <div id="actions-feedback" style="font-size:12px; color:var(--text3); margin-top:10px; min-height:18px;"></div>
+    <div id="actions-preview" style="display:none; margin-top:12px; max-height:160px; overflow-y:auto; border:1px solid var(--border); border-radius:6px;">
+      <table style="width:100%; border-collapse:collapse; font-size:11px;">
+        <thead>
+          <tr style="border-bottom:1px solid var(--border);">
+            <th style="padding:6px 10px; text-align:left; font-family:'DM Mono',monospace; color:var(--text3); font-weight:400; text-transform:uppercase; letter-spacing:0.06em;">Coach</th>
+            <th style="padding:6px 10px; text-align:left; font-family:'DM Mono',monospace; color:var(--text3); font-weight:400; text-transform:uppercase; letter-spacing:0.06em;">4-Week Trend</th>
+          </tr>
+        </thead>
+        <tbody id="actions-preview-body"></tbody>
+      </table>
+    </div>
+
+    <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:20px;">
+      <div style="font-size:11px; color:var(--text3);" id="actions-match-note"></div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn" onclick="closeActionsModal()">Cancel</button>
+        <button class="btn btn-actions" id="actions-confirm-btn" onclick="confirmActionsImport()" disabled style="opacity:0.4; cursor:not-allowed;">Apply Actions data</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <!-- Hex Priority Import Modal -->
@@ -3306,214 +3434,6 @@
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-// ═══════════════════════════════════════════════════════════════
-// SUPABASE INTEGRATION
-// Replace YOUR_ANON_KEY_HERE with your key from:
-// Supabase Dashboard → Settings → API → anon/public key
-// ═══════════════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://xbqhtcqvbcndikuqsesz.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhicWh0Y3F2YmNuZGlrdXFzZXN6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NzExOTEsImV4cCI6MjA5NjI0NzE5MX0.nmXeAvGQMfsamFDapBzO0JJiMXCqov7LNEyuUlnSJA8';
-const { createClient } = supabase;
-const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-let currentUser = null;
-
-async function initAuth() {
-  const { data: { session } } = await db.auth.getSession();
-  if (session?.user) {
-    currentUser = session.user;
-    await loadFromSupabase();
-    showApp();
-    postAuthSetup();
-  } else {
-    showAuthScreen();
-  }
-  db.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session?.user) {
-      currentUser = session.user;
-      await loadFromSupabase();
-      showApp();
-      postAuthSetup();
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      state = { currentWeek: null, weeks: {} };
-      showAuthScreen();
-    }
-  });
-}
-
-function postAuthSetup() {
-  const initTh = document.getElementById('th-' + sortCol);
-  if (initTh) initTh.classList.add('sort-asc');
-  if (state.lightMode) {
-    document.body.classList.add('light');
-    document.getElementById('theme-toggle-btn').textContent = '🌙';
-  } else {
-    document.getElementById('theme-toggle-btn').textContent = '☀️';
-  }
-  if (state.dashboardOpen) {
-    dashboardOpen = true;
-    document.getElementById('dashboard-toggle').classList.add('open');
-    document.getElementById('dashboard-body').classList.add('open');
-  }
-  updateQuickLinkButtons();
-  restoreNotepad();
-  restoreColState();
-  if (state.currentView) {
-    currentView = state.currentView;
-    document.getElementById('view-btn-focus').classList.toggle('active', currentView === 'focus');
-    document.getElementById('view-btn-full').classList.toggle('active', currentView === 'full');
-    document.getElementById('view-btn-focus').classList.toggle('focus-view', currentView === 'focus');
-    document.getElementById('view-btn-full').classList.toggle('focus-view', false);
-  }
-  if (state.logoSrc) applyLogo(state.logoSrc);
-  if (state.headerTitle) document.getElementById('header-title').textContent = state.headerTitle;
-  render();
-}
-
-function showApp() {
-  const a = document.getElementById('auth-screen');
-  if (a) a.style.display = 'none';
-  const app = document.getElementById('app');
-  if (app) app.style.display = '';
-}
-
-function showAuthScreen() {
-  const a = document.getElementById('auth-screen');
-  if (a) a.style.display = 'flex';
-  const app = document.getElementById('app');
-  if (app) app.style.display = 'none';
-}
-
-function showAuthError(msg, isSuccess = false) {
-  const el = document.getElementById('auth-error');
-  if (el) { el.textContent = msg; el.style.color = isSuccess ? '#6bffb8' : '#ff6b6b'; }
-}
-
-async function signIn(email, password) {
-  const { error } = await db.auth.signInWithPassword({ email, password });
-  if (error) showAuthError(error.message);
-}
-
-async function signUp(email, password) {
-  const { error } = await db.auth.signUp({ email, password, options: { emailRedirectTo: window.location.href } });
-  if (error) showAuthError(error.message);
-  else showAuthError('Check your email to confirm, then sign in.', true);
-}
-
-async function signOut() {
-  await db.auth.signOut();
-}
-
-async function loadFromSupabase() {
-  if (!currentUser) return;
-  try {
-    const { data, error } = await db
-      .from('tracker_state')
-      .select('state_json')
-      .eq('user_id', currentUser.id)
-      .single();
-    if (error && error.code !== 'PGRST116') { console.error('Load error:', error); return; }
-    if (data?.state_json) {
-      const imported = JSON.parse(data.state_json);
-      if (imported.weeks && imported.currentWeek) {
-        Object.assign(state, imported);
-        Object.values(state.weeks).forEach(w => (w.entries || []).forEach(applyDefaults));
-        const all = Object.values(state.weeks).flatMap(w => w.entries || []);
-        if (all.length) nextId = Math.max(...all.map(e => e.id)) + 1;
-      }
-    } else {
-      if (!state.currentWeek) state.currentWeek = weekKey(new Date());
-      if (!state.weeks[state.currentWeek]) state.weeks[state.currentWeek] = { entries: [], created: new Date().toISOString() };
-      seedRosterIfEmpty();
-      await _writeToSupabase();
-    }
-  } catch(e) { console.error('loadFromSupabase:', e); }
-}
-
-let _saveTimer = null;
-async function _writeToSupabase() {
-  if (!currentUser) return;
-  try {
-    const { error } = await db.from('tracker_state').upsert(
-      { user_id: currentUser.id, state_json: JSON.stringify(state), updated_at: new Date().toISOString() },
-      { onConflict: 'user_id' }
-    );
-    if (error) console.error('Save error:', error);
-  } catch(e) { console.error('saveToSupabase:', e); }
-}
-
-function save() {
-  try { localStorage.setItem('pcm_tracker_stable', JSON.stringify(state)); } catch(e) {}
-  clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(_writeToSupabase, 800);
-}
-</script>
-
-<!-- ═══════════════════════════════════════════════════
-     AUTH SCREEN — shown instead of the password gate
-     ════════════════════════════════════════════════ -->
-<div id="auth-screen" style="position:fixed;inset:0;background:#0f0f0f;display:flex;align-items:center;justify-content:center;z-index:9999;flex-direction:column;font-family:'DM Sans',sans-serif;">
-  <div style="background:#1a1a1a;border:1px solid #2e2e2e;border-radius:14px;padding:36px 40px;display:flex;flex-direction:column;align-items:center;gap:18px;width:340px;max-width:92vw;">
-    <div style="text-align:center;">
-      <div style="font-size:28px;line-height:1;margin-bottom:8px;">🚌📈</div>
-      <div style="font-size:15px;font-weight:600;color:#f0ede8;letter-spacing:-0.01em;">Coach Feedback Tracker</div>
-      <div style="font-size:11px;color:#555350;margin-top:4px;font-family:'DM Mono',monospace;text-transform:uppercase;letter-spacing:0.07em;">futurePro</div>
-    </div>
-    <div style="display:flex;gap:0;background:#111;border:1px solid #2e2e2e;border-radius:8px;padding:3px;width:100%;">
-      <button id="tab-signin" onclick="switchAuthTab('signin')" style="flex:1;padding:7px;border:none;border-radius:5px;font-size:12px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;background:#222;color:#f0ede8;">Sign in</button>
-      <button id="tab-signup" onclick="switchAuthTab('signup')" style="flex:1;padding:7px;border:none;border-radius:5px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;background:transparent;color:#555350;">Create account</button>
-    </div>
-    <div style="width:100%;display:flex;flex-direction:column;gap:10px;">
-      <input id="auth-email" type="email" placeholder="Email" autocomplete="email"
-        style="width:100%;font-family:'DM Sans',sans-serif;font-size:13px;background:#222;border:1px solid #3a3a3a;border-radius:7px;color:#f0ede8;padding:10px 14px;outline:none;box-sizing:border-box;"
-        onfocus="this.style.borderColor='#d4ff6e'" onblur="this.style.borderColor='#3a3a3a'"
-        onkeydown="if(event.key==='Enter')document.getElementById('auth-password').focus()" />
-      <input id="auth-password" type="password" placeholder="Password" autocomplete="current-password"
-        style="width:100%;font-family:'DM Sans',sans-serif;font-size:13px;background:#222;border:1px solid #3a3a3a;border-radius:7px;color:#f0ede8;padding:10px 14px;outline:none;box-sizing:border-box;"
-        onfocus="this.style.borderColor='#d4ff6e'" onblur="this.style.borderColor='#3a3a3a'"
-        onkeydown="if(event.key==='Enter')submitAuth()" />
-    </div>
-    <div id="auth-error" style="font-size:12px;color:#ff6b6b;font-family:'DM Mono',monospace;text-align:center;min-height:16px;line-height:1.5;width:100%;"></div>
-    <button id="auth-submit" onclick="submitAuth()" style="width:100%;padding:11px;background:#d4ff6e;color:#0f0f0f;border:none;border-radius:7px;font-size:13px;font-weight:700;font-family:'DM Sans',sans-serif;cursor:pointer;"
-      onmouseover="this.style.background='#c8f060'" onmouseout="this.style.background='#d4ff6e'">Sign in</button>
-    <button onclick="sendResetEmail()" style="background:none;border:none;color:#555350;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;text-decoration:underline;padding:0;">Forgot password?</button>
-  </div>
-</div>
-<script>
-  let _authMode = 'signin';
-  function switchAuthTab(mode) {
-    _authMode = mode;
-    const s = mode === 'signin';
-    document.getElementById('tab-signin').style.background = s ? '#222' : 'transparent';
-    document.getElementById('tab-signin').style.color = s ? '#f0ede8' : '#555350';
-    document.getElementById('tab-signup').style.background = s ? 'transparent' : '#222';
-    document.getElementById('tab-signup').style.color = s ? '#555350' : '#f0ede8';
-    document.getElementById('auth-submit').textContent = s ? 'Sign in' : 'Create account';
-    document.getElementById('auth-error').textContent = '';
-  }
-  function submitAuth() {
-    const email = document.getElementById('auth-email').value.trim();
-    const pw = document.getElementById('auth-password').value;
-    if (!email || !pw) { showAuthError('Enter your email and password'); return; }
-    const btn = document.getElementById('auth-submit');
-    btn.textContent = _authMode === 'signin' ? 'Signing in...' : 'Creating account...';
-    btn.style.opacity = '0.7';
-    const done = () => { btn.style.opacity = '1'; btn.textContent = _authMode === 'signin' ? 'Sign in' : 'Create account'; };
-    if (_authMode === 'signin') signIn(email, pw).finally(done);
-    else signUp(email, pw).finally(done);
-  }
-  async function sendResetEmail() {
-    const email = document.getElementById('auth-email').value.trim();
-    if (!email) { showAuthError('Enter your email first'); return; }
-    const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
-    if (error) showAuthError(error.message);
-    else showAuthError('Reset email sent — check your inbox ✓', true);
-  }
-</script>
-
 <script>
   const STORAGE_KEY = 'pcm_tracker_stable';
   let state = { currentWeek: null, weeks: {} };
@@ -3522,8 +3442,9 @@ function save() {
   let historyVisible = false;
 
   // ── Storage helpers ──────────────────────────────
-  // save() is defined above in the Supabase integration block —
-  // it writes to both localStorage (offline fallback) and Supabase.
+  function save() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+  }
 
   // Field defaults — any new fields added in future versions get backfilled here
   // so existing saved data never breaks
@@ -3531,7 +3452,7 @@ function save() {
     tier: '2', pm: 'none', status: 'pending', note: '', date: null,
     hexPriority: 'none', hexScore: 0, hexTimeline: '', hexWhy: '',
     hexRootCause: '', hexLoad: '', intervention: 'none',
-    warningDate: '', coachNotes: '', skipped: false, empStatus: 'active', resignDate: '', standing: 'active', wrPct: null, wrHistory: [],
+    warningDate: '', coachNotes: '', skipped: false, empStatus: 'active', resignDate: '', standing: 'active', wrPct: null, wrHistory: [], wrTrend: null,
     created: new Date().toISOString()
   };
 
@@ -4044,6 +3965,19 @@ function save() {
               return `<span style="font-family:'DM Mono',monospace; font-size:11px; color:${wrColor}; font-weight:500;">${e.wrPct}%</span>${trendHtml}`;
             })()}
           </td>
+          <td class="col-actions">
+            ${(() => {
+              if (e.wrTrend) {
+                const cfg = {
+                  improving: { emoji: '🟢', label: 'Improving', color: 'var(--green)', bg: 'var(--green-bg)', border: '#1a4a30' },
+                  declining:  { emoji: '🔴', label: 'Declining',  color: 'var(--red)',   bg: 'var(--red-bg)',   border: '#4a2828' },
+                  steady:     { emoji: '🟡', label: 'Steady',     color: 'var(--yellow)',bg: 'var(--yellow-bg)',border: '#4a3818' },
+                }[e.wrTrend] || {};
+                return `<span style="font-family:'DM Mono',monospace; font-size:10px; font-weight:600; padding:3px 8px; border-radius:12px; background:${cfg.bg}; color:${cfg.color}; border:1px solid ${cfg.border}; white-space:nowrap;">${cfg.emoji} ${cfg.label}</span>`;
+              }
+              return '<span style="color:var(--text3); font-size:11px;">—</span>';
+            })()}
+          </td>
           <td>
             <select class="standing-select standing-${e.standing || 'none'}" onchange="updateStanding(${e.id}, this.value)" title="${{'none':'—','warning1':'1st Warning','warning2':'2nd Warning','monitoring':'Monitoring','active':'Active','resignation':'Resignation','termination':'Termination'}[e.standing||'none']}">
               <option value="none"        ${(e.standing||'none')==='none'        ?'selected':''}>—</option>
@@ -4309,9 +4243,10 @@ function save() {
       const tbody = document.getElementById('wr-preview-body');
       tbody.innerHTML = rows.map(r => {
         const color = r.wr < 60 ? 'var(--red)' : r.wr < 70 ? 'var(--yellow)' : r.wr < 80 ? 'var(--text2)' : 'var(--green)';
+        const trendEmoji = r.trend === 'improving' ? ' 🟢' : r.trend === 'declining' ? ' 🔴' : r.trend === 'steady' ? ' 🟡' : '';
         return `<tr style="border-bottom:1px solid var(--border);">
           <td style="padding:6px 10px; color:var(--text);">${r.coach}</td>
-          <td style="padding:6px 10px; font-family:'DM Mono',monospace; color:${color}; font-weight:500;">${r.wr}%</td>
+          <td style="padding:6px 10px; font-family:'DM Mono',monospace; color:${color}; font-weight:500;">${r.wr}%${trendEmoji}</td>
         </tr>`;
       }).join('');
 
@@ -4349,7 +4284,8 @@ function save() {
     };
 
     const coachIdx = col(['coach', 'name']);
-    const wrIdx    = col(['wr%', 'wr %', 'weighted retention', 'retention', 'wr']);
+    const wrIdx    = col(['last week', 'wr%', 'wr %', 'weighted retention', 'retention', 'wr']);
+    const trendIdx = col(['4-week trend', '4 week trend', 'trend']);
 
     if (coachIdx === -1 || wrIdx === -1) return [];
 
@@ -4357,11 +4293,19 @@ function save() {
     for (let i = 1; i < lines.length; i++) {
       const cells = parseRow(lines[i]);
       const coach = cells[coachIdx] || '';
-      if (!coach) continue;
+      if (!coach || coach.toLowerCase() === 'squad average') continue;
       const raw = (cells[wrIdx] || '').replace('%', '').trim();
       const wr = parseFloat(raw);
       if (isNaN(wr)) continue;
-      rows.push({ coach, wr: Math.round(wr * 10) / 10 });
+      // Parse trend emoji
+      let trend = null;
+      if (trendIdx !== -1) {
+        const trendVal = (cells[trendIdx] || '').trim();
+        if (trendVal.includes('Improving') || trendVal.includes('🟢')) trend = 'improving';
+        else if (trendVal.includes('Declining') || trendVal.includes('🔴')) trend = 'declining';
+        else if (trendVal.includes('Steady') || trendVal.includes('🟡')) trend = 'steady';
+      }
+      rows.push({ coach, wr: Math.round(wr * 10) / 10, trend });
     }
     return rows;
   }
@@ -4390,6 +4334,7 @@ function save() {
       if (entry.wrHistory.length > 4) entry.wrHistory = entry.wrHistory.slice(-4);
 
       entry.wrPct = row.wr;
+      if (row.trend !== undefined) entry.wrTrend = row.trend;
       updated++;
     });
 
@@ -5515,7 +5460,39 @@ function save() {
   }
 
 
-  // Auth handled by Supabase — see initAuth() above
+  // ── Password gate ─────────────────────────────────
+  const PW_HASH = '3defe9adcd27b66d2e780194e64d0045c6f5f1536303ba0cff7479ab89e020c9';
+
+  async function checkPassword() {
+    const val = document.getElementById('pw-input').value;
+    const errEl = document.getElementById('pw-error');
+    const input = document.getElementById('pw-input');
+
+    const hash = await sha256(val);
+    if (hash === PW_HASH) {
+      document.getElementById('pw-gate').classList.add('hidden');
+      document.getElementById('app').style.display = '';
+      sessionStorage.setItem('eb_auth', '1');
+    } else {
+      errEl.textContent = 'Incorrect password';
+      input.classList.add('error');
+      input.value = '';
+      setTimeout(() => { input.classList.remove('error'); errEl.textContent = ''; }, 1500);
+    }
+  }
+
+  async function sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  // Skip gate if already authenticated this session
+  if (sessionStorage.getItem('eb_auth') === '1') {
+    document.getElementById('pw-gate').classList.add('hidden');
+    document.getElementById('app').style.display = '';
+  }
 
 
   // ── Name search ───────────────────────────────────
@@ -5944,6 +5921,139 @@ function save() {
     drawSparkline('spark-wr',      wrData,      '#6bffb8');
   }
 
+
+  // ── Coach Actions Import ──────────────────────────
+  let pendingActionsData = [];
+
+  function openActionsModal() {
+    pendingActionsData = [];
+    document.getElementById('actions-feedback').textContent = '';
+    document.getElementById('actions-preview').style.display = 'none';
+    document.getElementById('actions-preview-body').innerHTML = '';
+    document.getElementById('actions-match-note').textContent = '';
+    document.getElementById('actions-file-input').value = '';
+    setActionsBtn(false);
+    document.getElementById('actions-drop-zone').style.borderColor = '#4a3818';
+    document.getElementById('actions-modal').style.display = 'flex';
+  }
+
+  function closeActionsModal() {
+    document.getElementById('actions-modal').style.display = 'none';
+    pendingActionsData = [];
+  }
+
+  function setActionsBtn(enabled) {
+    const btn = document.getElementById('actions-confirm-btn');
+    btn.disabled = !enabled;
+    btn.style.opacity = enabled ? '1' : '0.4';
+    btn.style.cursor = enabled ? 'pointer' : 'not-allowed';
+  }
+
+  function handleActionsDrop(e) {
+    e.preventDefault();
+    document.getElementById('actions-drop-zone').style.borderColor = '#4a3818';
+    const file = e.dataTransfer.files[0];
+    if (file) parseActionsFile(file);
+  }
+
+  function handleActionsFile(input) {
+    const file = input.files[0];
+    if (file) parseActionsFile(file);
+  }
+
+  function parseActionsFile(file) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target.result;
+      const rows = parseActionsCSV(text);
+      const fb = document.getElementById('actions-feedback');
+
+      if (rows.length === 0) {
+        fb.textContent = 'No valid rows found. Check that the CSV has a "Coach" and "4-Week Trend" column.';
+        fb.style.color = 'var(--red)';
+        setActionsBtn(false);
+        return;
+      }
+
+      pendingActionsData = rows;
+      const rosterNames = currentEntries().map(e => e.name.toLowerCase());
+      const matched = rows.filter(r => rosterNames.includes(r.coach.toLowerCase())).length;
+
+      fb.textContent = `✓ ${rows.length} coaches found in "${file.name}"`;
+      fb.style.color = 'var(--green)';
+      document.getElementById('actions-match-note').textContent = `${matched} of ${rows.length} match current roster`;
+
+      const tbody = document.getElementById('actions-preview-body');
+      tbody.innerHTML = rows.map(r => {
+        const cfg = {
+          improving: { emoji: '🟢', label: 'Improving', color: 'var(--green)' },
+          declining:  { emoji: '🔴', label: 'Declining',  color: 'var(--red)' },
+          steady:     { emoji: '🟡', label: 'Steady',     color: 'var(--yellow)' },
+        }[r.trend] || { emoji: '—', label: '—', color: 'var(--text3)' };
+        return `<tr style="border-bottom:1px solid var(--border);">
+          <td style="padding:6px 10px; color:var(--text);">${r.coach}</td>
+          <td style="padding:6px 10px; color:${cfg.color}; font-weight:500;">${cfg.emoji} ${cfg.label}</td>
+        </tr>`;
+      }).join('');
+
+      document.getElementById('actions-preview').style.display = 'block';
+      setActionsBtn(true);
+    };
+    reader.readAsText(file);
+  }
+
+  function parseActionsCSV(text) {
+    const lines = text.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (lines.length < 2) return [];
+
+    const parseRow = (line) => {
+      const result = [];
+      let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') { inQ = !inQ; }
+        else if (ch === ',' && !inQ) { result.push(cur.trim()); cur = ''; }
+        else { cur += ch; }
+      }
+      result.push(cur.trim());
+      return result;
+    };
+
+    const header = parseRow(lines[0]).map(h => h.toLowerCase().replace(/[^a-z0-9% ]/g, '').trim());
+    const coachIdx = header.findIndex(h => h.includes('coach') || h.includes('name'));
+    const trendIdx = header.findIndex(h => h.includes('trend'));
+
+    if (coachIdx === -1 || trendIdx === -1) return [];
+
+    const rows = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cells = parseRow(lines[i]);
+      const coach = cells[coachIdx] || '';
+      if (!coach || coach.toLowerCase() === 'squad average') continue;
+      const trendVal = (cells[trendIdx] || '').trim();
+      let trend = null;
+      if (trendVal.includes('Improving') || trendVal.includes('🟢')) trend = 'improving';
+      else if (trendVal.includes('Declining') || trendVal.includes('🔴')) trend = 'declining';
+      else if (trendVal.includes('Steady') || trendVal.includes('🟡')) trend = 'steady';
+      if (!trend) continue;
+      rows.push({ coach, trend });
+    }
+    return rows;
+  }
+
+  function confirmActionsImport() {
+    if (pendingActionsData.length === 0) return;
+    const entries = currentEntries();
+    let updated = 0;
+    pendingActionsData.forEach(row => {
+      const entry = entries.find(e => e.name.toLowerCase() === row.coach.toLowerCase());
+      if (entry) { entry.wrTrend = row.trend; updated++; }
+    });
+    save(); render();
+    closeActionsModal();
+    toast(`Coach Actions applied — ${updated} coaches updated`);
+  }
+
   // ── Add coach form ────────────────────────────────
   let addFormOpen = false;
   function toggleAddForm() {
@@ -6315,9 +6425,35 @@ function save() {
   }
 
   // ── Init ─────────────────────────────────────────
-  // State is initialized empty; initAuth() loads from Supabase
-  // and calls postAuthSetup() + render() once user is confirmed.
-  initAuth();
+  load();
+  seedRosterIfEmpty();
+  if (state.lightMode) {
+    document.body.classList.add('light');
+    document.getElementById('theme-toggle-btn').textContent = '🌙';
+  } else {
+    document.getElementById('theme-toggle-btn').textContent = '☀️';
+  }
+  if (state.dashboardOpen) {
+    dashboardOpen = true;
+    document.getElementById('dashboard-toggle').classList.add('open');
+    document.getElementById('dashboard-body').classList.add('open');
+  }
+  // Set initial sort indicator
+  const initTh = document.getElementById('th-' + sortCol);
+  if (initTh) initTh.classList.add('sort-asc');
+  updateQuickLinkButtons();
+  restoreNotepad();
+  restoreColState();
+  if (state.currentView) {
+    currentView = state.currentView;
+    document.getElementById('view-btn-focus').classList.toggle('active', currentView === 'focus');
+    document.getElementById('view-btn-full').classList.toggle('active', currentView === 'full');
+    document.getElementById('view-btn-focus').classList.toggle('focus-view', currentView === 'focus');
+    document.getElementById('view-btn-full').classList.toggle('focus-view', false);
+  }
+  if (state.logoSrc) applyLogo(state.logoSrc);
+  if (state.headerTitle) document.getElementById('header-title').textContent = state.headerTitle;
+  render();
 </script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
@@ -6444,6 +6580,5 @@ function save() {
     renderTrend();
   }
 </script>
-</div><!-- /app -->
 </body>
 </html>
